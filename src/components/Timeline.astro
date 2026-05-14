@@ -1,0 +1,94 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  posts: CollectionEntry<'posts'>[];
+}
+const { posts } = Astro.props;
+
+// Group posts by year (extracted from date "YYYY.MM.DD")
+const years = new Map<string, CollectionEntry<'posts'>[]>();
+for (const post of posts) {
+  const year = post.data.date.slice(0, 4);
+  if (!years.has(year)) years.set(year, []);
+  years.get(year)!.push(post);
+}
+const yearList = Array.from(years.entries()); // newest year first because posts already sorted desc
+const yearLabels: Record<string, string> = {
+  '2026': 'ACTIVE',
+  '2025': 'ARCHIVED',
+  '2024': 'ARCHIVED',
+  '2023': 'ARCHIVED',
+};
+
+// helper
+function postHref(p: CollectionEntry<'posts'>) {
+  return `/posts/${p.slug}`;
+}
+
+const featured = posts[0];
+const restByYear = yearList.map(([year, ps]) => {
+  return [year, ps.filter(p => p.slug !== featured?.slug)] as const;
+});
+---
+
+<div class="section-marker" id="archive">
+  <span>ARCHIVE / 时间线</span>
+  <span class="right">{posts.length} ENTRIES · ALL ACCESS</span>
+</div>
+
+<div class="timeline">
+  {yearList.map(([year, ps], yearIdx) => {
+    const isFirstYear = yearIdx === 0;
+    return (
+      <>
+        <div class="year-header">
+          <span class="yr">{year}</span>
+          <span class="yr-lbl">{ps.length} CASES · {yearLabels[year] || 'ARCHIVED'}</span>
+        </div>
+        {isFirstYear && featured && ps[0]?.slug === featured.slug && (
+          <>
+            <a class="entry entry-hero" href={postHref(featured)}>
+              <div class="entry-meta">
+                <span>{featured.data.date}</span>
+                <span class="case-id">{featured.data.caseId}</span>
+                <span class="entry-tag-rail">LATEST · 最新通讯</span>
+              </div>
+              <h2 class="entry-title">{featured.data.title}</h2>
+              <p class="entry-summary-hero">{featured.data.subtitle}</p>
+              <div class="entry-foot-hero">
+                {featured.data.tags.map(t => <span class="tag">#{t}</span>)}
+                <span class="sep">·</span>
+                <span class="read-time">{featured.data.readTime} READ</span>
+                <span class="cta">READ DISPATCH →</span>
+              </div>
+            </a>
+            <div class="archive-divider">
+              <span class="line"></span>
+              <span class="lbl">早期档案 · EARLIER</span>
+              <span class="line"></span>
+            </div>
+            {ps.slice(1).map(p => (
+              <a class="entry entry-compact" href={postHref(p)}>
+                <span class="ec-date">{p.data.date}</span>
+                <span class="ec-case">{p.data.caseId}</span>
+                <span class="ec-title">{p.data.title}</span>
+                <span class="ec-tags">{p.data.tags.map(t => <span class="tag">#{t}</span>)}</span>
+                <span class="ec-time">{p.data.readTime}</span>
+              </a>
+            ))}
+          </>
+        )}
+        {!isFirstYear && ps.map(p => (
+          <a class="entry entry-compact" href={postHref(p)}>
+            <span class="ec-date">{p.data.date}</span>
+            <span class="ec-case">{p.data.caseId}</span>
+            <span class="ec-title">{p.data.title}</span>
+            <span class="ec-tags">{p.data.tags.map(t => <span class="tag">#{t}</span>)}</span>
+            <span class="ec-time">{p.data.readTime}</span>
+          </a>
+        ))}
+      </>
+    );
+  })}
+</div>

@@ -1,0 +1,14 @@
+---
+import Site from '../layouts/Site.astro';
+import Hero from '../components/Hero.astro';
+import Timeline from '../components/Timeline.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('posts'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.date.localeCompare(a.data.date));
+---
+<Site view="home">
+  <Hero />
+  <Timeline posts={posts} />
+</Site>

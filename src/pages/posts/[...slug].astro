@@ -1,0 +1,87 @@
+---
+import Site from '../../layouts/Site.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = (await getCollection('posts'))
+    .filter((p) => !p.data.draft)
+    .sort((a, b) => b.data.date.localeCompare(a.data.date));
+  return posts.map((post, i) => ({
+    params: { slug: post.slug },
+    props: {
+      post,
+      prev: posts[i + 1] ?? null,
+      next: posts[i - 1] ?? null,
+    },
+  }));
+}
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+  prev: CollectionEntry<'posts'> | null;
+  next: CollectionEntry<'posts'> | null;
+}
+
+const { post, prev, next } = Astro.props;
+const { Content } = await post.render();
+const d = post.data;
+---
+<Site view="post" title={`${d.title} — dongfangbai.com`} description={d.subtitle}>
+  <div class="post-back">
+    <a href="/">← RETURN TO ARCHIVE / 撤回档案</a>
+    <span class="case-id">{d.caseId} · DISPATCH · {d.date}</span>
+  </div>
+
+  <div class="post-header">
+    <div class="post-meta">
+      {d.tags.map((t) => <span class="tag">#{t}</span>)} · {d.readTime} READ · {d.date}
+    </div>
+    <h1 class="post-title">{d.title}</h1>
+    <p class="post-subtitle">{d.subtitle}</p>
+  </div>
+
+  <div class="post-divider">─ ─ ─ BEGIN DISPATCH · 开始传输 ─ ─ ─</div>
+
+  <div class="post-body">
+    <Content />
+  </div>
+
+  <div class="post-end" id="postEnd">
+    <div class="end-row">
+      <span class="end-char char-cn" style="--i:0">歌</span>
+      <span class="end-char char-cn" style="--i:1">未</span>
+      <span class="end-char char-cn" style="--i:2">竟</span>
+    </div>
+    <span class="end-sub">END · DISPATCH · TRANSMISSION CLOSED</span>
+  </div>
+
+  <div class="post-nav">
+    {prev ? (
+      <a class="prev" href={`/posts/${prev.slug}`}>
+        <span class="label">← PREV · {prev.data.caseId}</span>
+        <span class="title">{prev.data.title}</span>
+      </a>
+    ) : (
+      <span class="prev" style="opacity:0.4;pointer-events:none">
+        <span class="label">← PREV</span>
+        <span class="title">[ 已是最早 ]</span>
+      </span>
+    )}
+    {next ? (
+      <a class="next" href={`/posts/${next.slug}`}>
+        <span class="label">NEXT · {next.data.caseId} →</span>
+        <span class="title">{next.data.title}</span>
+      </a>
+    ) : (
+      <span class="next" style="opacity:0.4;pointer-events:none">
+        <span class="label">NEXT →</span>
+        <span class="title">[ 下篇待写 ]</span>
+      </span>
+    )}
+  </div>
+
+  <div class="comments-box">
+    <input type="text" placeholder="记录你的观测 // INPUT_TRANSMISSION ..." />
+    <div class="powered">// 觀測記錄 · POWERED BY GISCUS · GITHUB DISCUSSIONS</div>
+  </div>
+</Site>

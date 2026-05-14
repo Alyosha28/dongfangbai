@@ -1,0 +1,111 @@
+---
+import '../styles/global.css';
+import BootScreen from '../components/BootScreen.astro';
+import PenPen from '../components/PenPen.astro';
+import MarketHud from '../components/MarketHud.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  view?: 'home' | 'post' | 'about' | '404';
+}
+const {
+  title = '歌未竟,东方白 — dongfangbai.com',
+  description = '一个学生的数字花园:在读历史,看市场,写字。致敬 EVA × rauno.me × 毛主席《贺新郎·读史》。',
+  view = 'home',
+} = Astro.props;
+
+const pathname = Astro.url.pathname;
+const showMarketHud = view === 'home';
+---
+<!doctype html>
+<html lang="zh-CN" data-theme="night" data-view={view}>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content={description} />
+  <title>{title}</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700;0,6..96,900;1,6..96,400&family=JetBrains+Mono:wght@400;500;700&family=Liu+Jian+Mao+Cao&family=Long+Cang&family=Noto+Serif+SC:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet" />
+
+  <script is:inline>
+    // theme persistence - prevent FOUC
+    try {
+      const saved = localStorage.getItem('dongfangbai-theme');
+      if (saved === 'day' || saved === 'night') {
+        document.documentElement.dataset.theme = saved;
+      }
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <!-- ATMOSPHERE · radial glow + grain + scanline + drift sweep -->
+  <div class="atmosphere" aria-hidden="true">
+    <div class="atm-glow"></div>
+    <div class="atm-scanline"></div>
+    <div class="atm-grain"></div>
+    <div class="atm-sweep"></div>
+  </div>
+
+  <!-- THEME SWEEP · NERV 频道切换扫描带 -->
+  <div class="theme-sweep" id="themeSweep" aria-hidden="true"></div>
+
+  <!-- BOOT SCREEN · NERV 启动序列 (managed by JS) -->
+  <BootScreen />
+
+  <!-- HUD TOP -->
+  <div class="hud-top">
+    <div class="left">
+      <a href="/" class="logo-mark">DONGFANGBAI.COM</a>
+      <span class="status-dot"></span>
+      <span><span class="field-val" id="timecode">04:21:33</span></span>
+    </div>
+    <div class="center">
+      <a href="/" data-view="home" class:list={['nav-btn', { active: pathname === '/' }]}>HOME</a>
+      <a href="/posts/case-007" data-view="post" class:list={['nav-btn', { active: pathname.startsWith('/posts/') }]}>ENTRY</a>
+      <a href="/about" data-view="about" class:list={['nav-btn', { active: pathname === '/about' }]}>ABOUT</a>
+    </div>
+    <div class="right">
+      <span>OPERATIONS · ONLINE</span>
+      <button class="theme-toggle" id="themeToggle">TRIGGER: DAY</button>
+    </div>
+  </div>
+
+  <div class="read-progress" id="readProgress"></div>
+
+  {showMarketHud && <MarketHud />}
+
+  <main>
+    <slot />
+  </main>
+
+  <PenPen />
+
+  <!-- HUD BOTTOM -->
+  <div class="hud-bottom">
+    <div class="seg">
+      <span class="field-label">A.T.FIELD:</span>
+      <span class="field-val">ACTIVE</span>
+      <span class="field-label" style="margin-left:24px">SYNC:</span>
+      <span class="field-val" id="syncRate">99.7%</span>
+    </div>
+    <div class="seg center">
+      <span>歌未竟,东方白</span>
+    </div>
+    <div class="seg right">
+      <a href="https://github.com/" target="_blank" rel="noopener">GITHUB</a>
+      <a href="https://x.com/" target="_blank" rel="noopener">X</a>
+      <a href="mailto:hi@dongfangbai.com">MAIL</a>
+      <a href="/rss.xml">RSS</a>
+      <span class="ver">v.20260515</span>
+    </div>
+  </div>
+
+  <script>
+    import { initClient } from '../scripts/client';
+    initClient();
+  </script>
+</body>
+</html>

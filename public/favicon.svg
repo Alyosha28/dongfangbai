@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" fill="#0A0E1A"/>
+  <rect x="11" y="11" width="10" height="10" fill="#FF7A00" transform="rotate(45 16 16)"/>
+  <text x="16" y="22" text-anchor="middle" font-family="serif" font-style="italic" font-weight="900" font-size="14" fill="#D4AF37">白</text>
+</svg>

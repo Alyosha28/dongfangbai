@@ -1,0 +1,42 @@
+---
+// NERV-style boot screen (first visit per session)
+---
+<div class="boot-screen" id="bootScreen">
+  <div class="boot-warn-stripe"></div>
+  <div class="boot-warn-stripe-bot"></div>
+
+  <div class="boot-corner tl">▲ NERV TERMINAL<br>INITIALIZING ...</div>
+  <div class="boot-corner tr">DONGFANGBAI · MMXXVI<br>BUILD 20260515</div>
+  <div class="boot-corner bl">GRID 35-Y2-K4<br>OPERATIONS COMMAND</div>
+  <div class="boot-corner br">TIMECODE 04:21:33<br>AUTH · LEVEL-7</div>
+
+  <div class="boot-logo-wrap">
+    <div class="boot-logo-top">DONGFANGBAI · 東 方 白 · 二〇二六</div>
+    <div class="boot-logo-svg">
+      <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" width="340" height="340">
+        <polygon class="boot-hex" points="150,18 270,82 270,218 150,282 30,218 30,82"></polygon>
+        <polygon class="boot-hex-inner" points="150,48 240,98 240,202 150,252 60,202 60,98"></polygon>
+        <line class="boot-cross" x1="150" y1="0" x2="150" y2="300"></line>
+        <line class="boot-cross" x1="0" y1="150" x2="300" y2="150"></line>
+        <text class="boot-logo-text" x="150" y="150" text-anchor="middle" dominant-baseline="central">秋</text>
+      </svg>
+    </div>
+    <div class="boot-logo-bottom">
+      <span class="line-1">四 海 翻 腾 云 水 怒 · 五 洲 震 荡 风 雷 激</span>
+      <span class="line-2">歌 未 竟 · 东 方 白</span>
+      <span class="de">DAS LIED IST NOCH NICHT ZU ENDE GESUNGEN</span>
+    </div>
+  </div>
+
+  <div class="boot-log" id="bootLog">
+    <div class="boot-log-line"><span class="dim">&gt;</span> MAGI · BALTHASAR <span class="dim">....................</span> <span class="ok">[ OK ]</span></div>
+    <div class="boot-log-line"><span class="dim">&gt;</span> MAGI · CASPAR <span class="dim">.......................</span> <span class="ok">[ OK ]</span></div>
+    <div class="boot-log-line"><span class="dim">&gt;</span> MAGI · MELCHIOR <span class="dim">.....................</span> <span class="ok">[ OK ]</span></div>
+    <div class="boot-log-line"><span class="dim">&gt;</span> A.T.FIELD <span class="dim">...........................</span> <span class="ok">[ ACTIVE ]</span></div>
+    <div class="boot-log-line"><span class="dim">&gt;</span> SYNCHRONIZATION <span class="dim">.....................</span> <span class="num">99.7%</span></div>
+    <div class="boot-log-line"><span class="dim">&gt;</span> MARKET FEED · SH/SZ/HK <span class="dim">..............</span> <span class="ok">[ LINK ]</span></div>
+    <div class="boot-log-line"><span class="dim">&gt;</span> OPERATIONS <span class="dim">..........................</span> <span class="ok">[ ONLINE ]</span></div>
+  </div>
+
+  <button class="boot-skip" id="bootSkip">SKIP / ENTER ↵</button>
+</div>
