@@ -1291,51 +1291,121 @@ body.hero-revealed .hero-nav { transition-delay: 0.85s; opacity: 1; transform: t
   font-family: 'Rajdhani', monospace;
 }
 
-.boot-log {
+/* ============================================
+   BOOT · 1.5s 压缩版 · 单行状态栏 + 进度条 + ESC hint
+   ============================================ */
+.boot-status {
   position: absolute;
-  bottom: 60px;
+  bottom: 110px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(8px);
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  color: #65FF65;
-  letter-spacing: 0.05em;
-  line-height: 1.7;
-  text-align: left;
-  min-width: 360px;
-}
-.boot-log-line {
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
   opacity: 0;
-  animation: boot-typewriter 0.1s ease forwards;
+  animation: boot-status-fade 0.5s 0.85s cubic-bezier(0.34, 1.4, 0.6, 1) forwards;
 }
-.boot-log-line .ok { color: #65FF65; }
-.boot-log-line .num { color: #FF7A00; }
-.boot-log-line .dim { color: #3F4658; }
-@keyframes boot-typewriter {
-  to { opacity: 1; }
+@keyframes boot-status-fade {
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+.boot-status .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #65FF65;
+  box-shadow: 0 0 8px #65FF65;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+.boot-status .lbl { color: #6B7280; }
+.boot-status .val { color: #65FF65; font-weight: 500; }
+.boot-status .dim { color: #3F4658; margin: 0 2px; }
+
+/* progress bar at bottom · syncs with boot duration */
+.boot-progress {
+  position: absolute;
+  left: 0; right: 0;
+  bottom: 0;
+  height: 2px;
+  background: rgba(255, 122, 0, 0.08);
+  overflow: hidden;
+  z-index: 10;
+}
+.boot-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #FF3838 0%, #FF7A00 50%, #D4AF37 100%);
+  box-shadow: 0 0 10px rgba(255, 122, 0, 0.6);
+  animation: boot-progress-fill var(--boot-duration, 1500ms) linear forwards;
+}
+@keyframes boot-progress-fill {
+  to { width: 100%; }
+}
+
+/* ESC hint · right-middle, appears at 500ms */
+.boot-esc-hint {
+  position: absolute;
+  top: 50%;
+  right: 32px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Rajdhani', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 122, 0, 0.55);
+  opacity: 0;
+  animation: boot-hint-pulse 1.4s 0.5s ease-in-out forwards;
+  pointer-events: none;
+}
+.boot-esc-hint .kbd {
+  display: inline-block;
+  padding: 3px 7px;
+  border: 1px solid rgba(255, 122, 0, 0.4);
+  border-radius: 3px;
+  background: rgba(255, 122, 0, 0.06);
+  color: #FF7A00;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+}
+.boot-esc-hint .or { color: rgba(255, 122, 0, 0.4); }
+.boot-esc-hint .lbl { letter-spacing: 0.22em; }
+@keyframes boot-hint-pulse {
+  0%   { opacity: 0; transform: translateY(-50%) translateX(8px); }
+  18%  { opacity: 1; transform: translateY(-50%) translateX(0); }
+  85%  { opacity: 1; }
+  100% { opacity: 0.55; }
 }
 
 .boot-skip {
   position: absolute;
-  bottom: 18px;
+  bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
   background: transparent;
-  border: 1px solid rgba(255, 56, 56, 0.4);
-  color: rgba(255, 56, 56, 0.7);
+  border: 1.5px solid rgba(255, 122, 0, 0.55);
+  color: rgba(255, 122, 0, 0.85);
   font-family: 'Rajdhani', monospace;
-  font-size: 10px;
-  letter-spacing: 0.25em;
-  padding: 8px 14px;
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  padding: 10px 22px;
   cursor: pointer;
   opacity: 0;
-  animation: boot-fade-in 0.5s 2.0s ease forwards;
+  animation: boot-fade-in 0.4s 0.6s ease forwards;
   text-transform: uppercase;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+  font-weight: 600;
+  z-index: 11;
 }
 .boot-skip:hover {
-  background: rgba(255, 56, 56, 0.15);
-  color: #FF3838;
+  background: rgba(255, 122, 0, 0.18);
+  color: #FF7A00;
+  border-color: #FF7A00;
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 0 4px 14px rgba(255, 122, 0, 0.3);
 }
 
 /* ============================================

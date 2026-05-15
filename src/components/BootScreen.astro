@@ -28,15 +28,26 @@
     </div>
   </div>
 
-  <div class="boot-log" id="bootLog">
-    <div class="boot-log-line"><span class="dim">&gt;</span> MAGI · BALTHASAR <span class="dim">....................</span> <span class="ok">[ OK ]</span></div>
-    <div class="boot-log-line"><span class="dim">&gt;</span> MAGI · CASPAR <span class="dim">.......................</span> <span class="ok">[ OK ]</span></div>
-    <div class="boot-log-line"><span class="dim">&gt;</span> MAGI · MELCHIOR <span class="dim">.....................</span> <span class="ok">[ OK ]</span></div>
-    <div class="boot-log-line"><span class="dim">&gt;</span> A.T.FIELD <span class="dim">...........................</span> <span class="ok">[ ACTIVE ]</span></div>
-    <div class="boot-log-line"><span class="dim">&gt;</span> SYNCHRONIZATION <span class="dim">.....................</span> <span class="num">99.7%</span></div>
-    <div class="boot-log-line"><span class="dim">&gt;</span> MARKET FEED · SH/SZ/HK <span class="dim">..............</span> <span class="ok">[ LINK ]</span></div>
-    <div class="boot-log-line"><span class="dim">&gt;</span> OPERATIONS <span class="dim">..........................</span> <span class="ok">[ ONLINE ]</span></div>
+  <div class="boot-status" id="bootStatus">
+    <span class="dot"></span>
+    <span class="lbl">ALL SYSTEMS</span>
+    <span class="val">ONLINE</span>
+    <span class="dim">·</span>
+    <span class="lbl">SYNC</span>
+    <span class="val">99.7%</span>
+    <span class="dim">·</span>
+    <span class="lbl">NERV LINK</span>
+    <span class="val">ESTABLISHED</span>
   </div>
+
+  <div class="boot-esc-hint" id="bootEscHint">
+    <span class="kbd">ESC</span>
+    <span class="or">/</span>
+    <span class="kbd">click</span>
+    <span class="lbl">to skip →</span>
+  </div>
+
+  <div class="boot-progress" id="bootProgress"><div class="boot-progress-bar"></div></div>
 
   <button class="boot-skip" id="bootSkip">SKIP / ENTER ↵</button>
 </div>

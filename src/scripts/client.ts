@@ -15,6 +15,7 @@ export function initClient() {
 
   // ============================================
   // SFX · audio cues (from huashu-design SFX library)
+  // + first-interaction unlock(绕过浏览器 autoplay policy)
   // ============================================
   function createSfx(src: string, volume = 0.55): HTMLAudioElement {
     const a = new Audio(src);
@@ -34,6 +35,27 @@ export function initClient() {
     bootComplete: createSfx('/sfx/boot-complete.mp3', 0.55),
     themeToggle: createSfx('/sfx/theme-toggle.mp3', 0.45),
   };
+  // First-interaction unlock · 在任意用户输入后,把所有 sfx 都"激活"一次
+  // (空播 + 立即暂停),后续 playSfx 不再被 autoplay policy 屏蔽
+  let sfxUnlocked = false;
+  function unlockSfx() {
+    if (sfxUnlocked) return;
+    sfxUnlocked = true;
+    Object.values(sfx).forEach((a) => {
+      try {
+        a.muted = true;
+        const p = a.play();
+        if (p && typeof p.then === 'function') {
+          p.then(() => { a.pause(); a.currentTime = 0; a.muted = false; }).catch(() => { a.muted = false; });
+        } else {
+          a.pause(); a.currentTime = 0; a.muted = false;
+        }
+      } catch {}
+    });
+  }
+  ['pointerdown', 'keydown', 'touchstart'].forEach((evt) => {
+    document.addEventListener(evt, unlockSfx, { once: true, passive: true });
+  });
 
   // ============================================
   // theme button label sync (after FOUC-prevention inline script)
@@ -74,17 +96,16 @@ export function initClient() {
       if (marketHud) marketHud.classList.add('visible');
       revealHero();
     } else {
+      // 1.5s compressed boot · skip MAGI log entirely
+      const BOOT_DURATION = 1500;
+      // sync CSS progress bar var
+      bootScreen.style.setProperty('--boot-duration', `${BOOT_DURATION}ms`);
       // SFX timing - init plays right at boot start
       setTimeout(() => playSfx(sfx.bootInit), 80);
-      // stagger MAGI log lines
-      const lines = bootScreen.querySelectorAll('.boot-log-line');
-      lines.forEach((line, i) => {
-        (line as HTMLElement).style.animationDelay = (1.5 + i * 0.18) + 's';
-      });
-      // SFX timing - complete near end
-      setTimeout(() => playSfx(sfx.bootComplete), 2700);
-      // auto-end at 3.2s
-      const bootTimer = window.setTimeout(endBoot, 3200);
+      // SFX timing - complete just before fade out
+      setTimeout(() => playSfx(sfx.bootComplete), BOOT_DURATION - 400);
+      // auto-end
+      const bootTimer = window.setTimeout(endBoot, BOOT_DURATION);
       if (bootSkip) {
         bootSkip.addEventListener('click', () => { clearTimeout(bootTimer); endBoot(); });
       }
@@ -96,8 +117,10 @@ export function initClient() {
         }
       };
       document.addEventListener('keydown', skipHandler);
-      bootScreen.addEventListener('click', (e) => {
-        if (e.target === bootScreen) { clearTimeout(bootTimer); endBoot(); }
+      // any click on boot screen (not just the SKIP button) skips
+      bootScreen.addEventListener('click', () => {
+        clearTimeout(bootTimer);
+        endBoot();
       });
     }
   } else {
