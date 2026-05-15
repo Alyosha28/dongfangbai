@@ -63,11 +63,13 @@ const restByYear = yearList.map(([year, ps]) => {
                 <span class="cta">READ DISPATCH →</span>
               </div>
             </a>
-            <div class="archive-divider">
-              <span class="line"></span>
-              <span class="lbl">早期档案 · EARLIER</span>
-              <span class="line"></span>
-            </div>
+            {ps.slice(1).length > 0 && (
+              <div class="archive-divider">
+                <span class="line"></span>
+                <span class="lbl">早期档案 · EARLIER</span>
+                <span class="line"></span>
+              </div>
+            )}
             {ps.slice(1).map(p => (
               <a class="entry entry-compact" href={postHref(p)}>
                 <span class="ec-date">{p.data.date}</span>

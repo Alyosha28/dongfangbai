@@ -3,6 +3,7 @@ import '../styles/global.css';
 import BootScreen from '../components/BootScreen.astro';
 import PenPen from '../components/PenPen.astro';
 import MarketHud from '../components/MarketHud.astro';
+import { getCollection } from 'astro:content';
 
 interface Props {
   title?: string;
@@ -17,6 +18,12 @@ const {
 
 const pathname = Astro.url.pathname;
 const showMarketHud = view === 'home';
+
+// dynamic LATEST link · 自动跟随最新文章
+const latestPost = (await getCollection('posts'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.date.localeCompare(a.data.date))[0];
+const latestHref = latestPost ? `/posts/${latestPost.slug}` : '/';
 ---
 <!doctype html>
 <html lang="zh-CN" data-theme="night" data-view={view}>
@@ -69,7 +76,7 @@ const showMarketHud = view === 'home';
     </div>
     <div class="center">
       <a href="/" data-view="home" class:list={['nav-btn', { active: pathname === '/' }]}>HOME</a>
-      <a href="/posts/case-007" data-view="post" class:list={['nav-btn', { active: pathname.startsWith('/posts/') }]}>ENTRY</a>
+      <a href={latestHref} data-view="post" class:list={['nav-btn', { active: pathname.startsWith('/posts/') }]}>LATEST</a>
       <a href="/about" data-view="about" class:list={['nav-btn', { active: pathname === '/about' }]}>ABOUT</a>
     </div>
     <div class="right">

@@ -1,5 +1,14 @@
 ---
 // Hero · 「歌未竟·东方白」首屏巨字 + 战术装饰
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  latestPost?: CollectionEntry<'posts'>;
+}
+const { latestPost } = Astro.props;
+const latestHref = latestPost ? `/posts/${latestPost.slug}` : '#archive';
+const markerCaseId = latestPost?.data.caseId ?? 'CASE-NEW';
+const markerDate = latestPost?.data.date ?? '——';
 ---
 <div class="hero">
   <div class="hero-deco tl">
@@ -14,7 +23,7 @@
     <div>COMM · ONLINE</div>
     <div class="cross" style="margin-top:4px">╋</div>
   </div>
-  <div class="hero-marker">CASE-0007 · INCOMING TRANSMISSION · 2026.05.15</div>
+  <div class="hero-marker">{markerCaseId} · INCOMING TRANSMISSION · {markerDate}</div>
   <h1 class="hero-title">
     <span class="row">
       <span class="char" style="--i:0">歌</span><span class="char" style="--i:1">未</span><span class="char accent-char" style="--i:2">竟</span>
@@ -28,7 +37,7 @@
     <span class="line cn">一个学生 · 在读历史 · 看市场 · 写字</span>
   </div>
   <nav class="hero-nav">
-    <a href="/posts/case-007"><span class="arrow">──→</span> INCOMING TRANSMISSION / 最新通讯</a>
+    <a href={latestHref}><span class="arrow">──→</span> INCOMING TRANSMISSION / 最新通讯</a>
     <a href="#archive"><span class="arrow">──→</span> ARCHIVE / 档案</a>
     <a href="/about"><span class="arrow">──→</span> OPERATOR / 履历</a>
   </nav>

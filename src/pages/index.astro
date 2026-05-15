@@ -9,6 +9,6 @@ const posts = (await getCollection('posts'))
   .sort((a, b) => b.data.date.localeCompare(a.data.date));
 ---
 <Site view="home">
-  <Hero />
+  <Hero latestPost={posts[0]} />
   <Timeline posts={posts} />
 </Site>
