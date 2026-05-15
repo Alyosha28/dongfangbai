@@ -1337,7 +1337,7 @@ body.hero-revealed .hero-nav { transition-delay: 0.85s; opacity: 1; transform: t
   width: 0%;
   background: linear-gradient(90deg, #FF3838 0%, #FF7A00 50%, #D4AF37 100%);
   box-shadow: 0 0 10px rgba(255, 122, 0, 0.6);
-  animation: boot-progress-fill var(--boot-duration, 1500ms) linear forwards;
+  animation: boot-progress-fill var(--boot-duration, 3000ms) linear forwards;
 }
 @keyframes boot-progress-fill {
   to { width: 100%; }
@@ -1358,7 +1358,7 @@ body.hero-revealed .hero-nav { transition-delay: 0.85s; opacity: 1; transform: t
   text-transform: uppercase;
   color: rgba(255, 122, 0, 0.55);
   opacity: 0;
-  animation: boot-hint-pulse 1.4s 0.5s ease-in-out forwards;
+  animation: boot-hint-pulse 2.6s 0.5s ease-in-out forwards;
   pointer-events: none;
 }
 .boot-esc-hint .kbd {

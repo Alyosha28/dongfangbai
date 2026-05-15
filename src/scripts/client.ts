@@ -96,8 +96,8 @@ export function initClient() {
       if (marketHud) marketHud.classList.add('visible');
       revealHero();
     } else {
-      // 1.5s compressed boot · skip MAGI log entirely
-      const BOOT_DURATION = 1500;
+      // 3.0s ceremonial boot · MAGI dropped, single-line status replaces
+      const BOOT_DURATION = 3000;
       // sync CSS progress bar var
       bootScreen.style.setProperty('--boot-duration', `${BOOT_DURATION}ms`);
       // SFX timing - init plays right at boot start
