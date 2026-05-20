@@ -50,12 +50,18 @@ jobs:
       - name: Deploy via rsync
         run: |
           rsync -avz --delete \
+            --chmod=D755,F644 \
             -e "ssh -p ${{ secrets.SERVER_PORT || '22' }}" \
             --exclude='_worker.js' \
             --exclude='_routes.json' \
             --exclude='.wrangler' \
             --exclude='.assetsignore' \
             dist/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.SERVER_PATH }}/
+
+      - name: Fix permissions for OpenResty
+        run: |
+          ssh -p ${{ secrets.SERVER_PORT || '22' }} ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} \
+            "chmod -R 755 ${{ secrets.SERVER_PATH }}/ && echo '权限修复完成'"
 
       - name: Smoke test
         run: |
