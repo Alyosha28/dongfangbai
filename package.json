@@ -11,6 +11,7 @@
     "astro": "astro",
     "check": "astro check",
     "deploy": "npm run build && wrangler deploy",
+    "deploy:server": "bash deploy/deploy.sh",
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
