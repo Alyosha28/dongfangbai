@@ -1,44 +1,124 @@
 ---
-// Hero · 「歌未竟·东方白」首屏巨字 + 战术装饰
+// Hero · 「歌未竟·东方白」首屏 — REFINED
+// Anchored case-plate + vertical poem gutter + dispatch preview + Pen-Pen niche
 import type { CollectionEntry } from 'astro:content';
+import ReadingShelf from './ReadingShelf.astro';
 
 interface Props {
   latestPost?: CollectionEntry<'posts'>;
 }
 const { latestPost } = Astro.props;
 const latestHref = latestPost ? `/posts/${latestPost.slug}` : '#archive';
-const markerCaseId = latestPost?.data.caseId ?? 'CASE-NEW';
-const markerDate = latestPost?.data.date ?? '——';
+const caseId = latestPost?.data.caseId ?? 'CASE-NEW';
+const dateStr = latestPost?.data.date ?? '——';
+const title = latestPost?.data.title ?? 'No dispatch yet';
+const subtitle = latestPost?.data.subtitle ?? '';
+const tags = latestPost?.data.tags ?? [];
+const readTime = latestPost?.data.readTime ?? '— MIN';
 ---
-<div class="hero">
-  <div class="hero-deco tl">
-    <div class="cross">╋</div>
-    <div><span class="lbl">NERV.TAC</span></div>
-    <div>GRID 35-Y2-K4</div>
-    <div>STATUS · ACTIVE</div>
-  </div>
-  <div class="hero-deco br">
-    <div><span class="lbl">A.T.FIELD</span></div>
-    <div>SYNC 99.7%</div>
-    <div>COMM · ONLINE</div>
-    <div class="cross" style="margin-top:4px">╋</div>
-  </div>
-  <div class="hero-marker">{markerCaseId} · INCOMING TRANSMISSION · {markerDate}</div>
-  <h1 class="hero-title">
-    <span class="row">
-      <span class="char" style="--i:0">歌</span><span class="char" style="--i:1">未</span><span class="char accent-char" style="--i:2">竟</span>
-    </span>
-    <span class="row">
-      <span class="char" style="--i:3">东</span><span class="char" style="--i:4">方</span><span class="char accent-char" style="--i:5">白</span>
-    </span>
-  </h1>
-  <div class="hero-tagline">
-    <span class="line">// STUDENT · MARKET · NOTES · A.T.FIELD ACTIVE</span>
-    <span class="line cn">一个学生 · 在读历史 · 看市场 · 写字</span>
-  </div>
-  <nav class="hero-nav">
-    <a href={latestHref}><span class="arrow">──→</span> INCOMING TRANSMISSION / 最新通讯</a>
-    <a href="#archive"><span class="arrow">──→</span> ARCHIVE / 档案</a>
-    <a href="/about"><span class="arrow">──→</span> OPERATOR / 履历</a>
-  </nav>
+<div class="hero-stage">
+
+  <!-- LEFT · vertical poem column + telemetry -->
+  <aside class="hero-lgut">
+    <div class="corner-tl"></div>
+    <div class="vert-poem">
+      自<span class="sep">·</span>信<span class="sep">·</span>人<span class="sep">·</span>生<span class="sep">·</span>
+      二<span class="sep">·</span>百<span class="sep">·</span>年<span class="sep">·</span>
+      <span class="em">会</span>·<span class="em">当</span>·<span class="em">水</span>·<span class="em">击</span>·
+      <span class="em">三</span>·<span class="em">千</span>·<span class="em">里</span>
+    </div>
+    <div class="lgut-diag">
+      <div class="title-row">NERV.TAC · TELEMETRY</div>
+      <div class="row"><span class="k">GRID</span><span class="v">35-Y2-K4</span></div>
+      <div class="row"><span class="k">CASE</span><span class="v gld">{caseId}</span></div>
+      <div class="row"><span class="k">STATUS</span><span class="v grn">● ONLINE</span></div>
+      <div class="row"><span class="k">SYNC</span><span class="v acc">99.7%</span></div>
+      <div class="row"><span class="k">A.T.F</span><span class="v gld">DEPLOYED</span></div>
+    </div>
+  </aside>
+
+  <!-- CENTER · the hero -->
+  <main class="hero hero-center">
+    <!-- case plate -->
+    <div class="case-plate">
+      <div class="stamp">
+        <span class="lg">†</span>
+        NERV.TAC
+      </div>
+      <div class="lines">
+        <span class="case-id-large">{caseId}</span> · INCOMING TRANSMISSION · {dateStr}<br />
+        <span class="acc">▾</span> A.T.FIELD · <span class="gld">DEPLOYED</span> · <span class="grn">SYNC 99.7%</span>
+      </div>
+    </div>
+
+    <!-- giant title (existing markup; only padding override via .hero-center) -->
+    <h1 class="hero-title">
+      <span class="row">
+        <span class="char" style="--i:0">歌</span><span class="char" style="--i:1">未</span><span class="char accent-char" style="--i:2">竟</span>
+      </span>
+      <span class="row">
+        <span class="char" style="--i:3">东</span><span class="char" style="--i:4">方</span><span class="char accent-char" style="--i:5">白</span>
+      </span>
+    </h1>
+
+    <!-- meta strip -->
+    <div class="meta-strip">
+      <div class="meta-cell">ROLE<span class="v">STUDENT</span></div>
+      <div class="meta-cell">FIELD<span class="v acc">MARKET</span></div>
+      <div class="meta-cell">STUDY<span class="v">历史</span></div>
+      <div class="meta-cell">OUTPUT<span class="v gld">NOTES</span></div>
+      <div class="meta-cell sparkline">
+        A.T.FIELD
+        <svg width="92" height="20" viewBox="0 0 92 20">
+          <polyline fill="none" stroke="#65FF65" stroke-width="1.2"
+            points="0,14 8,10 16,12 24,6 32,9 40,4 48,7 56,3 64,5 72,2 80,4 88,1" />
+          <circle cx="88" cy="1" r="2" fill="#65FF65" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- tagline (kept) -->
+    <div class="hero-tagline" style="margin-top: 24px;">
+      <span class="line">// STUDENT · MARKET · NOTES · A.T.FIELD ACTIVE</span>
+      <span class="line cn">一个学生 · 在读历史 · 看市场 · 写字</span>
+    </div>
+
+    {latestPost && (
+      <a href={latestHref} class="dispatch-preview">
+        <div class="dp-left">
+          <span class="case-num">{caseId}</span>
+          <span class="date">{dateStr}</span>
+        </div>
+        <div class="dp-body">
+          <div class="title">{title}</div>
+          <div class="sub">{subtitle}</div>
+          <div class="row">
+            {tags.map((t) => <span class="tag">#{t}</span>)}
+            <span class="sep">/</span>
+            <span class="rt">{readTime} READ</span>
+          </div>
+        </div>
+        <div class="dp-right">
+          <div class="pct">001 / ∞</div>
+          <div class="dp-cta">READ →</div>
+        </div>
+      </a>
+    )}
+
+    <!-- secondary nav pills -->
+    <nav class="pill-nav">
+      <a class="pill" href="#archive"><span class="arrow">→</span> ARCHIVE <span class="cn">档案</span></a>
+      <a class="pill" href="/about"><span class="arrow">→</span> OPERATOR <span class="cn">履历</span></a>
+      <a class="pill" href="/rss.xml"><span class="arrow">→</span> RSS <span class="cn">订阅</span></a>
+    </nav>
+
+  </main>
+
+  <!-- RIGHT · shelf + pen-pen niche (market HUD remains fixed via Site.astro) -->
+  <aside class="hero-rgut">
+    <div class="corner-tr"></div>
+    <ReadingShelf />
+    <!-- Pen-Pen niche stays empty here — fixed-position PenPen.astro lives via Site.astro -->
+  </aside>
+
 </div>

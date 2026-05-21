@@ -1,0 +1,35 @@
+---
+// Reading Shelf · "Now Reading" widget
+// Static for now; convert to content collection later
+// (e.g. src/content/shelf/*.md)
+interface ShelfItem {
+  title: string;
+  author: string;
+  progress: number; // 0-100
+}
+const items: ShelfItem[] = [
+  { title: '人类简史', author: '尤瓦尔·赫拉利', progress: 68 },
+  { title: '资治通鉴 · 卷一', author: '司马光', progress: 22 },
+  { title: '证券分析', author: 'B. Graham', progress: 4 },
+];
+function pctColor(p: number): string {
+  if (p > 50) return 'var(--hero-gold)';
+  if (p > 15) return 'var(--accent)';
+  return 'var(--text-dim)';
+}
+---
+<div class="shelf">
+  <div class="shelf-head">
+    <span>▾ NOW READING · <span class="acc">书架</span></span>
+    <span style="font-family: var(--mono); font-size: 9px;">{items.length} 本</span>
+  </div>
+  {items.map((book, i) => (
+    <div class="shelf-item">
+      <span class="idx">{String(i + 1).padStart(2, '0')}</span>
+      <span>
+        <span class="title">{book.title}</span> · <span class="author">{book.author}</span>
+      </span>
+      <span class="pct" style={`color: ${pctColor(book.progress)};`}>{String(book.progress).padStart(2, '0')}%</span>
+    </div>
+  ))}
+</div>

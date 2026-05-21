@@ -1,0 +1,94 @@
+---
+// Post layout - REFINED
+// Three-column reading view: TOC/meta + body + marginalia
+// Used inside src/pages/posts/[slug].astro
+
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  entry: CollectionEntry<'posts'>;
+  Content: any;
+}
+const { entry, Content } = Astro.props;
+const { caseId, date, tags, readTime, title, subtitle } = entry.data;
+
+// Marginalia notes can be defined in frontmatter as:
+//   marginalia:
+//     - label: "ON 数字花园"
+//       text: "概念由 Maggie Appleton 推广 (2020)..."
+// For now this is static; you can extend the content schema.
+const marginalia = (entry.data as any).marginalia ?? [
+  { label: '关于本站', text: '一个学生的数字花园 · 不灌水,慢慢长。' },
+];
+---
+<div class="post-stage">
+
+  <!-- LEFT · TOC + meta -->
+  <aside class="post-lgut">
+    <div class="nerv-stamp">
+      <span class="cross">†</span>
+      <span class="tac">NERV.TAC</span>
+      <span class="case">{caseId}</span>
+    </div>
+    <div class="lgut-diag">
+      <div class="title-row">DISPATCH META</div>
+      <div class="row"><span class="k">DATE</span><span class="v">{date}</span></div>
+      <div class="row"><span class="k">READ</span><span class="v">{readTime}</span></div>
+      <div class="row"><span class="k">TAGS</span><span class="v" style="color: var(--eva-purple);">#{tags[0]}</span></div>
+      <div class="row"><span class="k">STATUS</span><span class="v grn">● LIVE</span></div>
+    </div>
+  </aside>
+
+  <!-- MAIN · body -->
+  <main class="post">
+    <div class="post-back">
+      <a class="back-link" href="/">← RETURN TO ARCHIVE / 撤回档案</a>
+      <span class="right">
+        <span class="case-id">{caseId}</span> · DISPATCH · {date}
+      </span>
+    </div>
+
+    <header class="post-header">
+      <div class="post-meta">
+        {tags.map((t) => <span class="tag">#{t}</span>)}
+        <span class="rt">{readTime} READ</span>
+        <span class="date">{date}</span>
+        <span style="color: var(--text-faint);">·</span>
+        <span style="color: var(--hud-green);">● LIVE</span>
+      </div>
+      <h1 class="post-title">{title}</h1>
+      <div class="post-subtitle">{subtitle}</div>
+    </header>
+
+    <div class="post-divider">— ▾ BEGIN DISPATCH · 开始传输 ▾ —</div>
+
+    <div class="post-body">
+      <Content />
+    </div>
+
+    <!-- end-of-dispatch · brush flourish -->
+    <div class="post-end-brush">
+      <div class="verse">歌未竟 · 东方白</div>
+      <div class="sig">— <span class="acc">END · {caseId}</span> · {date} · <span class="gld">SYNC 99.7%</span> —</div>
+    </div>
+  </main>
+
+  <!-- RIGHT · marginalia -->
+  <aside class="post-rgut">
+    <div class="reading-meta">
+      <div class="h">▾ READER · 阅读状态</div>
+      <div class="row"><span class="k">CASE</span><span class="v gld">{caseId}</span></div>
+      <div class="row"><span class="k">DATE</span><span class="v">{date}</span></div>
+      <div class="row"><span class="k">READ</span><span class="v acc">{readTime}</span></div>
+      <div class="row"><span class="k">SYNC</span><span class="v grn">99.7%</span></div>
+    </div>
+
+    {marginalia.map((m, i) => (
+      <div class="marginalia" data-num={String(i + 1)}>
+        <span class="lbl">▾ {m.label}</span>
+        <Fragment set:html={m.text} />
+      </div>
+    ))}
+  </aside>
+
+</div>

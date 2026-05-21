@@ -1,17 +1,39 @@
 ---
-// NERV-style boot screen (first visit per session)
+// BootScreen · NERV-style 启动序列 — REFINED
+// Denser HUD with 4 telemetry corners + diagnostic panel + progressive log
 ---
 <div class="boot-screen" id="bootScreen">
   <div class="boot-warn-stripe"></div>
   <div class="boot-warn-stripe-bot"></div>
 
-  <div class="boot-corner tl">▲ NERV TERMINAL<br>INITIALIZING ...</div>
-  <div class="boot-corner tr">DONGFANGBAI · MMXXVI<br>BUILD 20260515</div>
-  <div class="boot-corner bl">GRID 35-Y2-K4<br>OPERATIONS COMMAND</div>
-  <div class="boot-corner br">TIMECODE 04:21:33<br>AUTH · LEVEL-7</div>
+  <!-- 4 corners with real telemetry -->
+  <div class="boot-corner tl">
+    <div style="color: var(--accent); font-weight: 600; letter-spacing: 0.32em; margin-bottom: 8px; font-size: 10px;">▲ NERV.TAC · BOOT SEQ</div>
+    <div>SEQ · 2026.05.15-A</div>
+    <div>GRID · 35-Y2-K4</div>
+    <div>CLEARANCE · <span style="color: var(--hero-gold)">LV-1</span></div>
+  </div>
+  <div class="boot-corner tr">
+    <div style="color: var(--accent); font-weight: 600; letter-spacing: 0.32em; margin-bottom: 8px; font-size: 10px;">▲ TARGET · 东方白</div>
+    <div>BUILD 20260515</div>
+    <div>CASE · <span style="color: var(--hero-gold)">CASE-001</span></div>
+    <div>SYNC · <span style="color: var(--hud-green)">PRE-MOUNT</span></div>
+  </div>
+  <div class="boot-corner bl">
+    <div style="color: var(--accent); font-weight: 600; letter-spacing: 0.32em; margin-bottom: 8px; font-size: 10px;">▲ ATMOSPHERE</div>
+    <div>立夏 · 第 11 日</div>
+    <div>GRID 35-Y2-K4</div>
+    <div>OPS · ONLINE</div>
+  </div>
+  <div class="boot-corner br">
+    <div style="color: var(--accent); font-weight: 600; letter-spacing: 0.32em; margin-bottom: 8px; font-size: 10px;">▲ DISPATCH</div>
+    <div>ARCHIVE · 1 / ∞</div>
+    <div>UPTIME · 000d 14:32</div>
+    <div>STATUS · <span style="color: var(--hud-green)">● ONLINE</span></div>
+  </div>
 
   <div class="boot-logo-wrap">
-    <div class="boot-logo-top">DONGFANGBAI · 東 方 白 · 二〇二六</div>
+    <div class="boot-logo-top">SOUL · 灵魂 — BOOT SEQUENCE INITIATED</div>
     <div class="boot-logo-svg">
       <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" width="340" height="340">
         <polygon class="boot-hex" points="150,18 270,82 270,218 150,282 30,218 30,82"></polygon>
@@ -22,8 +44,8 @@
       </svg>
     </div>
     <div class="boot-logo-bottom">
-      <span class="line-1">四 海 翻 腾 云 水 怒 · 五 洲 震 荡 风 雷 激</span>
-      <span class="line-2">歌 未 竟 · 东 方 白</span>
+      <span class="line-1">歌 未 竟 · 东 方 白</span>
+      <span class="line-2">FINAL · WHITE · INITIALIZING</span>
       <span class="de">DAS LIED IST NOCH NICHT ZU ENDE GESUNGEN</span>
     </div>
   </div>

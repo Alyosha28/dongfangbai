@@ -1,26 +1,242 @@
 ---
 import Site from '../layouts/Site.astro';
+import ReadingShelf from '../components/ReadingShelf.astro';
 ---
 <Site view="about" title="OPERATOR · CASE FILE — dongfangbai.com">
-  <div class="hero-marker">OPERATOR · CASE FILE · LEVEL-7 ACCESS</div>
 
-  <div class="about-logo">白</div>
-  <div class="about-tagline">DONGFANGBAI · OPERATOR-07 · ANNO MMXXVI</div>
+<div class="about-stage">
 
-  <div class="about-body">
-    <p>一个学生 · 在读历史 · 看市场 · 写字。</p>
-
-    <p>在这里我会记录两件事:一是<span class="accent">市场</span>,二是<span class="accent">历史</span>。市场让我学谦卑,历史让我学耐心。都是好东西,我都缺。</p>
-
-    <p>「歌未竟,东方白」是毛主席《贺新郎·读史》的末句。我借来当域名,因为我也总写不完。这是一个数字花园,意思是它会一直在长,不会有「写完了」的那天。</p>
-
-    <p>站点用 Astro 静态生成,内容是本地 Markdown。设计上致敬了 EVA 的战术界面和 rauno.me 的克制排版。如果你喜欢,记得这里没有算法推送——RSS 订阅链接在底部。</p>
-
-    <div class="about-social">
-      <a href="https://github.com/" target="_blank" rel="noopener">GITHUB ↗</a>
-      <a href="https://x.com/" target="_blank" rel="noopener">X / TWITTER ↗</a>
-      <a href="mailto:hi@dongfangbai.com">EMAIL ↗</a>
-      <a href="/rss.xml">RSS ↗</a>
+  <!-- LEFT · operator stamp -->
+  <aside class="about-lgut">
+    <div class="operator-stamp">
+      <div class="id-row"><span class="k">CALLSIGN</span><span class="v gld">东方白</span></div>
+      <div class="id-row"><span class="k">CODE</span><span class="v acc">OPERATOR-07</span></div>
+      <div class="id-row"><span class="k">CLEARANCE</span><span class="v">LV-1 · PUBLIC</span></div>
+      <div class="id-row"><span class="k">ROLE</span><span class="v">STUDENT · 学生</span></div>
+      <div class="id-row"><span class="k">STATUS</span><span class="v grn">● ACTIVE</span></div>
     </div>
-  </div>
+
+    <!-- vertical poem · reused -->
+    <div style="padding: 18px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); display: flex; justify-content: center; margin-bottom: 24px;">
+      <div class="vert-poem" style="font-size: 17px; letter-spacing: 0.42em;">
+        自<span class="sep">·</span>信<span class="sep">·</span>人<span class="sep">·</span>生<span class="sep">·</span>
+        二<span class="sep">·</span>百<span class="sep">·</span>年<span class="sep">·</span>
+        <span class="em">会</span>·<span class="em">当</span>·<span class="em">水</span>·<span class="em">击</span>·
+        <span class="em">三</span>·<span class="em">千</span>·<span class="em">里</span>
+      </div>
+    </div>
+
+    <div class="lgut-diag">
+      <div class="title-row">VITAL STATS</div>
+      <div class="row"><span class="k">JOINED</span><span class="v">2026.05.12</span></div>
+      <div class="row"><span class="k">DISPATCH</span><span class="v gld">1 / ∞</span></div>
+      <div class="row"><span class="k">WORDS</span><span class="v">412</span></div>
+      <div class="row"><span class="k">SYNC</span><span class="v acc">99.7%</span></div>
+    </div>
+  </aside>
+
+  <!-- MAIN · DOSSIER -->
+  <main>
+    <div class="declass">
+      <span>▸ DECLASSIFIED · 公开档案</span>
+      <span class="id">CASE-FILE · OPERATOR-07 · 2026</span>
+      <span class="seal">LEVEL 1</span>
+    </div>
+
+    <div class="file-head">
+      <div class="big-glyph">白</div>
+      <div class="info">
+        <div class="ttl-row">
+          ▾ OPERATOR · CASE FILE / 履历 / LEVEL-1 ACCESS
+        </div>
+        <div class="cn-name">东方 · 白</div>
+        <div class="en-name">DONGFANGBAI · OPERATOR-07</div>
+        <div class="roles">
+          STUDENT · 学生 / OBSERVER · 市场 / DISCIPLE · 历史 / WRITER · 写字
+        </div>
+      </div>
+    </div>
+
+    <section class="about-section">
+      <div class="section-h">
+        <span class="num">§ I</span>
+        <div class="meta">
+          <span class="lbl">CHAPTER · 缘起 / GENESIS</span>
+          <span class="ttl">「歌未竟,东方白」是谁的话</span>
+        </div>
+        <span class="ts">2026.05.12</span>
+      </div>
+      <p style="font-family: var(--serif-cn); font-size: 17px; line-height: 1.85;">
+        「歌未竟,东方白」是<strong style="color: var(--accent)">毛主席</strong>《贺新郎·读史》的末句。
+        我借来当域名,因为我也总写不完。
+        <em style="color: var(--eva-purple)">这是一个数字花园,意思是它会一直在长,不会有「写完了」的那天。</em>
+      </p>
+      <div class="about-quote">
+        人猿相揖别。<br/>只几个石头磨过,小儿时节。<br/>
+        <span style="color: var(--accent)">…歌未竟,东方白。</span>
+        <span class="attr">— 毛泽东 · 贺新郎 · 读史 · 1964</span>
+      </div>
+    </section>
+
+    <section class="about-section">
+      <div class="section-h">
+        <span class="num">§ II</span>
+        <div class="meta">
+          <span class="lbl">CHAPTER · 在做 / CURRENT POSTING</span>
+          <span class="ttl">这里写什么,不写什么</span>
+        </div>
+        <span class="ts">2026.05.15 — 现在</span>
+      </div>
+      <p style="font-family: var(--serif-cn); font-size: 17px; line-height: 1.85;">在这里我会记录两件事:</p>
+      <div class="fact-grid">
+        <div class="fact-cell">FIELD · 一<span class="v cn" style="color: var(--accent)">市场</span></div>
+        <div class="fact-cell">FIELD · 二<span class="v cn" style="color: var(--hero-gold)">历史</span></div>
+        <div class="fact-cell">STANCE<span class="v cn">慢 + 真</span></div>
+        <div class="fact-cell">TEMPO<span class="v">不固定</span></div>
+        <div class="fact-cell">ALGORITHM<span class="v" style="color: var(--warn)">无</span></div>
+        <div class="fact-cell">COMMENT<span class="v">暂未开</span></div>
+      </div>
+      <p style="font-family: var(--serif-cn); font-size: 17px; line-height: 1.85;">
+        市场让我学<strong style="color: var(--accent)">谦卑</strong>——它每天都有方法证明我是错的。
+        历史让我学<strong style="color: var(--accent)">耐心</strong>——它每天都用一千年来回应。
+        <em style="color: var(--eva-purple)">都是好东西,我都缺。</em>
+      </p>
+      <p style="font-family: var(--serif-cn); font-size: 17px; line-height: 1.85;">
+        不会写的:十大金句、年度盘点、流量话题、营销洞察、个人成长干货。
+        <strong style="color: var(--accent)">我不教你赚钱,我自己还在亏</strong>。
+      </p>
+    </section>
+
+    <section class="about-section">
+      <div class="section-h">
+        <span class="num">§ III</span>
+        <div class="meta">
+          <span class="lbl">CHAPTER · 站点 / TECHNICAL</span>
+          <span class="ttl">这个站是怎么搭出来的</span>
+        </div>
+        <span class="ts">2026.05.14</span>
+      </div>
+      <p style="font-family: var(--serif-cn); font-size: 17px; line-height: 1.85;">
+        站点用 <strong style="color: var(--accent)">Astro 5</strong> 静态生成,内容是本地 Markdown。
+        <span style="color: var(--hero-gold)">git push 就发布</span>——零后端,零数据库,零账号系统。
+      </p>
+      <p style="font-family: var(--serif-cn); font-size: 17px; line-height: 1.85;">
+        设计上致敬了三家:<strong style="color: var(--accent)">EVA</strong> 的战术 UI、
+        <em style="color: var(--eva-purple)">rauno.me</em> 的克制排版、
+        <strong style="color: var(--accent)">毛主席</strong> 的诗词气韵。
+        三者看似不搭,但都共享一种 <span style="color: var(--hero-gold)">未完成的姿态</span>。
+      </p>
+    </section>
+
+    <section class="about-section">
+      <div class="section-h">
+        <span class="num">§ IV</span>
+        <div class="meta">
+          <span class="lbl">CHAPTER · 通道 / CHANNELS</span>
+          <span class="ttl">在哪里能找到我</span>
+        </div>
+        <span class="ts">总是开着</span>
+      </div>
+      <p style="font-family: var(--serif-cn); font-size: 17px; line-height: 1.85;">
+        没有算法推送,没有评论区。但有四条通道——选最合你节奏的那条。
+      </p>
+      <div class="channels">
+        <a class="channel" href="/rss.xml">
+          <span class="num">01</span>
+          <div class="info"><span class="nm">RSS</span><span class="desc">/rss.xml · 推荐方式</span></div>
+          <span class="arrow">↗</span>
+        </a>
+        <a class="channel" href="mailto:hi@dongfangbai.com">
+          <span class="num">02</span>
+          <div class="info"><span class="nm">EMAIL</span><span class="desc">hi@dongfangbai.com</span></div>
+          <span class="arrow">↗</span>
+        </a>
+        <a class="channel" href="https://github.com/Alyosha28" target="_blank" rel="noopener">
+          <span class="num">03</span>
+          <div class="info"><span class="nm">GITHUB</span><span class="desc">源码 · open source</span></div>
+          <span class="arrow">↗</span>
+        </a>
+        <a class="channel" href="https://x.com/" target="_blank" rel="noopener">
+          <span class="num">04</span>
+          <div class="info"><span class="nm">X / TWITTER</span><span class="desc">不定期</span></div>
+          <span class="arrow">↗</span>
+        </a>
+      </div>
+    </section>
+
+    <div class="file-foot">
+      <div class="stamp">
+        <span class="acc">END · OPERATOR FILE</span><br/>
+        AUTH · LEVEL 1 · PUBLIC · NO CLASSIFICATION<br/>
+        PRINTED · 2026.05.15 · <span class="gld">CASE-FILE-007</span>
+      </div>
+      <div class="seal">
+        <span class="row1">VERIFIED</span>
+        <span class="row2">NERV.TAC · 2026</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- RIGHT · NOW + READING + tags -->
+  <aside class="about-rgut">
+    <div class="rgut-card">
+      <div class="lbl">
+        <span>▾ NOW · 此周</span>
+        <span class="num">W20 / 2026</span>
+      </div>
+      <div class="now-row">
+        <span class="day">MON</span>
+        <span class="act">读《人类简史》第三遍 · 第 9 章</span>
+        <span class="stat done">DONE</span>
+      </div>
+      <div class="now-row">
+        <span class="day">TUE</span>
+        <span class="act">复盘 5/12 失败的交易</span>
+        <span class="stat done">DONE</span>
+      </div>
+      <div class="now-row">
+        <span class="day">WED</span>
+        <span class="act">CASE-002 起稿</span>
+        <span class="stat now">NOW</span>
+      </div>
+      <div class="now-row">
+        <span class="day">THU</span>
+        <span class="act">读《资治通鉴》卷三</span>
+        <span class="stat todo">TODO</span>
+      </div>
+      <div class="now-row">
+        <span class="day">FRI</span>
+        <span class="act">月度市场总结(草)</span>
+        <span class="stat todo">TODO</span>
+      </div>
+      <div class="now-row">
+        <span class="day">WKND</span>
+        <span class="act">休息 · 看 EVA EoE</span>
+        <span class="stat todo">TODO</span>
+      </div>
+    </div>
+
+    <ReadingShelf />
+
+    <div class="rgut-card">
+      <div class="lbl"><span>▾ INTERESTS · 兴趣</span></div>
+      <div class="tags-cloud">
+        <span class="tag-chip acc">#市场</span>
+        <span class="tag-chip gld">#历史</span>
+        <span class="tag-chip">#诗词</span>
+        <span class="tag-chip pur">#EVA</span>
+        <span class="tag-chip">#数字花园</span>
+        <span class="tag-chip">#长期主义</span>
+        <span class="tag-chip pur">#庵野秀明</span>
+        <span class="tag-chip gld">#毛诗</span>
+        <span class="tag-chip">#Graham</span>
+        <span class="tag-chip">#司马光</span>
+        <span class="tag-chip acc">#Buffett</span>
+        <span class="tag-chip">#古典</span>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
 </Site>

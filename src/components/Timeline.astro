@@ -1,4 +1,6 @@
 ---
+// Timeline · year-grouped post list — REFINED
+// Adds: founding-dispatch ribbon, planned drafts card, sparse-state epigraph
 import type { CollectionEntry } from 'astro:content';
 
 interface Props {
@@ -6,14 +8,14 @@ interface Props {
 }
 const { posts } = Astro.props;
 
-// Group posts by year (extracted from date "YYYY.MM.DD")
+// Group posts by year
 const years = new Map<string, CollectionEntry<'posts'>[]>();
 for (const post of posts) {
   const year = post.data.date.slice(0, 4);
   if (!years.has(year)) years.set(year, []);
   years.get(year)!.push(post);
 }
-const yearList = Array.from(years.entries()); // newest year first because posts already sorted desc
+const yearList = Array.from(years.entries());
 const yearLabels: Record<string, string> = {
   '2026': 'ACTIVE',
   '2025': 'ARCHIVED',
@@ -21,34 +23,45 @@ const yearLabels: Record<string, string> = {
   '2023': 'ARCHIVED',
 };
 
-// helper
 function postHref(p: CollectionEntry<'posts'>) {
   return `/posts/${p.slug}`;
 }
 
 const featured = posts[0];
-const restByYear = yearList.map(([year, ps]) => {
-  return [year, ps.filter(p => p.slug !== featured?.slug)] as const;
-});
+const totalPosts = posts.length;
+
+// === Planned drafts · static for now.
+// Move to src/content/planned/*.md later for live edits.
+const planned = [
+  { id: 'CASE-002', title: '读《人类简史》第三遍', dim: '还没读完', status: 'thinking' },
+  { id: 'CASE-003', title: '五月市场复盘 · 一个学生的视角', dim: '在等数据', status: 'draft', pct: 32 },
+  { id: 'CASE-004', title: '关于「耐心」 · 历史教我的事', dim: '想清楚再写', status: 'thinking' },
+  { id: 'CASE-005', title: '毛主席的诗词,为什么对我有用', dim: '还在读', status: 'thinking' },
+];
+
+const isSparse = totalPosts <= 1;
 ---
 
 <div class="section-marker" id="archive">
   <span>ARCHIVE / 时间线</span>
-  <span class="right">{posts.length} ENTRIES · ALL ACCESS</span>
+  <span class="right">{totalPosts} ENTRIES · {planned.length} PLANNED</span>
 </div>
 
 <div class="timeline">
   {yearList.map(([year, ps], yearIdx) => {
     const isFirstYear = yearIdx === 0;
+    const restPosts = ps.filter((p) => p.slug !== featured?.slug);
     return (
       <>
         <div class="year-header">
           <span class="yr">{year}</span>
           <span class="yr-lbl">{ps.length} CASES · {yearLabels[year] || 'ARCHIVED'}</span>
         </div>
+
         {isFirstYear && featured && ps[0]?.slug === featured.slug && (
           <>
-            <a class="entry entry-hero" href={postHref(featured)}>
+            <a class="entry entry-hero" href={postHref(featured)} style="position: relative;">
+              <span class="ribbon">FOUNDING DISPATCH</span>
               <div class="entry-meta">
                 <span>{featured.data.date}</span>
                 <span class="case-id">{featured.data.caseId}</span>
@@ -57,40 +70,69 @@ const restByYear = yearList.map(([year, ps]) => {
               <h2 class="entry-title">{featured.data.title}</h2>
               <p class="entry-summary-hero">{featured.data.subtitle}</p>
               <div class="entry-foot-hero">
-                {featured.data.tags.map(t => <span class="tag">#{t}</span>)}
+                {featured.data.tags.map((t) => <span class="tag">#{t}</span>)}
                 <span class="sep">·</span>
                 <span class="read-time">{featured.data.readTime} READ</span>
                 <span class="cta">READ DISPATCH →</span>
               </div>
             </a>
-            {ps.slice(1).length > 0 && (
+
+            {restPosts.length > 0 && (
               <div class="archive-divider">
                 <span class="line"></span>
                 <span class="lbl">早期档案 · EARLIER</span>
                 <span class="line"></span>
               </div>
             )}
-            {ps.slice(1).map(p => (
+            {restPosts.map((p) => (
               <a class="entry entry-compact" href={postHref(p)}>
                 <span class="ec-date">{p.data.date}</span>
                 <span class="ec-case">{p.data.caseId}</span>
                 <span class="ec-title">{p.data.title}</span>
-                <span class="ec-tags">{p.data.tags.map(t => <span class="tag">#{t}</span>)}</span>
+                <span class="ec-tags">{p.data.tags.map((t) => <span class="tag">#{t}</span>)}</span>
                 <span class="ec-time">{p.data.readTime}</span>
               </a>
             ))}
           </>
         )}
-        {!isFirstYear && ps.map(p => (
+
+        {!isFirstYear && ps.map((p) => (
           <a class="entry entry-compact" href={postHref(p)}>
             <span class="ec-date">{p.data.date}</span>
             <span class="ec-case">{p.data.caseId}</span>
             <span class="ec-title">{p.data.title}</span>
-            <span class="ec-tags">{p.data.tags.map(t => <span class="tag">#{t}</span>)}</span>
+            <span class="ec-tags">{p.data.tags.map((t) => <span class="tag">#{t}</span>)}</span>
             <span class="ec-time">{p.data.readTime}</span>
           </a>
         ))}
       </>
     );
   })}
+
+  <!-- planned drafts · turns sparse archive into "look what's coming" -->
+  {planned.length > 0 && (
+    <div class="planned-card">
+      <div class="planned-list">
+        {planned.map((p) => (
+          <div class="planned">
+            <span class="id">{p.id}</span>
+            <span class="blot"></span>
+            <span class="ttl">{p.title} <span class="dim">{p.dim}</span></span>
+            <span class={`status ${p.status === 'draft' ? 'draft' : 'thinking'}`}>
+              {p.status === 'draft' ? `DRAFT ${p.pct}%` : 'THINKING'}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+
+  <!-- sparse-state epigraph · turns "1 post" from embarrassment into feature -->
+  {isSparse && (
+    <div class="sparse-epigraph">
+      <div class="lbl">— 站名出处 · EPIGRAPH —</div>
+      <div class="verse">歌未竟<br/>东方白</div>
+      <div class="src">毛泽东 · <span class="em">贺新郎 · 读史</span> · 1964</div>
+    </div>
+  )}
 </div>
