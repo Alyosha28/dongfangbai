@@ -17,7 +17,11 @@ const { caseId, date, tags, readTime, title, subtitle } = entry.data;
 //     - label: "ON 数字花园"
 //       text: "概念由 Maggie Appleton 推广 (2020)..."
 // For now this is static; you can extend the content schema.
-const marginalia = (entry.data as any).marginalia ?? [
+interface Marginalia {
+  label: string;
+  text: string;
+}
+const marginalia: Marginalia[] = (entry.data as { marginalia?: Marginalia[] }).marginalia ?? [
   { label: '关于本站', text: '一个学生的数字花园 · 不灌水,慢慢长。' },
 ];
 ---

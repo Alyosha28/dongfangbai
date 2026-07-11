@@ -1,6 +1,8 @@
 // dongfangbai · client-side logic
 // boot animation + theme toggle + market HUD + scroll behaviors + SFX
 
+import { startMarketFeed } from './market-feed';
+
 export function initClient() {
   const html = document.documentElement;
   const themeBtn = document.getElementById('themeToggle') as HTMLButtonElement | null;
@@ -12,6 +14,7 @@ export function initClient() {
   const penpenBubble = penpen?.querySelector('.penpen-bubble') as HTMLElement | null;
   const progress = document.getElementById('readProgress');
   const postEnd = document.getElementById('postEnd');
+  startMarketFeed();
 
   // ============================================
   // SFX · audio cues (from huashu-design SFX library)
@@ -234,35 +237,6 @@ export function initClient() {
   // ============================================
   // MARKET HUD · 数据跳动
   // ============================================
-  if (marketHud) {
-    const mktBase: Record<string, { val: number; base: number; range: number }> = {
-      sh: { val: 3274.18, base: 3260, range: 30 },
-      sz: { val: 10422.51, base: 10400, range: 80 },
-      hk: { val: 19281.05, base: 19200, range: 150 },
-      us: { val: 5847.32, base: 5840, range: 25 },
-    };
-    function updateMarket() {
-      Object.keys(mktBase).forEach(k => {
-        const m = mktBase[k];
-        m.val += (Math.random() - 0.5) * (m.range / 30);
-        m.val = Math.max(m.base, Math.min(m.base + m.range, m.val));
-        const pct = ((m.val - (m.base + m.range / 2)) / (m.base + m.range / 2) * 100);
-        const valEl = document.querySelector(`[data-sym="${k}"]`);
-        const pctEl = document.querySelector(`[data-pct="${k}"]`) as HTMLElement | null;
-        if (valEl) valEl.textContent = m.val.toFixed(2);
-        if (pctEl) {
-          const sign = pct >= 0 ? '+' : '';
-          const arrow = pct >= 0 ? '↑' : '↓';
-          pctEl.textContent = `${sign}${pct.toFixed(2)}%${arrow}`;
-          pctEl.className = 'pct ' + (pct >= 0 ? 'up' : 'down');
-        }
-      });
-      const ms = document.getElementById('marketSync');
-      if (ms) ms.textContent = (99.0 + Math.random() * 0.9).toFixed(1) + '%';
-    }
-    setInterval(updateMarket, 2500);
-  }
-
   // ============================================
   // KEYBOARD SHORTCUTS
   // ============================================

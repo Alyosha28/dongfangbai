@@ -6,11 +6,8 @@ import { handleMarketRequest } from '../workers/market-feed/src/handler.ts';
 const allowedOrigin = 'https://finalwhite.lol';
 
 function rawUpstreamResponse() {
-  const fields = Array(33).fill('');
-  fields[0] = '1';
-  fields[2] = '000300';
+  const fields = Array.from({ length: 33 }, () => '0');
   fields[3] = '4780.79';
-  fields[4] = '4876.31';
   fields[30] = '20260710161408';
   fields[31] = '-95.52';
   fields[32] = '-1.96';
@@ -86,6 +83,6 @@ test('returns a structured 502 when the upstream fails or has no valid quotes', 
   assert.deepEqual(await response.json(), {
     error: 'UPSTREAM_INVALID',
     message: 'Market data is temporarily unavailable.',
+    reason: 'NO_VALID_QUOTES',
   });
 });
-

@@ -1415,7 +1415,7 @@ body.hero-revealed .hero-nav { transition-delay: 0.85s; opacity: 1; transform: t
   position: fixed;
   top: calc(var(--hud-h) + 16px);
   right: 24px;
-  width: 220px;
+  width: 286px;
   background: rgba(15, 20, 36, 0.85);
   border: 1px solid var(--border-strong);
   font-family: var(--mono);
@@ -1453,7 +1453,7 @@ body.hero-revealed .hero-nav { transition-delay: 0.85s; opacity: 1; transform: t
 .market-hud-body { padding: 10px 12px; }
 .market-row {
   display: grid;
-  grid-template-columns: 56px 1fr auto;
+  grid-template-columns: 58px 1fr 52px 34px 38px;
   gap: 6px;
   align-items: center;
   padding: 4px 0;
@@ -1469,13 +1469,19 @@ body.hero-revealed .hero-nav { transition-delay: 0.85s; opacity: 1; transform: t
 }
 .market-row .pct.up { color: var(--hud-green); }
 .market-row .pct.down { color: var(--warn); }
+.market-row .quote-time { color: var(--text-dim); font-size: 9px; text-align: right; }
+.market-row .quote-status { color: var(--text-dim); font-size: 8px; text-align: right; }
+.quote-status[data-state="live"], .sync-val[data-state="live"] { color: var(--hud-green); }
+.quote-status[data-state="stale"], .sync-val[data-state="stale"],
+.sync-val[data-state="offline"] { color: var(--warn); }
 .market-foot {
   border-top: 1px solid var(--border);
   padding: 8px 12px;
-  display: flex; justify-content: space-between;
+  display: flex; justify-content: space-between; gap: 8px;
   font-size: 10px;
   color: var(--text-dim);
   letter-spacing: 0.08em;
+  white-space: nowrap;
 }
 .market-foot .sync-val { color: var(--accent); }
 
@@ -1540,7 +1546,9 @@ body.hero-revealed .hero-nav { transition-delay: 0.85s; opacity: 1; transform: t
    RESPONSIVE · 1024 / 720 / 480 breakpoints
    ============================================ */
 @media (max-width: 1024px) {
-  .market-hud { width: 180px; right: 16px; }
+  .market-hud { width: 250px; right: 16px; }
+  .market-row { grid-template-columns: 54px 1fr 48px 32px; }
+  .market-row .quote-time { display: none; }
   .market-hud .market-row { font-size: 10.5px; gap: 4px; }
   .hero-deco.tl, .hero-deco.br { display: none; }
 }

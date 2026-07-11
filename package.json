@@ -10,6 +10,8 @@
     "preview": "npm run build && wrangler dev",
     "astro": "astro",
     "check": "astro check",
+    "test:market": "node --test tests/market-*.test.mjs",
+    "test:market:coverage": "node --test --experimental-test-coverage tests/market-*.test.mjs",
     "deploy": "npm run build && wrangler deploy",
     "deploy:server": "bash deploy/deploy.sh",
     "cf-typegen": "wrangler types"

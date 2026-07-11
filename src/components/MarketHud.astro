@@ -1,35 +1,24 @@
----
-// A.T.Field Market Watch HUD · 固定右上,只在 home 显示
----
-<div class="market-hud" id="marketHud">
-  <div class="market-hud-head">
-    <span>▼ A.T.FIELD · MARKET</span>
-    <span class="pulse"></span>
-  </div>
+<aside class="market-hud" id="marketHud" aria-label="实时市场指数">
+  <div class="market-hud-head"><span>◆ A.T.FIELD · MARKET</span><span class="pulse"></span></div>
   <div class="market-hud-body" id="marketBody">
-    <div class="market-row">
-      <span class="sym">SHCOMP</span>
-      <span class="val" data-sym="sh">3274.18</span>
-      <span class="pct up" data-pct="sh">+0.43%↑</span>
+    <div class="market-row" data-market="NASDAQ">
+      <span class="sym" title="纳指">NASDAQ</span><span class="val" data-role="value">--</span><span class="pct" data-role="percent">--</span><span class="quote-time" data-role="time">--:--</span><span class="quote-status" data-role="status" data-state="syncing">SYNC</span>
     </div>
-    <div class="market-row">
-      <span class="sym">SZCOMP</span>
-      <span class="val" data-sym="sz">10422.51</span>
-      <span class="pct down" data-pct="sz">-0.21%↓</span>
+    <div class="market-row" data-market="SP500">
+      <span class="sym" title="标普500">SP500</span><span class="val" data-role="value">--</span><span class="pct" data-role="percent">--</span><span class="quote-time" data-role="time">--:--</span><span class="quote-status" data-role="status" data-state="syncing">SYNC</span>
     </div>
-    <div class="market-row">
-      <span class="sym">HSI</span>
-      <span class="val" data-sym="hk">19281.05</span>
-      <span class="pct up" data-pct="hk">+1.12%↑</span>
+    <div class="market-row" data-market="CSI300">
+      <span class="sym" title="沪深300">CSI300</span><span class="val" data-role="value">--</span><span class="pct" data-role="percent">--</span><span class="quote-time" data-role="time">--:--</span><span class="quote-status" data-role="status" data-state="syncing">SYNC</span>
     </div>
-    <div class="market-row">
-      <span class="sym">SP500</span>
-      <span class="val" data-sym="us">5847.32</span>
-      <span class="pct up" data-pct="us">+0.18%↑</span>
+    <div class="market-row" data-market="STAR50">
+      <span class="sym" title="科创50">STAR50</span><span class="val" data-role="value">--</span><span class="pct" data-role="percent">--</span><span class="quote-time" data-role="time">--:--</span><span class="quote-status" data-role="status" data-state="syncing">SYNC</span>
+    </div>
+    <div class="market-row" data-market="CSI500">
+      <span class="sym" title="中证500">CSI500</span><span class="val" data-role="value">--</span><span class="pct" data-role="percent">--</span><span class="quote-time" data-role="time">--:--</span><span class="quote-status" data-role="status" data-state="syncing">SYNC</span>
     </div>
   </div>
   <div class="market-foot">
-    <span>SYNC: <span class="sync-val" id="marketSync">99.7%</span></span>
-    <span id="marketCase">CASE-007</span>
+    <span><span class="sync-val" id="marketStatus" data-state="syncing">SYNCING</span> · <span id="marketUpdated">等待数据</span></span>
+    <span title="行情数据来自腾讯，仅供展示">DATA · TENCENT</span>
   </div>
-</div>
+</aside>

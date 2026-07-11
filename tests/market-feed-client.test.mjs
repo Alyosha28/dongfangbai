@@ -62,4 +62,3 @@ test('classifies a fresh US quote during the New York session', () => {
 test('caps retry backoff at two minutes', () => {
   assert.deepEqual([0, 1, 2, 3].map(getRetryDelay), [30000, 60000, 120000, 120000]);
 });
-
