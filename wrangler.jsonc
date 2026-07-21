@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "dongfangbai",
+  "account_id": "0f3cda54f5198e9d0eb5442a20d4d410",
   "compatibility_date": "2026-05-15",
   "observability": {
     "enabled": true
