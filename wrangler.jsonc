@@ -7,5 +7,9 @@
   },
   "assets": {
     "directory": "dist"
-  }
+  },
+  "routes": [
+    { "pattern": "finalwhite.lol", "custom_domain": true },
+    { "pattern": "www.finalwhite.lol", "custom_domain": true }
+  ]
 }
