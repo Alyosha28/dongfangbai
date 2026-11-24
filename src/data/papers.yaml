@@ -1,0 +1,50 @@
+items:
+  - id: "continual-execution-feedback"
+    title: "Continual Execution Feedback for Neural-Guided Genetic Programming in Stock Factor Discovery"
+    authors:
+      - "Xianzhuo Huang"
+    authorNote: "First Author"
+    venue: "Working Paper"
+    year: 2026
+    status: "Working Paper"
+    featured: true
+    tags:
+      - "Symbolic Regression"
+      - "Factor Discovery"
+      - "Neural-Guided GP"
+      - "CSI 300 / 500 / 1000"
+    summary: "Reframes symbolic factor search around deduplicated effective factors per evaluation budget, using a three-head neural ensemble for priority scheduling and parent sampling across 613.6k expression evaluations on CSI 300, CSI 500, and CSI 1000 (2017–2023)."
+    abstract: "Symbolic regression for quantitative factor discovery faces two bottlenecks: expensive historical backtesting and heavy collinearity across candidate formulas. We reformulate the search objective around deduplicated effective factors discovered per unit evaluation budget across 340 fields on CSI 300, CSI 500, and CSI 1000 (2017–2023). A three-head neural ensemble—jointly predicting quality, ranking overlap, and exploration value—schedules backtest evaluations and parent selection while updating model and operator priors online from execution feedback. Across 613.6k expression executions and 6x13 paired experiments under cross-period reconstruction, joint online feedback outperforms replay-only baselines in 13/13 runs, lifting qualified representative yield on fixed probes by +42.5% (p = 1.22e-4) and cumulative yield by +20.4%."
+    bibtex: |
+      @unpublished{huang2026continual,
+        author = {Huang, Xianzhuo},
+        title  = {Continual Execution Feedback for Neural-Guided Genetic Programming in Stock Factor Discovery},
+        year   = {2026},
+        note   = {Working paper}
+      }
+    links: []
+
+  - id: "memory-guided-atomic-evolution"
+    title: "Memory-Guided Atomic Evolution of Factor Research Harnesses under Fixed Budgets"
+    authors:
+      - "Xianzhuo Huang"
+    authorNote: "First Author"
+    venue: "Working Paper"
+    year: 2026
+    status: "Working Paper"
+    featured: true
+    tags:
+      - "LLM Agents"
+      - "Research Automation"
+      - "Factor Discovery"
+      - "Fixed Budget"
+    summary: "Evolves full factor research harnesses—operator sets, mutation rules, and probe memory—via a Propose–Probe–Compose loop under fixed LLM and evaluation budgets, with strict separation between online exploration and frozen holdout evaluation."
+    abstract: "Rather than evolving isolated factor formulas, we treat the factor discovery harness itself—operator sets, mutation rules, and probe memory—as the unit of evolution under fixed LLM and backtest budgets. We build a Propose–Probe–Compose atomic edit loop where online exploration is strictly isolated from the holdout evaluation split, invalid proposals are accounted against the budget, and frozen harnesses are scored on common dates and stock universes (2017–2020 development window). Across 24 paired experiments, memory-guided harness evolution consistently outperforms both fixed initial harnesses (+0.011 mean |IC|, 24/24 wins) and random legal edits in the same search space (+0.0035, p = 0.031), while quantifying the trade-off between faster convergence and factor diversity."
+    bibtex: |
+      @unpublished{huang2026memory,
+        author = {Huang, Xianzhuo},
+        title  = {Memory-Guided Atomic Evolution of Factor Research Harnesses under Fixed Budgets},
+        year   = {2026},
+        note   = {Working paper}
+      }
+    links: []

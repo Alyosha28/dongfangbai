@@ -1,0 +1,55 @@
+items:
+  - id: "unwilling-or-unable"
+    name: "Unwilling or Unable?"
+    subtitle: "Dual Policy-Commitment Uncertainty and Cross-Asset Pricing"
+    year: "2026 — Present"
+    status: "Active Research"
+    featured: true
+    tags:
+      - "Macro Event Study"
+      - "Alternative Data"
+      - "Gold / WTI / VIX / Nasdaq"
+      - "Polymarket"
+    summary: "Separates unilateral bluffing from external execution constraints across 172 policy-commitment event clusters (2017–2026) using resolution-timestamped text signals, Polymarket odds, and dual-layer Bayesian forgetting posteriors."
+    highlights:
+      - "Screened 54,000 public statements into 1,224 policy commitments merged into 172 event clusters with zero-lookahead resolution alignment."
+      - "Separated 'unwilling' (unilateral bluffing) vs. 'unable' (external implementation friction) via dual-layer Bayesian forgetting posteriors controlling for pre-event returns and election cycles."
+      - "Pre-registered BH-FDR tests across Gold, WTI Crude, VIX, and Nasdaq futures demonstrate asymmetric pricing (p = 0.013): execution capability drives directional Gold returns (q = 0.044), while WTI volatility exhibits bluff discounting (q = 5.3e-4, -13.0% leave-one-year-out OOS MSE) and constraint amplification (q = 0.022)."
+    links: []
+
+  - id: "ashare-multifactor-system"
+    name: "Full-Market Equity Multi-Factor Research System"
+    subtitle: "Point-in-Time Pipeline, Friction Backtester & Löwdin Orthogonalization"
+    year: "2026 — Present"
+    status: "Research System"
+    featured: true
+    tags:
+      - "Python"
+      - "Multi-Factor Models"
+      - "PIT Backtesting"
+      - "CI Contracts"
+    summary: "End-to-end empirical equity research infrastructure covering 42 feature panels (4,342 features), announcement-date PIT alignment, T+1 open-match trading frictions, BH-FDR screening, and daily lookahead-free orthogonalization."
+    highlights:
+      - "Audits 42 feature panels across full A-share coverage with strict announcement-date PIT alignment and merge_asof index-weight integrity checks."
+      - "Enforces T+1 open-auction execution, limit-up/down buy restrictions, halt/limit-down lock-ins, and 22.2–30 bp round-trip cost assumptions."
+      - "Screens 1,062 statistically validated factors via BH-FDR and net-cost filters down to 212 core factors across 155 clusters and a 69-dimensional daily Löwdin orthogonal basis, backed by data-free CI contract tests."
+    links: []
+
+  - id: "finalwhite-site"
+    name: "finalwhite.lol"
+    subtitle: "Personal Homepage & Digital Garden"
+    year: "2026"
+    status: "Open Source"
+    featured: true
+    tags:
+      - "Astro 5"
+      - "Modern CSS"
+      - "Pages CMS"
+      - "Pixel Sprite"
+    summary: "Minimalist static personal site built with Astro 5, YAML-backed data collections, native CSS light-dark theming, view transitions, and an interactive pixel-art companion."
+    highlights:
+      - "Decouples profile, papers, projects, and long-form thoughts into plain YAML and Markdown files managed via Git or Pages CMS."
+      - "Built around CSS cascade layers, light-dark() tokens, native popover responsive navigation, and scroll-driven progress indicators."
+    links:
+      - label: "GitHub"
+        url: "https://github.com/Alyosha28"

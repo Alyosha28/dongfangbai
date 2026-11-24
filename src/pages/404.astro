@@ -1,86 +1,27 @@
 ---
 import Site from '../layouts/Site.astro';
+import Icon from '../components/Icon.astro';
+import { getProfile } from '../lib/data';
+
+const profile = getProfile();
 ---
-<Site view="404" title="使徒未检测到 — 404 NOT FOUND">
+<Site view="404" title={`404 — ${profile.name}`}>
+  <header class="page-header">
+    <h1>Page not found</h1>
+    <p class="page-intro">
+      The requested page<span id="notFoundPathWrap" hidden> (<code id="notFoundPath"></code>)</span> does not exist on this site.
+    </p>
+  </header>
 
-  <div style="display: grid; grid-template-columns: 240px 1fr 280px; gap: 48px; max-width: 1320px; margin: 0 auto; padding-top: 24px;">
-
-    <!-- LEFT · diagnostic -->
-    <aside style="padding-top: 24px;">
-      <div style="font-family: var(--tactical); font-size: 9.5px; letter-spacing: 0.32em; color: var(--warn); margin-bottom: 14px; text-transform: uppercase;">▲ ERROR 404 · DIAGNOSTIC</div>
-      {Object.entries({
-        CODE: ['404 NOT_FOUND', 'warn'],
-        CASE_ID: ['CASE-???', 'dim'],
-        SEVERITY: ['MINOR', 'warn'],
-        SYNC: ['31.4% ↓', 'warn'],
-      }).map(([k, [v, c]]) => (
-        <div style="display: flex; justify-content: space-between; padding: 5px 0; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.06em; border-bottom: 1px dashed var(--border);">
-          <span style="color: var(--text-faint);">{k}</span>
-          <span style={`color: var(--${c === 'warn' ? 'warn' : c === 'dim' ? 'text-faint' : 'text'}); ${c === 'dim' ? 'text-decoration: line-through;' : ''}`}>{v}</span>
-        </div>
-      ))}
-      <div style="margin-top: 28px; font-family: var(--tactical); font-size: 9.5px; letter-spacing: 0.32em; color: var(--accent); margin-bottom: 12px; text-transform: uppercase;">▾ TRY INSTEAD</div>
-      <div style="font-family: var(--mono); font-size: 10.5px; line-height: 2; color: var(--text-dim);">
-        <div><a href="/" style="color: var(--hero-gold)">/</a> · HOME</div>
-        <div><a href="/about" style="color: var(--text)">/ABOUT</a> · OPERATOR</div>
-        <div><a href="/" style="color: var(--accent)">/#archive</a> · ARCHIVE</div>
-      </div>
-    </aside>
-
-    <!-- CENTER · error main -->
-    <main>
-      <div style="background: rgba(255, 0, 51, 0.06); border: 1px solid var(--warn); padding: 14px 18px; margin-bottom: 32px; font-family: var(--tactical); font-size: 10.5px; letter-spacing: 0.3em; color: var(--warn); display: flex; justify-content: space-between; align-items: center;">
-        <span>▲ CONNECTION LOST · 通讯失联</span>
-        <span style="color: var(--text); font-family: var(--mono);">SEQ.404</span>
-      </div>
-
-      <div style="display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 36px; margin-bottom: 28px;">
-        <div style="font-family: var(--serif-display); font-style: italic; font-weight: 900; font-size: 220px; line-height: 0.85; color: var(--warn); letter-spacing: -0.02em; text-shadow: 0 0 24px rgba(255, 0, 51, 0.32), 4px 0 0 rgba(255, 122, 0, 0.4), -4px 0 0 rgba(139, 108, 217, 0.35);">404</div>
-        <div style="border-left: 1px solid var(--border-strong); padding-left: 24px;">
-          <div style="font-family: var(--tactical); font-size: 9.5px; letter-spacing: 0.32em; color: var(--accent); text-transform: uppercase; margin-bottom: 4px;">▾ MISSING DISPATCH · 缺失通讯</div>
-          <div style="font-family: var(--mono); font-size: 11px; line-height: 1.7; color: var(--text-dim);">
-            <span style="color: var(--text-faint);">REQUESTED</span> <span style="text-decoration: line-through; color: var(--text-faint);">{Astro.url.pathname}</span><br/>
-            <span style="color: var(--text-faint);">STATUS</span> <span style="color: var(--warn);">NULL · ARCHIVE</span><br/>
-            <span style="color: var(--text-faint);">SUGGEST</span> <span style="color: var(--hero-gold);">RETURN TO HOME</span>
-          </div>
-        </div>
-      </div>
-
-      <h1 style="font-family: var(--serif-cn); font-size: 60px; font-weight: 900; line-height: 1.15; color: var(--text); margin-bottom: 18px; letter-spacing: 0.04em;">
-        这里 — 还<span style="color: var(--hero-gold); font-style: italic; font-family: var(--serif-display); font-weight: 700; text-shadow: 0 0 24px var(--hero-gold-glow);">没有</span>写。
-      </h1>
-      <div style="font-family: var(--serif-cn); font-size: 18px; font-style: italic; line-height: 1.7; color: var(--text-dim); max-width: 560px; border-left: 2px solid var(--warn); padding-left: 18px; margin-bottom: 40px;">
-        你找的这一条不在档案里。可能 <strong style="color: var(--accent); font-weight: 600; font-style: normal;">还没长出来</strong>,可能 <strong style="color: var(--accent); font-weight: 600; font-style: normal;">路径错了</strong>。
-        Pen-pen 已经在找,但暂时没有进展。
-      </div>
-
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
-        <a href="/" style="padding: 18px 16px; border: 1px solid var(--accent); background: rgba(255, 122, 0, 0.08); color: var(--accent); font-family: var(--tactical); font-size: 10.5px; letter-spacing: 0.24em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; position: relative;">
-          <span style="font-family: var(--mono); font-size: 9px; color: var(--text-faint); display: block; margin-bottom: 6px;">01</span>
-          <span style="font-family: var(--serif-cn); font-size: 16px; color: var(--accent); display: block; margin-bottom: 4px;">回到首页</span>
-          <span style="font-family: var(--mono); font-size: 9.5px; color: var(--text-dim); text-transform: none;">Return home</span>
-        </a>
-        <a href="/#archive" style="padding: 18px 16px; border: 1px solid var(--border-strong); background: rgba(15, 20, 36, 0.4); font-family: var(--tactical); font-size: 10.5px; letter-spacing: 0.24em; color: var(--text-dim); text-transform: uppercase;">
-          <span style="font-family: var(--mono); font-size: 9px; color: var(--text-faint); display: block; margin-bottom: 6px;">02</span>
-          <span style="font-family: var(--serif-cn); font-size: 16px; color: var(--text); display: block; margin-bottom: 4px;">看档案</span>
-          <span style="font-family: var(--mono); font-size: 9.5px; color: var(--text-dim); text-transform: none;">Browse archive</span>
-        </a>
-        <a href="/about" style="padding: 18px 16px; border: 1px solid var(--border-strong); background: rgba(15, 20, 36, 0.4); font-family: var(--tactical); font-size: 10.5px; letter-spacing: 0.24em; color: var(--text-dim); text-transform: uppercase;">
-          <span style="font-family: var(--mono); font-size: 9px; color: var(--text-faint); display: block; margin-bottom: 6px;">03</span>
-          <span style="font-family: var(--serif-cn); font-size: 16px; color: var(--text); display: block; margin-bottom: 4px;">看操作员</span>
-          <span style="font-family: var(--mono); font-size: 9.5px; color: var(--text-dim); text-transform: none;">Operator file</span>
-        </a>
-      </div>
-    </main>
-
-    <!-- RIGHT · poem cap (existing PenPen will float fixed) -->
-    <aside style="padding-top: 32px;">
-      <div class="sparse-epigraph" style="margin: 0;">
-        <div class="lbl">— PATIENCE · 静观 —</div>
-        <div class="verse">未到春风<br/>不必催</div>
-        <div class="src">CASE-???? · TBD</div>
-      </div>
-    </aside>
-
+  <div class="intro-actions">
+    <a class="intro-more-link" href="/">
+      <Icon name="arrow-left" size={14} />
+      <span>Back home</span>
+    </a>
+    <div class="intro-channels">
+      <a href="/projects">Projects</a>
+      <a href="/papers">Papers</a>
+      <a href="/thoughts">Thoughts</a>
+    </div>
   </div>
 </Site>

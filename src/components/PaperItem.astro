@@ -1,0 +1,106 @@
+---
+import Icon from './Icon.astro';
+import type { Paper } from '../lib/data';
+import { getProfile, tokenizeAuthors } from '../lib/data';
+
+export interface Props {
+  paper: Paper;
+  showDetails?: boolean;
+  headingLevel?: 'h2' | 'h3';
+  linkToDetail?: boolean;
+}
+
+const { paper, showDetails = true, headingLevel = 'h3', linkToDetail = false } = Astro.props;
+const HeadingTag = headingLevel;
+const profile = getProfile();
+const authorTokens = tokenizeAuthors(paper.authors, profile.name);
+---
+<article class="ledger-item" id={showDetails ? paper.id : undefined}>
+  <div class="ledger-meta">
+    <span class="tabular ledger-year">{paper.year}</span>
+    {paper.status && <span class="ledger-status">{paper.status}</span>}
+  </div>
+
+  <div class="ledger-body">
+    <HeadingTag class="item-title">
+      {linkToDetail ? (
+        <a href={`/papers#${paper.id}`}>{paper.title}</a>
+      ) : (
+        paper.title
+      )}
+    </HeadingTag>
+
+    <p class="item-authors">
+      {authorTokens.map((author, idx) => (
+        <>
+          {idx > 0 && ', '}
+          {author.isOwner ? <strong>{author.name}</strong> : author.name}
+        </>
+      ))}
+      {paper.authorNote && <span class="meta-sep">· {paper.authorNote}</span>}
+      {paper.venue && <span class="meta-sep">· {paper.venue}</span>}
+    </p>
+
+    <p class="item-summary">{paper.summary}</p>
+
+    {paper.tags.length > 0 && (
+      <ul class="item-tags" aria-label="Topics">
+        {paper.tags.map((tag) => <li class="tag-term">{tag}</li>)}
+      </ul>
+    )}
+
+    {paper.links.length > 0 && (
+      <div class="item-actions">
+        {paper.links.map((link) => {
+          const isExternal = link.url.startsWith('http');
+          return (
+            <a
+              class="action-link"
+              href={link.url}
+              target={isExternal ? '_blank' : undefined}
+              rel={isExternal ? 'noopener noreferrer' : undefined}
+            >
+              <span>{link.label}</span>
+              {isExternal && <Icon name="arrow-up-right" size={14} />}
+            </a>
+          );
+        })}
+      </div>
+    )}
+
+    {showDetails && (paper.abstract || paper.bibtex) && (
+      <div class="item-disclosures">
+        {paper.abstract && (
+          <details class="disclosure">
+            <summary>Abstract</summary>
+            <div class="disclosure-panel">
+              <p>{paper.abstract}</p>
+            </div>
+          </details>
+        )}
+
+        {paper.bibtex && (
+          <details class="disclosure">
+            <summary>BibTeX</summary>
+            <div class="disclosure-panel">
+              <pre class="bibtex-pre" tabindex="0"><code>{paper.bibtex.trim()}</code></pre>
+              <div class="bibtex-toolbar">
+                <button
+                  type="button"
+                  class="copy-btn"
+                  data-copy-text={paper.bibtex.trim()}
+                  data-copy-label="BibTeX copied"
+                >
+                  <span class="copy-icon-default" aria-hidden="true"><Icon name="copy" size={14} /></span>
+                  <span class="copy-icon-done" aria-hidden="true"><Icon name="check" size={14} /></span>
+                  <span class="copy-btn-label">Copy BibTeX</span>
+                </button>
+                <span class="copy-status" role="status" aria-live="polite"></span>
+              </div>
+            </div>
+          </details>
+        )}
+      </div>
+    )}
+  </div>
+</article>

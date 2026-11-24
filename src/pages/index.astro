@@ -1,14 +1,138 @@
 ---
-import Site from '../layouts/Site.astro';
-import Hero from '../components/Hero.astro';
-import Timeline from '../components/Timeline.astro';
 import { getCollection } from 'astro:content';
+import Site from '../layouts/Site.astro';
+import Icon from '../components/Icon.astro';
+import PaperItem from '../components/PaperItem.astro';
+import ProjectItem from '../components/ProjectItem.astro';
+import { estimateReadTime, getPapers, getProfile, getProjects, normalizeDate } from '../lib/data';
 
-const posts = (await getCollection('posts'))
-  .filter((p) => !p.data.draft)
-  .sort((a, b) => b.data.date.localeCompare(a.data.date));
+const profile = getProfile();
+const papers = getPapers().filter((p) => p.featured);
+const projects = getProjects().filter((p) => p.featured);
+
+const thoughts = (await getCollection('thoughts'))
+  .filter((t) => !t.data.draft)
+  .sort((a, b) => normalizeDate(b.data.date).localeCompare(normalizeDate(a.data.date)))
+  .slice(0, 5);
 ---
 <Site view="home">
-  <Hero latestPost={posts[0]} />
-  <Timeline posts={posts} />
+  <section class="intro-hero" aria-labelledby="intro-heading">
+    <div class="intro-primary">
+      <h1 class="intro-title" id="intro-heading">{profile.name}</h1>
+      <p class="intro-native" lang="zh-CN">
+        <span>{profile.nativeName}</span>
+        <span class="intro-dot" aria-hidden="true">·</span>
+        <span>{profile.moniker}</span>
+      </p>
+      <p class="intro-lead">{profile.tagline}</p>
+      <p class="intro-sub">{profile.bio[0]}</p>
+
+      <div class="intro-actions">
+        <a class="intro-more-link" href="/about">
+          <span>More about me</span>
+          <Icon name="arrow-right" size={14} />
+        </a>
+        <div class="intro-channels">
+          {profile.links.map((link) => (
+            <a
+              href={link.url}
+              target={link.external ? '_blank' : undefined}
+              rel={link.external ? 'noopener noreferrer' : undefined}
+            >
+              <span>{link.label}</span>
+              {link.external && <Icon name="arrow-up-right" size={14} />}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <aside class="intro-colophon" aria-label="Epigraph">
+      <span class="colophon-dawn" aria-hidden="true">
+        <Icon name="dawn" size={28} />
+      </span>
+      <div class="colophon-epigraph-wrap">
+        <p class="colophon-epigraph" lang="zh-CN">「{profile.epigraph}」</p>
+        <p class="colophon-source" lang="zh-CN">{profile.epigraphAttribution}</p>
+      </div>
+      <button
+        type="button"
+        class="colophon-seal-btn"
+        id="heroSealBtn"
+        aria-label="Press archival seal"
+        title="歌未竟，东方白"
+      >
+        <Icon name="seal" size={26} />
+      </button>
+    </aside>
+  </section>
+
+  <section class="home-section" aria-labelledby="papers-heading">
+    <div class="section-head">
+      <h2 id="papers-heading">Papers</h2>
+      <a class="section-more" href="/papers">
+        <span>All papers</span>
+        <Icon name="arrow-right" size={14} />
+      </a>
+    </div>
+    <div class="ledger-list ledger-list--interactive">
+      {papers.map((paper) => (
+        <PaperItem paper={paper} showDetails={false} linkToDetail={true} />
+      ))}
+    </div>
+  </section>
+
+  <section class="home-section" aria-labelledby="projects-heading">
+    <div class="section-head">
+      <h2 id="projects-heading">Projects</h2>
+      <a class="section-more" href="/projects">
+        <span>All projects</span>
+        <Icon name="arrow-right" size={14} />
+      </a>
+    </div>
+    <div class="ledger-list ledger-list--interactive">
+      {projects.map((project) => (
+        <ProjectItem project={project} showHighlights={false} linkToDetail={true} />
+      ))}
+    </div>
+  </section>
+
+  <section class="home-section" aria-labelledby="thoughts-heading">
+    <div class="section-head">
+      <h2 id="thoughts-heading">Thoughts</h2>
+      <a class="section-more" href="/thoughts">
+        <span>All thoughts</span>
+        <Icon name="arrow-right" size={14} />
+      </a>
+    </div>
+    <div class="ledger-list ledger-list--interactive">
+      {thoughts.map((thought) => {
+        const dateIso = normalizeDate(thought.data.date);
+        const readTime = estimateReadTime(thought.body ?? '', thought.data.readTime);
+        return (
+          <article class="thought-row">
+            <div class="thought-row-main">
+              <a
+                class="thought-row-title"
+                href={`/thoughts/${thought.slug}`}
+                lang={thought.data.lang === 'zh' ? 'zh-CN' : 'en'}
+              >
+                {thought.data.title}
+              </a>
+              {thought.data.subtitle && (
+                <p class="thought-row-sub" lang={thought.data.lang === 'zh' ? 'zh-CN' : 'en'}>
+                  {thought.data.subtitle}
+                </p>
+              )}
+            </div>
+            <div class="thought-row-meta">
+              <time datetime={dateIso}>{dateIso}</time>
+              <span class="meta-dot" aria-hidden="true">·</span>
+              <span>{readTime}</span>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </section>
 </Site>

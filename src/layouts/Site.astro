@@ -1,123 +1,207 @@
 ---
-import '../styles/global.css';
-import BootScreen from '../components/BootScreen.astro';
-import PenPen from '../components/PenPen.astro';
-import MarketHud from '../components/MarketHud.astro';
-import { getCollection } from 'astro:content';
+import '../styles/site.css';
+import CommandPalette from '../components/CommandPalette.astro';
+import Icon from '../components/Icon.astro';
+import PixelPet from '../components/PixelPet.astro';
+import { getProfile } from '../lib/data';
 
-interface Props {
+export interface Props {
   title?: string;
   description?: string;
-  view?: 'home' | 'post' | 'about' | '404';
+  lang?: 'en' | 'zh-CN';
+  view?: 'home' | 'projects' | 'papers' | 'thoughts' | 'thought' | 'about' | '404';
+  showProgress?: boolean;
+  wide?: boolean;
 }
+
+const profile = getProfile();
 const {
-  title = '歌未竟,东方白 — dongfangbai.com',
-  description = '一个学生的数字花园:在读历史,看市场,写字。致敬 EVA × rauno.me × 毛主席《贺新郎·读史》。',
+  title = profile.siteTitle,
+  description = profile.description,
+  lang = 'en',
   view = 'home',
+  showProgress = false,
+  wide = false,
 } = Astro.props;
 
 const pathname = Astro.url.pathname;
-const showMarketHud = view === 'home';
+const navItems = [
+  { href: '/', label: 'Home', active: pathname === '/' },
+  { href: '/projects', label: 'Projects', active: pathname.startsWith('/projects') },
+  { href: '/papers', label: 'Papers', active: pathname.startsWith('/papers') },
+  { href: '/thoughts', label: 'Thoughts', active: pathname.startsWith('/thoughts') },
+  { href: '/about', label: 'About', active: pathname.startsWith('/about') },
+];
 
-// dynamic LATEST link · 自动跟随最新文章
-const latestPost = (await getCollection('posts'))
-  .filter((p) => !p.data.draft)
-  .sort((a, b) => b.data.date.localeCompare(a.data.date))[0];
-const latestHref = latestPost ? `/posts/${latestPost.slug}` : '/';
+const expectAttrs = { blocking: 'render' } as Record<string, string>;
+const cmdInvokeAttrs = {
+  commandfor: 'commandPalette',
+  command: 'show-modal',
+} as Record<string, string>;
+
+const inkOptions = [
+  { id: 'plum', label: 'Dawn Plum', cn: '曙紫' },
+  { id: 'cinnabar', label: 'Cinnabar Seal', cn: '朱砂' },
+  { id: 'celadon', label: 'Song Celadon', cn: '天青' },
+  { id: 'noir', label: 'Ink Noir', cn: '松烟' },
+];
 ---
 <!doctype html>
-<html lang="zh-CN" data-theme="night" data-view={view}>
+<html lang={lang}>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <script is:inline>
+    try {
+      const saved = localStorage.getItem('color-scheme');
+      const meta = document.querySelector('meta[name="color-scheme"]');
+      if (meta && (saved === 'light' || saved === 'dark')) {
+        meta.content = saved;
+      }
+      const ink = localStorage.getItem('site-ink');
+      if (ink === 'plum' || ink === 'cinnabar' || ink === 'celadon' || ink === 'noir') {
+        document.documentElement.dataset.ink = ink;
+      }
+    } catch {}
+  </script>
+  <link rel="expect" href="#main-content" {...expectAttrs} />
   <meta name="description" content={description} />
   <title>{title}</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="alternate" type="application/rss+xml" title={profile.siteTitle} href="/rss.xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700;0,6..96,900;1,6..96,400&family=JetBrains+Mono:wght@400;500;700&family=Liu+Jian+Mao+Cao&family=Long+Cang&family=Noto+Serif+SC:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet" />
-
-  <!-- SFX preload · 进站即异步抢资源,首次交互后立即可播 -->
-  <link rel="preload" as="audio" type="audio/mpeg" href="/sfx/boot-init.mp3" />
-  <link rel="preload" as="audio" type="audio/mpeg" href="/sfx/boot-complete.mp3" />
-  <link rel="preload" as="audio" type="audio/mpeg" href="/sfx/theme-toggle.mp3" />
-
-  <script is:inline>
-    // theme persistence - prevent FOUC
-    try {
-      const saved = localStorage.getItem('dongfangbai-theme');
-      if (saved === 'day' || saved === 'night') {
-        document.documentElement.dataset.theme = saved;
-      }
-    } catch (e) {}
-  </script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;600;700&family=Source+Sans+3:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
 </head>
-<body>
-  <!-- ATMOSPHERE · radial glow + grain + scanline + drift sweep -->
-  <div class="atmosphere" aria-hidden="true">
-    <div class="atm-glow"></div>
-    <div class="atm-scanline"></div>
-    <div class="atm-grain"></div>
-    <div class="atm-sweep"></div>
-  </div>
+<body id="top">
+  <a class="skip-link" href="#main-content">Skip to main content</a>
 
-  <!-- THEME SWEEP · NERV 频道切换扫描带 -->
-  <div class="theme-sweep" id="themeSweep" aria-hidden="true"></div>
+  <div class="site-horizon" aria-hidden="true"></div>
+  {showProgress && <div class="read-progress" id="readProgress" aria-hidden="true"></div>}
 
-  <!-- BOOT SCREEN · NERV 启动序列 (managed by JS) -->
-  <BootScreen />
+  <header class="site-header" id="siteHeader" lang="en">
+    <div class="header-inner">
+      <a class="site-brand" href="/">
+        <Icon name="seal" size={20} class="site-brand-seal" />
+        <span class="site-brand-name">{profile.name}</span>
+        <span class="site-brand-cn" lang="zh-CN">{profile.moniker}</span>
+      </a>
 
-  <!-- HUD TOP -->
-  <div class="hud-top">
-    <div class="left">
-      <a href="/" class="logo-mark">DONGFANGBAI.COM</a>
-      <span class="status-dot"></span>
-      <span><span class="field-val" id="timecode">04:21:33</span></span>
+      <div class="header-controls">
+        <nav class="site-nav" aria-label="Primary">
+          <button
+            class="menu-button"
+            type="button"
+            popovertarget="site-menu"
+            popovertargetaction="toggle"
+            aria-controls="site-menu"
+          >
+            <Icon name="menu" size={16} />
+            <span class="menu-button-label">Menu</span>
+          </button>
+
+          <ul id="site-menu" class="site-menu" popover="auto">
+            {navItems.map((item) => (
+              <li>
+                <a href={item.href} aria-current={item.active ? 'page' : undefined}>
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <button
+          class="cmd-trigger"
+          id="cmdTrigger"
+          type="button"
+          aria-label="Open quick index"
+          title="Quick Index (Cmd/Ctrl + K)"
+          {...cmdInvokeAttrs}
+        >
+          <Icon name="search" size={15} />
+          <kbd class="cmd-kbd" aria-hidden="true">
+            <Icon name="command" size={11} />
+            <span>K</span>
+          </kbd>
+        </button>
+
+        <button class="theme-toggle" id="themeToggle" type="button">
+          <span class="icon-moon" aria-hidden="true">
+            <Icon name="moon" size={16} />
+          </span>
+          <span class="icon-sun" aria-hidden="true">
+            <Icon name="sun" size={16} />
+          </span>
+          <span class="sr-only label-to-dark">Switch to dark theme</span>
+          <span class="sr-only label-to-light">Switch to light theme</span>
+        </button>
+      </div>
     </div>
-    <div class="center">
-      <a href="/" data-view="home" class:list={['nav-btn', { active: pathname === '/' }]}>HOME</a>
-      <a href={latestHref} data-view="post" class:list={['nav-btn', { active: pathname.startsWith('/posts/') }]}>LATEST</a>
-      <a href="/about" data-view="about" class:list={['nav-btn', { active: pathname === '/about' }]}>ABOUT</a>
+  </header>
+
+  <main id="main-content" class="site-main">
+    <div class={wide ? 'page-shell--wide' : 'page-shell'}>
+      <div class="print-letterhead" aria-hidden="true">
+        <span class="print-letterhead-name">{profile.name}</span>
+        <span class="print-letterhead-meta">{profile.domain}</span>
+      </div>
+      <slot />
     </div>
-    <div class="right">
-      <span>OPERATIONS · ONLINE</span>
-      <button class="theme-toggle" id="themeToggle">TRIGGER: DAY</button>
-    </div>
-  </div>
-
-  <div class="read-progress" id="readProgress"></div>
-
-  {showMarketHud && <MarketHud />}
-
-  <main>
-    <slot />
   </main>
 
-  <PenPen />
+  <footer class="site-footer" lang="en">
+    <div class="footer-inner">
+      <div class="footer-colophon">
+        <span class="footer-epigraph" lang="zh-CN">{profile.epigraph}</span>
+        <span class="footer-domain">{profile.domain}</span>
+      </div>
 
-  <!-- HUD BOTTOM -->
-  <div class="hud-bottom">
-    <div class="seg">
-      <span class="field-label">A.T.FIELD:</span>
-      <span class="field-val">ACTIVE</span>
-      <span class="field-label" style="margin-left:24px">SYNC:</span>
-      <span class="field-val" id="syncRate">99.7%</span>
+      <div class="footer-right">
+        <div class="ink-switcher" data-ink-switcher role="group" aria-label="Editorial ink edition">
+          <span class="ink-switcher-label" id="inkCurrentLabel">Dawn Plum</span>
+          <div class="ink-dots">
+            {inkOptions.map((ink) => (
+              <button
+                type="button"
+                class="ink-swatch"
+                data-ink-option={ink.id}
+                data-ink-label={ink.label}
+                aria-label={`${ink.label} (${ink.cn}) ink`}
+                aria-pressed={ink.id === 'plum' ? 'true' : 'false'}
+                title={`${ink.label} · ${ink.cn}`}
+              >
+                <span class={`ink-dot ink-dot--${ink.id}`} aria-hidden="true"></span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div class="footer-links">
+          {profile.links.map((link) => (
+            <a
+              href={link.url}
+              target={link.external ? '_blank' : undefined}
+              rel={link.external ? 'noopener noreferrer' : undefined}
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+      </div>
     </div>
-    <div class="seg center">
-      <span>歌未竟,东方白</span>
-    </div>
-    <div class="seg right">
-      <a href="https://github.com/Alyosha28" target="_blank" rel="noopener">GITHUB</a>
-      <a href="https://x.com/finalwhit76" target="_blank" rel="noopener">X</a>
-      <a href="mailto:hi@dongfangbai.com">MAIL</a>
-      <a href="/rss.xml">RSS</a>
-      <span class="ver">v.20260515</span>
-    </div>
-  </div>
+  </footer>
+
+  <CommandPalette />
+  <PixelPet view={view} />
 
   <script>
-    import { initClient } from '../scripts/client';
-    initClient();
+    import { initSite } from '../scripts/site';
+    initSite();
   </script>
 </body>
 </html>

@@ -1,0 +1,63 @@
+---
+import Icon from './Icon.astro';
+import type { Project } from '../lib/data';
+
+export interface Props {
+  project: Project;
+  showHighlights?: boolean;
+  headingLevel?: 'h2' | 'h3';
+  linkToDetail?: boolean;
+}
+
+const { project, showHighlights = false, headingLevel = 'h3', linkToDetail = false } = Astro.props;
+const HeadingTag = headingLevel;
+---
+<article class="ledger-item" id={showHighlights ? project.id : undefined}>
+  <div class="ledger-meta">
+    <span class="tabular ledger-year">{project.year}</span>
+    {project.status && <span class="ledger-status">{project.status}</span>}
+  </div>
+
+  <div class="ledger-body">
+    <HeadingTag class="item-title">
+      {linkToDetail ? (
+        <a href={`/projects#${project.id}`}>{project.name}</a>
+      ) : (
+        project.name
+      )}
+    </HeadingTag>
+    {project.subtitle && <p class="item-subtitle">{project.subtitle}</p>}
+    <p class="item-summary">{project.summary}</p>
+
+    {showHighlights && project.highlights.length > 0 && (
+      <ul class="item-highlights">
+        {project.highlights.map((item) => <li>{item}</li>)}
+      </ul>
+    )}
+
+    {project.tags.length > 0 && (
+      <ul class="item-tags" aria-label="Keywords">
+        {project.tags.map((tag) => <li class="tag-term">{tag}</li>)}
+      </ul>
+    )}
+
+    {project.links.length > 0 && (
+      <div class="item-actions">
+        {project.links.map((link) => {
+          const isExternal = link.url.startsWith('http');
+          return (
+            <a
+              class="action-link"
+              href={link.url}
+              target={isExternal ? '_blank' : undefined}
+              rel={isExternal ? 'noopener noreferrer' : undefined}
+            >
+              <span>{link.label}</span>
+              {isExternal && <Icon name="arrow-up-right" size={14} />}
+            </a>
+          );
+        })}
+      </div>
+    )}
+  </div>
+</article>

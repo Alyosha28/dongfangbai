@@ -1,0 +1,270 @@
+---
+import { getCollection } from 'astro:content';
+import Icon from './Icon.astro';
+import { getPapers, getProfile, getProjects, normalizeDate } from '../lib/data';
+
+const profile = getProfile();
+const papers = getPapers();
+const projects = getProjects();
+const thoughts = (await getCollection('thoughts'))
+  .filter((t) => !t.data.draft)
+  .sort((a, b) => normalizeDate(b.data.date).localeCompare(normalizeDate(a.data.date)));
+
+const emailLink = profile.links.find((l) => l.url.startsWith('mailto:'));
+const dialogAttrs = { closedby: 'any' } as Record<string, string>;
+
+const pageRoutes = [
+  { label: 'Home', meta: '/', href: '/', keywords: 'home index frontispiece overview 首页' },
+  { label: 'Projects', meta: '/projects', href: '/projects', keywords: 'projects research systems engineering 项目' },
+  { label: 'Papers', meta: '/papers', href: '/papers', keywords: 'papers publications working manuscripts bibtex 论文' },
+  { label: 'Thoughts', meta: '/thoughts', href: '/thoughts', keywords: 'thoughts essays notes reading blog 随笔 思考' },
+  { label: 'About', meta: '/about', href: '/about', keywords: 'about bio education experience skills contact 关于' },
+];
+
+const inkEditions = [
+  { id: 'plum', label: 'Dawn Plum', cn: '曙紫', keywords: 'ink accent theme color plum purple 曙紫 东方白' },
+  { id: 'cinnabar', label: 'Cinnabar Seal', cn: '朱砂', keywords: 'ink accent theme color red vermilion seal 朱砂 印章' },
+  { id: 'celadon', label: 'Song Celadon', cn: '天青', keywords: 'ink accent theme color green jade teal 天青 宋瓷' },
+  { id: 'noir', label: 'Ink Noir', cn: '松烟', keywords: 'ink accent theme color monochrome black minimal 松烟 黑白' },
+];
+---
+<dialog id="commandPalette" class="cmd-dialog" lang="en" aria-labelledby="cmdDialogTitle" {...dialogAttrs}>
+  <div class="cmd-surface">
+    <div class="cmd-header">
+      <h2 id="cmdDialogTitle" class="sr-only">Quick Index and Commands</h2>
+      <span class="cmd-search-icon" aria-hidden="true">
+        <Icon name="search" size={16} />
+      </span>
+      <input
+        id="cmdSearchInput"
+        class="cmd-input"
+        type="search"
+        placeholder="Search pages, work, or atelier..."
+        autocomplete="off"
+        spellcheck="false"
+        autofocus
+        aria-label="Filter index and commands"
+      />
+      <button type="button" class="cmd-close" id="cmdCloseBtn" aria-label="Close quick index">
+        <Icon name="close" size={16} />
+      </button>
+    </div>
+
+    <div class="cmd-body" id="cmdResults">
+      <section class="cmd-group" data-cmd-group>
+        <h3 class="cmd-group-title">Pages</h3>
+        <ul class="cmd-list">
+          {pageRoutes.map((route) => (
+            <li>
+              <a
+                class="cmd-item"
+                href={route.href}
+                data-cmd-item
+                data-cmd-search={`${route.label} ${route.meta} ${route.keywords}`.toLowerCase()}
+              >
+                <span class="cmd-item-main">
+                  <span class="cmd-item-title">{route.label}</span>
+                </span>
+                <span class="cmd-item-meta tabular">{route.meta}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {papers.length > 0 && (
+        <section class="cmd-group" data-cmd-group>
+          <h3 class="cmd-group-title">Papers</h3>
+          <ul class="cmd-list">
+            {papers.map((paper) => (
+              <li>
+                <a
+                  class="cmd-item"
+                  href={`/papers#${paper.id}`}
+                  data-cmd-item
+                  data-cmd-search={`${paper.title} ${paper.venue} ${paper.year} ${paper.tags.join(' ')} paper`.toLowerCase()}
+                >
+                  <span class="cmd-item-main">
+                    <span class="cmd-item-title">{paper.title}</span>
+                    <span class="cmd-item-sub">{paper.status || paper.venue}</span>
+                  </span>
+                  <span class="cmd-item-meta tabular">{paper.year}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {projects.length > 0 && (
+        <section class="cmd-group" data-cmd-group>
+          <h3 class="cmd-group-title">Projects</h3>
+          <ul class="cmd-list">
+            {projects.map((project) => (
+              <li>
+                <a
+                  class="cmd-item"
+                  href={`/projects#${project.id}`}
+                  data-cmd-item
+                  data-cmd-search={`${project.name} ${project.subtitle} ${project.tags.join(' ')} project`.toLowerCase()}
+                >
+                  <span class="cmd-item-main">
+                    <span class="cmd-item-title">{project.name}</span>
+                    {project.subtitle && <span class="cmd-item-sub">{project.subtitle}</span>}
+                  </span>
+                  <span class="cmd-item-meta tabular">{project.year}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {thoughts.length > 0 && (
+        <section class="cmd-group" data-cmd-group>
+          <h3 class="cmd-group-title">Thoughts</h3>
+          <ul class="cmd-list">
+            {thoughts.map((thought) => {
+              const dateIso = normalizeDate(thought.data.date);
+              return (
+                <li>
+                  <a
+                    class="cmd-item"
+                    href={`/thoughts/${thought.slug}`}
+                    data-cmd-item
+                    data-cmd-search={`${thought.data.title} ${thought.data.subtitle ?? ''} ${thought.data.caseId ?? ''} ${thought.data.tags.join(' ')} thought essay`.toLowerCase()}
+                  >
+                    <span class="cmd-item-main">
+                      <span class="cmd-item-title" lang={thought.data.lang === 'zh' ? 'zh-CN' : 'en'}>
+                        {thought.data.title}
+                      </span>
+                      {thought.data.subtitle && (
+                        <span class="cmd-item-sub" lang={thought.data.lang === 'zh' ? 'zh-CN' : 'en'}>
+                          {thought.data.subtitle}
+                        </span>
+                      )}
+                    </span>
+                    <span class="cmd-item-meta tabular">{dateIso}</span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
+
+      <section class="cmd-group" data-cmd-group>
+        <h3 class="cmd-group-title">Atelier & Actions</h3>
+        <ul class="cmd-list">
+          <li>
+            <button
+              type="button"
+              class="cmd-item"
+              data-cmd-item
+              data-cmd-action="toggle-theme"
+              data-cmd-search="toggle theme light dark paper charcoal dawn aperture appearance 切换 主题 深色 浅色"
+            >
+              <span class="cmd-item-main">
+                <span class="cmd-item-title">Toggle Paper / Charcoal Theme</span>
+                <span class="cmd-item-sub">Switch between light rag paper and dark ink-stone</span>
+              </span>
+              <span class="cmd-item-meta">Theme</span>
+            </button>
+          </li>
+
+          {inkEditions.map((ink) => (
+            <li>
+              <button
+                type="button"
+                class="cmd-item"
+                data-cmd-item
+                data-cmd-action={`set-ink:${ink.id}`}
+                data-cmd-ink={ink.id}
+                aria-pressed={ink.id === 'plum' ? 'true' : 'false'}
+                data-cmd-search={`${ink.label} ${ink.cn} ${ink.keywords}`.toLowerCase()}
+              >
+                <span class="cmd-item-main cmd-item-main--inline">
+                  <span class={`ink-dot ink-dot--${ink.id}`} aria-hidden="true"></span>
+                  <span class="cmd-item-title">
+                    Ink Edition: {ink.label} <span class="cmd-item-cn" lang="zh-CN">{ink.cn}</span>
+                  </span>
+                </span>
+                <span class="cmd-item-meta cmd-ink-active" aria-hidden="true">
+                  <Icon name="check" size={14} />
+                </span>
+              </button>
+            </li>
+          ))}
+
+          {emailLink && (
+            <li>
+              <button
+                type="button"
+                class="cmd-item"
+                data-cmd-item
+                data-cmd-action="copy-email"
+                data-cmd-value={emailLink.handle}
+                data-cmd-search={`copy email contact address ${emailLink.handle} 邮箱 复制`.toLowerCase()}
+              >
+                <span class="cmd-item-main">
+                  <span class="cmd-item-title">Copy Email Address</span>
+                  <span class="cmd-item-sub tabular">{emailLink.handle}</span>
+                </span>
+                <span class="cmd-item-meta">Copy</span>
+              </button>
+            </li>
+          )}
+
+          <li>
+            <a
+              class="cmd-item"
+              href="/rss.xml"
+              data-cmd-item
+              data-cmd-search="rss feed subscribe xml atom 订阅"
+            >
+              <span class="cmd-item-main">
+                <span class="cmd-item-title">RSS Feed</span>
+                <span class="cmd-item-sub">Subscribe to thoughts via /rss.xml</span>
+              </span>
+              <span class="cmd-item-meta tabular">/rss.xml</span>
+            </a>
+          </li>
+
+          <li>
+            <button
+              type="button"
+              class="cmd-item"
+              data-cmd-item
+              data-cmd-action="pet-wave"
+              data-cmd-search="greet pixel mouse companion wave pet 老鼠 互动 招手"
+            >
+              <span class="cmd-item-main">
+                <span class="cmd-item-title">Greet Pixel Mouse Companion</span>
+                <span class="cmd-item-sub">Wake companion with a wave</span>
+              </span>
+              <span class="cmd-item-meta">Companion</span>
+            </button>
+          </li>
+        </ul>
+      </section>
+
+      <p class="cmd-empty" id="cmdEmpty" hidden>
+        No matching entries in the index.
+      </p>
+    </div>
+
+    <p class="sr-only" id="cmdStatus" role="status" aria-live="polite"></p>
+
+    <div class="cmd-footer" aria-hidden="true">
+      <span class="cmd-hint">
+        <kbd><Icon name="arrow-up" size={11} /></kbd><kbd><Icon name="arrow-down" size={11} /></kbd> Navigate
+      </span>
+      <span class="cmd-hint">
+        <kbd><Icon name="corner-down-left" size={11} /></kbd> Open
+      </span>
+      <span class="cmd-hint">
+        <kbd>Esc</kbd> Close
+      </span>
+    </div>
+  </div>
+</dialog>

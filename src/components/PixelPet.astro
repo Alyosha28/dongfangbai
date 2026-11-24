@@ -1,0 +1,41 @@
+---
+import Icon from './Icon.astro';
+import { getProfile } from '../lib/data';
+
+export interface Props {
+  view?: 'home' | 'projects' | 'papers' | 'thoughts' | 'thought' | 'about' | '404';
+}
+const { view = 'home' } = Astro.props;
+const profile = getProfile();
+const spriteStyle =
+  "--pet-sheet-png: url('/pet/mouse-spritesheet.png'); --pet-sheet-webp: url('/pet/mouse-spritesheet.webp');";
+---
+<aside class="pixel-pet" id="pixelPet" data-state="idle" data-paused="false" data-view={view} aria-label="Pixel companion">
+  <span class="sr-only" id="pixelPetAnnounce" role="status" aria-live="polite"></span>
+  <div class="pixel-pet-note" id="pixelPetNote" aria-hidden="true" hidden></div>
+  <div class="pixel-pet-frame">
+    <button
+      type="button"
+      class="pixel-pet-pause"
+      id="pixelPetPause"
+      aria-label="Pause companion animation"
+      title="Pause or resume companion animation"
+    >
+      <span class="pet-glyph-pause" aria-hidden="true">
+        <Icon name="pause" size={12} />
+      </span>
+      <span class="pet-glyph-play" aria-hidden="true">
+        <Icon name="play" size={12} />
+      </span>
+    </button>
+    <button
+      type="button"
+      class="pixel-pet-sprite-btn"
+      id="pixelPetTrigger"
+      aria-label={`${profile.moniker} pixel mouse companion — click to interact`}
+    >
+      <span class="pixel-pet-shadow" aria-hidden="true"></span>
+      <span class="pixel-pet-sprite" style={spriteStyle} aria-hidden="true"></span>
+    </button>
+  </div>
+</aside>

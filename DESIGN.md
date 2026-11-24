@@ -1,0 +1,36 @@
+# DESIGN.md — finalwhite.lol
+
+## Visual Philosophy
+An archival monograph, quiet-luxury lookbook index, and reader-first publication ledger (**Archival Monograph & Dawn Horizon**): tactile uncoated cotton rag-paper and nocturnal ink-stone surfaces with subtle paper micro-grain and whisper-soft dawn horizon aura, high-contrast couture serif display typography, hairline architectural rules, and understated personal poise around `「歌未竟，东方白」`.
+
+## Color & Theme System
+- Driven natively by `<meta name="color-scheme" content="light dark">` + CSS `color-scheme: light dark` and `light-dark()`.
+- **Paper (Light)**: Ground `#F9F8F5`, Surface `#F1EFEA`, Elevated `#FFFFFF`, Ink `#151517`, Muted `#4E4F58`, Subtle `#5E606B`, Interactive Control Border `rgba(21, 21, 23, 0.48)` (≥ 3.15:1 across ground and surface).
+- **Charcoal (Dark)**: Ground `#111215`, Surface `#181A1F`, Elevated `#1C1E25`, Ink `#EDEBE6`, Muted `#B5B4BC`, Subtle `#9596A2`, Interactive Control Border `rgba(237, 235, 230, 0.42)` (≥ 3.57:1 across ground, surface, and elevated surfaces).
+- **Four WCAG-AAA Editorial Ink Editions** (`data-ink`, persisted in `localStorage` before first paint and switchable via footer swatches or `⌘K`):
+  - **Dawn Plum (`曙紫`, default)**: `#6B2D83` (8.49:1) / `#D3A8F2` (9.50:1)
+  - **Cinnabar Seal (`朱砂`)**: `#9E2A2B` (7.01:1) / `#F09488` (8.29:1)
+  - **Song Celadon (`天青`)**: `#1E5C58` (7.25:1) / `#7FD4C6` (10.82:1)
+  - **Ink Noir (`松烟`)**: `#1F1F24` (15.45:1) / `#E4E1DA` (14.34:1)
+- Two-state header toggle reverts to system default (deletes `localStorage` entry) when toggling back to the OS theme, syncs across tabs via `storage`, and animates a **Dawn Aperture circular view transition** (`document.startViewTransition` + `clip-path: circle()`) expanding from the click origin under `prefers-reduced-motion: no-preference`.
+- Top `2px` dawn horizon hairline uses `linear-gradient(to right var(--in-oklab), ...)` with progressive `@supports` detection, unified with the scroll-driven reading progress bar on Thoughts essays and a soft fixed top atmospheric wash + archival rag-paper grain (omitted in `print` and `forced-colors`).
+
+## Typography & Iconography
+- **Display & Headings**: `Cormorant Garamond` + `Noto Serif SC` (`text-wrap: balance`) for sculptural editorial contrast on display titles, ledger headings, and English italic subtitles.
+- **UI & Body**: `Source Sans 3` + `Noto Serif SC`, prose measure capped at `64ch` (`text-wrap: pretty`), `font-size-adjust: from-font` with `@supports not (font-size-adjust: from-font)` fallback tuning and perceptual dark-mode leading/tracking compensation (`1.73` / `0.008em`).
+- **CJK Editorial Typography**: Upright `Noto Serif SC` titles/blockquotes (`font-style: normal`) and traditional upright emphasis dots (`text-emphasis: filled dot` under `:lang(zh-CN) .prose em`) to prevent synthetic oblique distortion; dual Shiki code themes (`github-light` / `github-dark`) synced with light/dark/print modes; centered diamond fleuron `<hr>` chapter dividers.
+- **Technical / Tabular Metadata**: `JetBrains Mono` strictly for dates, BibTeX, archive IDs, keyboard hints, and code, with `tabular-nums`.
+- **Icons**: Consistent `1.4px`-stroke authored inline SVG icons (`src/components/Icon.astro` — including `search`, `command`, `close`, `dawn`, `link`, `arrow-up`, `arrow-down`, `corner-down-left`, and archival `seal`) plus masked SVG disclosure chevrons (`forced-color-adjust: none`), replacing all raw Unicode control glyphs.
+
+## Layout, Navigation & Interactions
+- Single semantic `<header>` + `<nav>` tree using `popover="auto"`, dynamic `ResizeObserver` fit detection (`.is-wide`), conditional `@oddbird/popover-polyfill`, `@starting-style` + `overlay` + `transition-behavior: allow-discrete` popover transitions, and CSS Anchor Positioning gliding nav hairlines (`border-block-end` for forced-colors resilience).
+- **Quick Index / Command Palette (`⌘K` / `/`)**: Native `<dialog id="commandPalette" closedby="any">` built from YAML/Markdown collections at build time, opened via declarative `commandfor="commandPalette" command="show-modal"` (+ JS fallback), keyboard filter & arrow navigation, `overscroll-behavior: contain` scroll containment on `dialog:modal` and `dialog::backdrop`, pointerdown/pointerup light-dismiss fallback, and `supportsTopLayerExit()` exit fallback.
+- Cross-document `@view-transition` paired with `<link rel="expect" href="#main-content" blocking="render">` and static `site-header` / `pixel-pet` transition names (temporarily lifted during same-document Dawn Aperture sweeps).
+- Asymmetric Monograph Frontispiece Hero on `/` pairing sculptural display typography and capsule primary CTA with a classical vertical-rl (`writing-mode: vertical-rl` above `44rem`) `「歌未竟，东方白」` epigraph colophon, architectural registration corner hairlines, dawn arc ornament, dropped attribution (`padding-inline-start`), and an interactive `白` archival seal stamp button.
+- Two-column typographic ledger rows (`7.5rem` meta column + `minmax(0, 1fr)` content column) separated by `1px` hairlines with italic `Cormorant Garamond` project subtitles, scoped lookbook index hover choreography (top accent hairline sweep on index/detail rows, sibling focus-dimming strictly on compact index views `/` and `/thoughts` so static `/about` resume entries and long case studies stay un-dimmed), quiet trailing-dot taxonomic terms, `:target` arrival highlights, and smooth `<details>::details-content` disclosures (`interpolate-size: allow-keywords`, `contain: layout`) with `Expand all / Collapse all` invoker commands (`commandfor` / `command="--toggle-all"` + click fallback).
+- Thoughts topic filter uses `role="toolbar"` with `focusgroup="toolbar wrap"`, an editorial hairline index rail with anchor-positioned gliding baseline underline (`anchor(self-start)` / `anchor(self-end)`, `@supports not` static border fallback), roving-tabindex arrow-key fallback, and an external `role="status"` live region.
+- Long-form Thoughts render centered at `47.5rem` (with `.prose` capped at `64ch`) with conditional sticky left `<nav class="article-toc">` (`scroll-target-group: auto` + `:target-current` + offset-tracked scroll fallback + `aria-current` sync), conditional right marginalia above `72rem`, and signoff Copy-link / Top controls.
+- Dedicated `@media print` stylesheet renders a monochrome brief with letterhead, full-width prose, and explicit external channel URLs for interviewers and readers.
+
+## Companion Sprite
+- Bottom-right integer-crisp `48x48` (`1:1` native cell from `192x144` `4x3` atlas, `image-rendering: pixelated`) pixel-art mouse companion (`idle`, `wave`, `sleep`) grounded by a theme-aware contact shadow, zero-CLS mobile whisper positioning, always-mounted `role="status"` announcer, shared `canTransitionDisplay()` exit fallback, accessible SVG Pause/Resume control, `visibilitychange` loop suspension, `prefers-reduced-motion` static fallback, and reactive waves for seal stamps, ink edition changes, copy actions, and `⌘K` greetings.

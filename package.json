@@ -7,21 +7,24 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
-    "preview": "npm run build && wrangler dev",
-    "astro": "astro",
+    "preview": "astro preview",
     "check": "astro check",
+    "new": "node scripts/new-thought.mjs",
+    "test": "node --test tests/*.test.mjs",
     "test:market": "node --test tests/market-*.test.mjs",
     "test:market:coverage": "node --test --experimental-test-coverage tests/market-*.test.mjs",
     "deploy": "npm run build && wrangler deploy",
-    "deploy:server": "bash deploy/deploy.sh",
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "12",
-    "astro": "^5.0.0"
+    "@astrojs/rss": "^4.0.12",
+    "@oddbird/popover-polyfill": "^0.6.1",
+    "astro": "^5.0.0",
+    "yaml": "^2.7.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.0",
+    "@types/node": "^22.0.0",
     "typescript": "^5.6.0",
     "wrangler": "^4.91.0"
   }

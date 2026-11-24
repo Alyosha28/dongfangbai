@@ -1,0 +1,167 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Site from '../../layouts/Site.astro';
+import Icon from '../../components/Icon.astro';
+import { estimateReadTime, getProfile, normalizeDate } from '../../lib/data';
+
+export async function getStaticPaths() {
+  const thoughts = (await getCollection('thoughts'))
+    .filter((t) => !t.data.draft)
+    .sort((a, b) => normalizeDate(b.data.date).localeCompare(normalizeDate(a.data.date)));
+
+  return thoughts.map((entry, idx) => ({
+    params: { slug: entry.slug },
+    props: {
+      entry,
+      prev: thoughts[idx + 1] ?? null,
+      next: thoughts[idx - 1] ?? null,
+    },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'thoughts'>;
+  prev: CollectionEntry<'thoughts'> | null;
+  next: CollectionEntry<'thoughts'> | null;
+}
+
+const { entry, prev, next } = Astro.props;
+const profile = getProfile();
+const { Content, headings } = await entry.render();
+
+const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
+const marginalia = entry.data.marginalia ?? [];
+const hasRail = tocHeadings.length > 0 || marginalia.length > 0;
+const dateIso = normalizeDate(entry.data.date);
+const readTime = estimateReadTime(entry.body ?? '', entry.data.readTime);
+const pageLang = entry.data.lang === 'zh' ? 'zh-CN' : 'en';
+---
+<Site
+  view="thought"
+  lang={pageLang}
+  title={`${entry.data.title} — ${profile.name}`}
+  description={entry.data.subtitle || entry.data.title}
+  showProgress={true}
+  wide={hasRail}
+>
+  <div class:list={['article-stage', { 'has-rail': hasRail }]}>
+    {hasRail &&
+      (tocHeadings.length > 0 ? (
+        <nav class="article-toc" id="articleToc" aria-label="Table of contents">
+          <p class="article-toc-title">On this page</p>
+          <ul>
+            {tocHeadings.map((h) => (
+              <li class:list={[{ 'is-sub': h.depth === 3 }]}>
+                <a href={`#${h.slug}`}>{h.text}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ) : (
+        <div class="article-rail-spacer" aria-hidden="true"></div>
+      ))}
+
+    <article class="article-main">
+      <a class="article-back" href="/thoughts" lang="en">
+        <Icon name="arrow-left" size={14} />
+        <span>Back to Thoughts</span>
+      </a>
+
+      <header class="article-header">
+        <div class="article-meta-line">
+          {entry.data.caseId && (
+            <>
+              <span class="article-case-id">{entry.data.caseId}</span>
+              <span aria-hidden="true">·</span>
+            </>
+          )}
+          <time datetime={dateIso}>{dateIso}</time>
+          <span aria-hidden="true">·</span>
+          <span>{readTime}</span>
+          {entry.data.tags.length > 0 && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span class="article-meta-tags">{entry.data.tags.join(' / ')}</span>
+            </>
+          )}
+        </div>
+        <h1 class="article-title">{entry.data.title}</h1>
+        {entry.data.subtitle && <p class="article-subtitle">{entry.data.subtitle}</p>}
+      </header>
+
+      <div class="prose" id="articleProse">
+        <Content />
+      </div>
+
+      <footer class="article-signoff">
+        <div class="article-signoff-mark">
+          <span class="article-signoff-seal" aria-hidden="true">
+            <Icon name="seal" size={18} />
+          </span>
+          <span lang="zh-CN">{profile.epigraph}</span>
+        </div>
+
+        <div class="article-signoff-actions" lang="en">
+          <span class="signoff-copy-wrap">
+            <button
+              type="button"
+              class="copy-btn copy-btn--quiet"
+              data-copy-url
+              data-copy-label="Essay link copied"
+            >
+              <span class="copy-icon-default" aria-hidden="true"><Icon name="link" size={13} /></span>
+              <span class="copy-icon-done" aria-hidden="true"><Icon name="check" size={13} /></span>
+              <span class="copy-btn-label">Copy link</span>
+            </button>
+            <span class="copy-status" role="status" aria-live="polite"></span>
+          </span>
+          <a class="signoff-top-link" href="#top">
+            <Icon name="arrow-up" size={13} />
+            <span>Top</span>
+          </a>
+        </div>
+      </footer>
+
+      {(prev || next) && (
+        <nav class="article-pager" aria-label="Adjacent thoughts">
+          {prev ? (
+            <a class="pager-link" href={`/thoughts/${prev.slug}`}>
+              <span class="pager-label">
+                <Icon name="arrow-left" size={13} />
+                <span>Previous</span>
+              </span>
+              <span class="pager-title">{prev.data.title}</span>
+            </a>
+          ) : (
+            <div class="pager-spacer" aria-hidden="true"></div>
+          )}
+          {next ? (
+            <a class="pager-link pager-link--next" href={`/thoughts/${next.slug}`}>
+              <span class="pager-label">
+                <span>Next</span>
+                <Icon name="arrow-right" size={13} />
+              </span>
+              <span class="pager-title">{next.data.title}</span>
+            </a>
+          ) : (
+            <div class="pager-spacer" aria-hidden="true"></div>
+          )}
+        </nav>
+      )}
+    </article>
+
+    {hasRail &&
+      (marginalia.length > 0 ? (
+        <aside class="article-marginalia" aria-label="Side notes">
+          {marginalia.map((note) => (
+            <div class="marginalia-item">
+              <span class="marginalia-label">{note.label}</span>
+              <p>{note.text}</p>
+            </div>
+          ))}
+        </aside>
+      ) : (
+        <div class="article-rail-spacer" aria-hidden="true"></div>
+      ))}
+  </div>
+</Site>

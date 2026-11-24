@@ -1,0 +1,45 @@
+---
+import Site from '../layouts/Site.astro';
+import PaperItem from '../components/PaperItem.astro';
+import { getPapers, getProfile } from '../lib/data';
+
+const profile = getProfile();
+const papers = getPapers();
+const hasDisclosures = papers.some((p) => p.abstract || p.bibtex);
+const toggleAttrs = {
+  commandfor: 'papers-list',
+  command: '--toggle-all',
+} as Record<string, string>;
+---
+<Site
+  view="papers"
+  title={`Papers — ${profile.name}`}
+  description={`Working papers and research manuscripts by ${profile.name}.`}
+>
+  <header class="page-header page-header--flush">
+    <div class="page-header-row">
+      <h1>Papers</h1>
+      {hasDisclosures && (
+        <button
+          type="button"
+          class="disclosure-toggle-all"
+          id="papersToggleAll"
+          aria-expanded="false"
+          {...toggleAttrs}
+        >
+          <span class="toggle-expand">Expand all</span>
+          <span class="toggle-collapse">Collapse all</span>
+        </button>
+      )}
+    </div>
+    <p class="page-intro">
+      Research manuscripts and working papers on neural-guided symbolic factor search and automated research harnesses.
+    </p>
+  </header>
+
+  <div class="ledger-list ledger-list--detail" id="papers-list">
+    {papers.map((paper) => (
+      <PaperItem paper={paper} showDetails={true} headingLevel="h2" />
+    ))}
+  </div>
+</Site>

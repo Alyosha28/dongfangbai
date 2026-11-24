@@ -2,21 +2,26 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
-const layoutPath = new URL('../src/layouts/Site.astro', import.meta.url);
-const aboutPath = new URL('../src/pages/about.astro', import.meta.url);
+const profilePath = new URL('../src/data/profile.yaml', import.meta.url);
+const footerCheckPaths = [
+  new URL('../dist/index.html', import.meta.url),
+  new URL('../dist/about/index.html', import.meta.url),
+];
 
 test('site-wide social links point to the owner profiles', async () => {
-  const [layout, about] = await Promise.all([
-    readFile(layoutPath, 'utf8'),
-    readFile(aboutPath, 'utf8'),
-  ]);
+  const profile = await readFile(profilePath, 'utf8');
 
-  assert.match(layout, /href="https:\/\/github\.com\/Alyosha28"/);
-  assert.match(layout, /href="https:\/\/x\.com\/finalwhit76"/);
-  assert.match(about, /href="https:\/\/github\.com\/Alyosha28"/);
-  assert.match(about, /href="https:\/\/x\.com\/finalwhit76"/);
+  assert.match(profile, /https:\/\/github\.com\/Alyosha28/);
+  assert.match(profile, /https:\/\/x\.com\/finalwhit76/);
+  assert.match(profile, /mailto:hi@dongfangbai\.com/);
 
-  assert.doesNotMatch(layout, /href="https:\/\/github\.com\/"/);
-  assert.doesNotMatch(layout, /href="https:\/\/x\.com\/"/);
-  assert.doesNotMatch(about, /href="https:\/\/x\.com\/"/);
+  assert.doesNotMatch(profile, /url:\s*"https:\/\/github\.com\/"/);
+  assert.doesNotMatch(profile, /url:\s*"https:\/\/x\.com\/"/);
+
+  for (const htmlUrl of footerCheckPaths) {
+    const html = await readFile(htmlUrl, 'utf8');
+    assert.match(html, /href="https:\/\/github\.com\/Alyosha28"/);
+    assert.match(html, /href="https:\/\/x\.com\/finalwhit76"/);
+    assert.match(html, /href="mailto:hi@dongfangbai\.com"/);
+  }
 });

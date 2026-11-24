@@ -1,28 +1,28 @@
 ---
-// Updated dynamic post route
-// src/pages/posts/[slug].astro
-//
-// This replaces the existing posts/[slug].astro (which likely renders the
-// markdown directly into Site). We now wrap the rendered Markdown in the
-// new <Post /> component (with marginalia + chapter gutter).
-
 import { getCollection } from 'astro:content';
-import Site from '../../layouts/Site.astro';
-import Post from '../../components/Post.astro';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('posts');
-  return posts
-    .filter((p) => !p.data.draft)
-    .map((entry) => ({
-      params: { slug: entry.slug },
-      props: { entry },
-    }));
+  const thoughts = (await getCollection('thoughts')).filter((t) => !t.data.draft);
+  return thoughts.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { target: `/thoughts/${entry.slug}` },
+  }));
 }
 
-const { entry } = Astro.props;
-const { Content } = await entry.render();
+interface Props {
+  target: string;
+}
+const { target } = Astro.props;
 ---
-<Site view="post" title={`${entry.data.caseId} · ${entry.data.title} — dongfangbai.com`} description={entry.data.subtitle}>
-  <Post entry={entry} Content={Content} />
-</Site>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="refresh" content={`0;url=${target}`} />
+  <link rel="canonical" href={target} />
+  <title>Redirecting…</title>
+</head>
+<body>
+  <p>Moved to <a href={target}>{target}</a>.</p>
+</body>
+</html>

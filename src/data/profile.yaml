@@ -1,0 +1,72 @@
+name: "Xianzhuo Huang"
+nativeName: "黄显卓"
+moniker: "东方白"
+epigraph: "歌未竟，东方白"
+epigraphAttribution: "毛泽东《贺新郎·读史》"
+siteTitle: "Xianzhuo Huang — 东方白"
+siteUrl: "https://finalwhite.lol"
+domain: "finalwhite.lol"
+description: "Personal homepage of Xianzhuo Huang (东方白) — quantitative research, machine learning, projects, working papers, and thoughts."
+tagline: "Undergraduate researcher in quantitative finance and machine learning. Reading history, studying markets, and building reproducible research systems."
+bio:
+  - "I am an undergraduate in Big Data Management & Applications at Harbin Institute of Technology (HIT). My research focuses on quantitative factor discovery, neural-guided symbolic search, and empirical asset pricing."
+  - "I build full-market equity research pipelines and event-driven macro studies with strict point-in-time data alignment, realistic execution frictions, and automated evaluation harnesses."
+  - "Outside research, I read history, observe markets, and write long-form reflections here. My pen name 东方白 comes from 「歌未竟，东方白」—a reminder to stay patient, candid, and perpetually unfinished."
+interests:
+  - "Quantitative Factor Discovery"
+  - "Neural-Guided Symbolic Search"
+  - "Empirical Asset Pricing"
+  - "Macro & Alternative Data"
+  - "History & Long-Form Essays"
+education:
+  - school: "Harbin Institute of Technology (HIT)"
+    degree: "B.S. in Big Data Management & Applications"
+    period: "2024 — Present"
+experience:
+  - period: "2026.08 — Present"
+    role: "Quantitative Factor & Strategy Research"
+    org: "Independent Research"
+    summary: "Designed an A-share multi-factor research system spanning 4,300+ features with announcement-date point-in-time alignment, T+1 open-match execution frictions, FDR and net-cost screening, lookahead-free Löwdin orthogonalization, exposure attribution diagnostics, and data-free CI contracts."
+  - period: "2026.05 — 2026.07"
+    role: "Quantitative Research Intern"
+    org: "Financial Intelligence & Quantitative Investment Research Center, HIT"
+    summary: "Worked on cross-sectional factor construction, feature screening, correlation deduplication, and empirical strategy backtesting."
+skills:
+  - group: "Languages"
+    items:
+      - "Python"
+      - "SQL"
+      - "C++"
+      - "Rust"
+  - group: "Quant & ML"
+    items:
+      - "PyTorch"
+      - "scikit-learn"
+      - "pandas"
+      - "NumPy"
+      - "Cross-Sectional Factor Analysis"
+      - "Event Studies"
+      - "Point-in-Time Backtesting"
+  - group: "Engineering"
+    items:
+      - "Panel Data Governance"
+      - "Automated Backtesting"
+      - "Data-Free CI Contracts"
+      - "LLM Research Automation"
+links:
+  - label: "GitHub"
+    handle: "Alyosha28"
+    url: "https://github.com/Alyosha28"
+    external: true
+  - label: "X"
+    handle: "@finalwhit76"
+    url: "https://x.com/finalwhit76"
+    external: true
+  - label: "Email"
+    handle: "hi@dongfangbai.com"
+    url: "mailto:hi@dongfangbai.com"
+    external: false
+  - label: "RSS"
+    handle: "/rss.xml"
+    url: "/rss.xml"
+    external: false

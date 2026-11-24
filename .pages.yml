@@ -1,0 +1,290 @@
+media:
+  input: public/uploads
+  output: /uploads
+
+content:
+  - name: thoughts
+    label: Thoughts
+    type: collection
+    path: src/content/thoughts
+    view:
+      fields: [title, date, draft, tags]
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: date
+        label: Date
+        type: date
+        required: true
+      - name: subtitle
+        label: Subtitle / Summary
+        type: string
+      - name: tags
+        label: Tags
+        type: string
+        list: true
+      - name: lang
+        label: Language
+        type: select
+        options:
+          values: [zh, en]
+        default: zh
+      - name: draft
+        label: Draft
+        type: boolean
+        default: false
+      - name: caseId
+        label: Optional Note ID
+        type: string
+      - name: marginalia
+        label: Marginalia (Side Notes)
+        type: object
+        list: true
+        fields:
+          - name: label
+            label: Label
+            type: string
+          - name: text
+            label: Note Text
+            type: text
+      - name: body
+        label: Body
+        type: rich-text
+
+  - name: papers
+    label: Papers
+    type: file
+    path: src/data/papers.yaml
+    fields:
+      - name: items
+        label: Papers
+        type: object
+        list: true
+        fields:
+          - name: id
+            label: ID
+            type: string
+            required: true
+          - name: title
+            label: Title
+            type: string
+            required: true
+          - name: authors
+            label: Authors
+            type: string
+            list: true
+            required: true
+          - name: authorNote
+            label: Author Note
+            type: string
+          - name: venue
+            label: Venue
+            type: string
+            required: true
+          - name: year
+            label: Year
+            type: number
+            required: true
+          - name: status
+            label: Status
+            type: string
+          - name: featured
+            label: Featured on Home
+            type: boolean
+            default: true
+          - name: tags
+            label: Tags
+            type: string
+            list: true
+          - name: summary
+            label: Short Summary
+            type: text
+            required: true
+          - name: abstract
+            label: Abstract
+            type: text
+          - name: bibtex
+            label: BibTeX
+            type: code
+          - name: links
+            label: Links
+            type: object
+            list: true
+            fields:
+              - name: label
+                label: Label (PDF / arXiv / Code)
+                type: string
+                required: true
+              - name: url
+                label: URL
+                type: string
+                required: true
+
+  - name: projects
+    label: Projects
+    type: file
+    path: src/data/projects.yaml
+    fields:
+      - name: items
+        label: Projects
+        type: object
+        list: true
+        fields:
+          - name: id
+            label: ID
+            type: string
+            required: true
+          - name: name
+            label: Name
+            type: string
+            required: true
+          - name: subtitle
+            label: Subtitle
+            type: string
+          - name: year
+            label: Year / Period
+            type: string
+            required: true
+          - name: status
+            label: Status
+            type: string
+          - name: featured
+            label: Featured on Home
+            type: boolean
+            default: true
+          - name: tags
+            label: Tags
+            type: string
+            list: true
+          - name: summary
+            label: Summary
+            type: text
+            required: true
+          - name: highlights
+            label: Key Highlights
+            type: string
+            list: true
+          - name: links
+            label: Links
+            type: object
+            list: true
+            fields:
+              - name: label
+                label: Label (Repo / Demo / Paper)
+                type: string
+                required: true
+              - name: url
+                label: URL
+                type: string
+                required: true
+
+  - name: profile
+    label: Profile & Site Config
+    type: file
+    path: src/data/profile.yaml
+    fields:
+      - name: name
+        label: Display Name (English)
+        type: string
+        required: true
+      - name: nativeName
+        label: Native Name
+        type: string
+      - name: moniker
+        label: Pen Name / Moniker
+        type: string
+      - name: epigraph
+        label: Epigraph
+        type: string
+      - name: epigraphAttribution
+        label: Epigraph Source
+        type: string
+      - name: siteTitle
+        label: Site Title
+        type: string
+        required: true
+      - name: siteUrl
+        label: Site URL
+        type: string
+        required: true
+      - name: domain
+        label: Domain
+        type: string
+        required: true
+      - name: description
+        label: Meta Description
+        type: text
+      - name: tagline
+        label: Home Tagline
+        type: text
+      - name: bio
+        label: Bio Paragraphs
+        type: text
+        list: true
+      - name: interests
+        label: Research Interests
+        type: string
+        list: true
+      - name: education
+        label: Education
+        type: object
+        list: true
+        fields:
+          - name: school
+            label: School
+            type: string
+          - name: degree
+            label: Degree
+            type: string
+          - name: period
+            label: Period
+            type: string
+      - name: experience
+        label: Experience
+        type: object
+        list: true
+        fields:
+          - name: period
+            label: Period
+            type: string
+          - name: role
+            label: Role
+            type: string
+          - name: org
+            label: Organization
+            type: string
+          - name: summary
+            label: Summary
+            type: text
+      - name: skills
+        label: Skills
+        type: object
+        list: true
+        fields:
+          - name: group
+            label: Group
+            type: string
+          - name: items
+            label: Items
+            type: string
+            list: true
+      - name: links
+        label: Social & Contact Links
+        type: object
+        list: true
+        fields:
+          - name: label
+            label: Label
+            type: string
+          - name: handle
+            label: Handle
+            type: string
+          - name: url
+            label: URL
+            type: string
+          - name: external
+            label: External Link
+            type: boolean
+            default: true
