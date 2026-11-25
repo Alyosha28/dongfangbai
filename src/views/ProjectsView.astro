@@ -1,0 +1,33 @@
+---
+import Site from '../layouts/Site.astro';
+import ProjectItem from '../components/ProjectItem.astro';
+import { getProfile, getProjects } from '../lib/data';
+import { getUi, type Locale } from '../lib/i18n';
+
+export interface Props {
+  locale?: Locale;
+}
+
+const { locale = 'en' } = Astro.props;
+const ui = getUi(locale);
+const profile = getProfile(locale);
+const projects = getProjects(locale);
+const displayName = locale === 'zh' ? profile.nativeName || profile.name : profile.name;
+---
+<Site
+  view="projects"
+  locale={locale}
+  title={`${ui.projects.titleSuffix} — ${displayName}`}
+  description={ui.projects.description(displayName)}
+>
+  <header class="page-header page-header--flush">
+    <h1>{ui.projects.heading}</h1>
+    <p class="page-intro">{ui.projects.intro}</p>
+  </header>
+
+  <div class="ledger-list ledger-list--detail">
+    {projects.map((project) => (
+      <ProjectItem project={project} locale={locale} showHighlights={true} headingLevel="h2" />
+    ))}
+  </div>
+</Site>

@@ -1,0 +1,125 @@
+---
+import Site from '../layouts/Site.astro';
+import Icon from '../components/Icon.astro';
+import { getProfile } from '../lib/data';
+import { getUi, type Locale } from '../lib/i18n';
+
+export interface Props {
+  locale?: Locale;
+}
+
+const { locale = 'en' } = Astro.props;
+const ui = getUi(locale);
+const profile = getProfile(locale);
+const displayName = locale === 'zh' ? profile.nativeName || profile.name : profile.name;
+---
+<Site
+  view="about"
+  locale={locale}
+  title={`${ui.about.titleSuffix} — ${displayName}`}
+  description={ui.about.description(displayName, profile.moniker)}
+>
+  <header class="page-header">
+    <h1>{ui.about.heading}</h1>
+    <p class="page-intro" lang="zh-CN">
+      {profile.nativeName} · {profile.moniker} — 「{profile.epigraph}」
+    </p>
+  </header>
+
+  <section class="about-section" aria-labelledby="bio-heading">
+    <h2 id="bio-heading">{ui.about.introduction}</h2>
+    <div class="about-prose">
+      {profile.bio.map((paragraph) => <p>{paragraph}</p>)}
+    </div>
+  </section>
+
+  <section class="about-section" aria-labelledby="interests-heading">
+    <h2 id="interests-heading">{ui.about.researchInterests}</h2>
+    <ul class="interest-list">
+      {profile.interests.map((interest) => <li>{interest}</li>)}
+    </ul>
+  </section>
+
+  <section class="about-section" aria-labelledby="experience-heading">
+    <h2 id="experience-heading">{ui.about.experienceAndEducation}</h2>
+    <div class="ledger-list">
+      {profile.experience.map((exp) => (
+        <article class="ledger-item">
+          <div class="ledger-meta">
+            <span class="tabular">{exp.period}</span>
+          </div>
+          <div class="ledger-body">
+            <h3 class="item-title">{exp.role}</h3>
+            <p class="item-subtitle">{exp.org}</p>
+            <p class="item-summary">{exp.summary}</p>
+          </div>
+        </article>
+      ))}
+      {profile.education.map((edu) => (
+        <article class="ledger-item">
+          <div class="ledger-meta">
+            <span class="tabular">{edu.period}</span>
+          </div>
+          <div class="ledger-body">
+            <h3 class="item-title">{edu.school}</h3>
+            <p class="item-subtitle">{edu.degree}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="about-section" aria-labelledby="skills-heading">
+    <h2 id="skills-heading">{ui.about.technicalToolkit}</h2>
+    <div class="skills-grid">
+      {profile.skills.map((group) => (
+        <div>
+          <h3 class="skill-group-title">{group.group}</h3>
+          <ul class="skill-list">
+            {group.items.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="about-section" aria-labelledby="contact-heading">
+    <h2 id="contact-heading">{ui.about.contactAndChannels}</h2>
+    <dl class="channel-list">
+      {profile.links.map((link) => {
+        const isEmail = link.url.startsWith('mailto:');
+        return (
+          <div class="channel-row">
+            <dt class="channel-term">{link.label}</dt>
+            <dd class="channel-def">
+              <a
+                class="channel-link"
+                href={link.url}
+                target={link.external ? '_blank' : undefined}
+                rel={link.external ? 'noopener noreferrer' : undefined}
+              >
+                <span>{link.handle}</span>
+                {link.external && <Icon name="arrow-up-right" size={14} />}
+              </a>
+              {isEmail && (
+                <span class="channel-copy-wrap">
+                  <button
+                    type="button"
+                    class="copy-btn copy-btn--quiet"
+                    data-copy-text={link.handle}
+                    data-copy-label={ui.about.emailCopied}
+                  >
+                    <span class="copy-icon-default" aria-hidden="true"><Icon name="copy" size={13} /></span>
+                    <span class="copy-icon-done" aria-hidden="true"><Icon name="check" size={13} /></span>
+                    <span class="copy-btn-label">{ui.about.copy}</span>
+                  </button>
+                  <span class="copy-status" role="status" aria-live="polite"></span>
+                </span>
+              )}
+            </dd>
+          </div>
+        );
+      })}
+    </dl>
+  </section>
+</Site>

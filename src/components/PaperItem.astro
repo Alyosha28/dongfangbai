@@ -2,9 +2,11 @@
 import Icon from './Icon.astro';
 import type { Paper } from '../lib/data';
 import { getProfile, tokenizeAuthors } from '../lib/data';
+import { getUi, localizePath, type Locale } from '../lib/i18n';
 
 export interface Props {
   paper: Paper;
+  locale?: Locale;
   showDetails?: boolean;
   headingLevel?: 'h2' | 'h3';
   linkToDetail?: boolean;
@@ -14,20 +16,26 @@ export interface Props {
 
 const {
   paper,
+  locale = 'en',
   showDetails = true,
   headingLevel = 'h3',
   linkToDetail = false,
   compact = false,
   showSummary = true,
 } = Astro.props;
+const ui = getUi(locale);
 const HeadingTag = headingLevel;
-const profile = getProfile();
+const profile = getProfile(locale);
 const authorTokens = tokenizeAuthors(paper.authors, profile.name);
 const isSoloOwner = authorTokens.length === 1 && authorTokens[0].isOwner;
 const hasCoauthors = authorTokens.length > 0 && !isSoloOwner;
 const normalizedStatus = paper.status.trim().toLowerCase();
 const normalizedVenue = paper.venue.trim().toLowerCase();
-const showVenue = Boolean(normalizedVenue && normalizedVenue !== normalizedStatus);
+const showVenue = Boolean(
+  normalizedVenue &&
+    normalizedVenue !== normalizedStatus &&
+    !(locale === 'zh' && (normalizedVenue === 'working paper' || normalizedVenue === 'under review'))
+);
 const showByline = hasCoauthors || showVenue;
 ---
 <article class:list={['ledger-item', { 'ledger-item--compact': compact && !showSummary }]} id={showDetails ? paper.id : undefined}>
@@ -37,9 +45,9 @@ const showByline = hasCoauthors || showVenue;
   </div>
 
   <div class="ledger-body">
-    <HeadingTag class="item-title">
+    <HeadingTag class="item-title" lang="en">
       {linkToDetail ? (
-        <a href={`/papers#${paper.id}`}>{paper.title}</a>
+        <a href={localizePath(`/papers#${paper.id}`, locale)}>{paper.title}</a>
       ) : (
         paper.title
       )}
@@ -64,7 +72,7 @@ const showByline = hasCoauthors || showVenue;
     {showSummary && <p class="item-summary">{paper.summary}</p>}
 
     {!compact && paper.tags.length > 0 && (
-      <ul class="item-tags" aria-label="Topics">
+      <ul class="item-tags" aria-label={ui.papers.topicsAria}>
         {paper.tags.map((tag) => <li class="tag-term">{tag}</li>)}
       </ul>
     )}
@@ -73,15 +81,16 @@ const showByline = hasCoauthors || showVenue;
       <div class="item-actions">
         {paper.links.map((link) => {
           const isExternal = link.url.startsWith('http');
+          const openInNewTab = isExternal || link.url.endsWith('.pdf');
           return (
             <a
               class="action-link"
               href={link.url}
-              target={isExternal ? '_blank' : undefined}
-              rel={isExternal ? 'noopener noreferrer' : undefined}
+              target={openInNewTab ? '_blank' : undefined}
+              rel={openInNewTab ? 'noopener noreferrer' : undefined}
             >
               <span>{link.label}</span>
-              {isExternal && <Icon name="arrow-up-right" size={14} />}
+              {openInNewTab && <Icon name="arrow-up-right" size={14} />}
             </a>
           );
         })}
@@ -92,8 +101,8 @@ const showByline = hasCoauthors || showVenue;
       <div class="item-disclosures">
         {paper.abstract && (
           <details class="disclosure">
-            <summary>Abstract</summary>
-            <div class="disclosure-panel">
+            <summary>{ui.papers.abstract}</summary>
+            <div class="disclosure-panel" lang="en">
               <p>{paper.abstract}</p>
             </div>
           </details>
@@ -101,7 +110,7 @@ const showByline = hasCoauthors || showVenue;
 
         {paper.bibtex && (
           <details class="disclosure">
-            <summary>BibTeX</summary>
+            <summary>{ui.papers.bibtex}</summary>
             <div class="disclosure-panel">
               <pre class="bibtex-pre" tabindex="0"><code>{paper.bibtex.trim()}</code></pre>
               <div class="bibtex-toolbar">
@@ -109,11 +118,11 @@ const showByline = hasCoauthors || showVenue;
                   type="button"
                   class="copy-btn"
                   data-copy-text={paper.bibtex.trim()}
-                  data-copy-label="BibTeX copied"
+                  data-copy-label={ui.papers.bibtexCopied}
                 >
                   <span class="copy-icon-default" aria-hidden="true"><Icon name="copy" size={14} /></span>
                   <span class="copy-icon-done" aria-hidden="true"><Icon name="check" size={14} /></span>
-                  <span class="copy-btn-label">Copy BibTeX</span>
+                  <span class="copy-btn-label">{ui.papers.copyBibtex}</span>
                 </button>
                 <span class="copy-status" role="status" aria-live="polite"></span>
               </div>

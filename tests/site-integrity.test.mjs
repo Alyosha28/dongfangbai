@@ -42,8 +42,17 @@ test('built site contains all expected routes and sprite assets', async () => {
     'dist/posts/case-001/index.html',
     'dist/posts/case-002/index.html',
     'dist/about/index.html',
+    'dist/zh/index.html',
+    'dist/zh/papers/index.html',
+    'dist/zh/projects/index.html',
+    'dist/zh/thoughts/index.html',
+    'dist/zh/thoughts/case-001/index.html',
+    'dist/zh/thoughts/case-002/index.html',
+    'dist/zh/about/index.html',
     'dist/404.html',
     'dist/rss.xml',
+    'dist/papers/continual-execution-feedback.pdf',
+    'dist/papers/evo-harness.pdf',
     'dist/pet/mouse-spritesheet.png',
     'dist/pet/mouse-spritesheet.webp',
   ];
@@ -62,6 +71,13 @@ test('each rendered page has exactly one <main>, color-scheme meta, and render-b
     'dist/thoughts/case-001/index.html',
     'dist/thoughts/case-002/index.html',
     'dist/about/index.html',
+    'dist/zh/index.html',
+    'dist/zh/papers/index.html',
+    'dist/zh/projects/index.html',
+    'dist/zh/thoughts/index.html',
+    'dist/zh/thoughts/case-001/index.html',
+    'dist/zh/thoughts/case-002/index.html',
+    'dist/zh/about/index.html',
     'dist/404.html',
   ];
 
@@ -134,7 +150,9 @@ test('deep-link anchors, expand-all control, TOC scrollspy nav, and epigraph col
 
   const papersHtml = await readFile(join(ROOT, 'dist/papers/index.html'), 'utf8');
   assert.match(papersHtml, /id="continual-execution-feedback"/);
-  assert.match(papersHtml, /id="memory-guided-atomic-evolution"/);
+  assert.match(papersHtml, /id="evo-harness"/);
+  assert.match(papersHtml, /href="\/papers\/continual-execution-feedback\.pdf"/);
+  assert.match(papersHtml, /href="\/papers\/evo-harness\.pdf"/);
   assert.match(papersHtml, /commandfor="papers-list"/);
   assert.match(papersHtml, /command="--toggle-all"/);
 
@@ -147,7 +165,7 @@ test('deep-link anchors, expand-all control, TOC scrollspy nav, and epigraph col
   // With fewer than 6 thoughts, avoid rendering a premature topic filter bar
   assert.doesNotMatch(thoughtsHtml, /data-thought-filter/);
   // Ensure the Thoughts template preserves accessible focusgroup toolbar & external live status for 6+ thoughts
-  const thoughtsTemplate = await readFile(join(ROOT, 'src/pages/thoughts/index.astro'), 'utf8');
+  const thoughtsTemplate = await readFile(join(ROOT, 'src/views/ThoughtsIndexView.astro'), 'utf8');
   assert.match(thoughtsTemplate, /thoughts\.length\s*>=\s*6/);
   assert.match(thoughtsTemplate, /data-thought-filter/);
   assert.match(thoughtsTemplate, /focusgroup:\s*'toolbar wrap'/);
@@ -184,6 +202,17 @@ test('deep-link anchors, expand-all control, TOC scrollspy nav, and epigraph col
   const aboutHtml = await readFile(join(ROOT, 'dist/about/index.html'), 'utf8');
   assert.match(aboutHtml, /<dl class="channel-list">/);
   assert.match(aboutHtml, /data-copy-text="hi@dongfangbai\.com"/);
+
+  // Bilingual zh/en switcher, hreflang alternates, and /zh/ routes render properly
+  assert.match(homeHtml, /id="langToggle"[^>]*href="\/zh"/);
+  assert.match(homeHtml, /hreflang="zh-CN"[^>]*href="https:\/\/finalwhite\.lol\/zh"/);
+  const zhHomeHtml = await readFile(join(ROOT, 'dist/zh/index.html'), 'utf8');
+  assert.match(zhHomeHtml, /<html lang="zh-CN">/);
+  assert.match(zhHomeHtml, /id="langToggle"[^>]*href="\/"/);
+  assert.match(zhHomeHtml, /href="\/zh\/papers#continual-execution-feedback"/);
+  const zhPapersHtml = await readFile(join(ROOT, 'dist/zh/papers/index.html'), 'utf8');
+  assert.match(zhPapersHtml, /id="langToggle"[^>]*href="\/papers"/);
+  assert.match(zhPapersHtml, /href="\/papers\/evo-harness\.pdf"/);
 });
 
 test('no sensitive CV personal details appear in src/ or dist/', async () => {

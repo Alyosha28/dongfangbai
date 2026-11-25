@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse } from 'yaml';
 import { z } from 'astro:content';
+import type { Locale } from './i18n';
 
 const optStr = z.string().nullish().transform((v) => v ?? '');
 const optStrArr = z.array(z.string()).nullish().transform((v) => v ?? []);
@@ -28,15 +29,22 @@ const ProfileSchema = z.object({
   siteUrl: z.string(),
   domain: z.string(),
   description: optStr,
+  descriptionZh: optStr,
   tagline: optStr,
+  taglineZh: optStr,
   bio: optStrArr,
+  bioZh: optStrArr,
   interests: optStrArr,
+  interestsZh: optStrArr,
   education: z
     .array(
       z.object({
         school: z.string(),
+        schoolZh: optStr,
         degree: z.string(),
+        degreeZh: optStr,
         period: z.string(),
+        periodZh: optStr,
       })
     )
     .nullish()
@@ -45,9 +53,13 @@ const ProfileSchema = z.object({
     .array(
       z.object({
         period: z.string(),
+        periodZh: optStr,
         role: z.string(),
+        roleZh: optStr,
         org: z.string(),
+        orgZh: optStr,
         summary: z.string(),
+        summaryZh: optStr,
       })
     )
     .nullish()
@@ -56,6 +68,7 @@ const ProfileSchema = z.object({
     .array(
       z.object({
         group: z.string(),
+        groupZh: optStr,
         items: optStrArr,
       })
     )
@@ -72,9 +85,11 @@ const PaperSchema = z.object({
   venue: z.string(),
   year: z.coerce.number(),
   status: optStr,
+  statusZh: optStr,
   featured: z.boolean().nullish().transform((v) => v ?? true),
   tags: optStrArr,
   summary: z.string(),
+  summaryZh: optStr,
   abstract: optStr,
   bibtex: optStr,
   links: z.array(LinkSchema).nullish().transform((v) => v ?? []),
@@ -83,13 +98,19 @@ const PaperSchema = z.object({
 const ProjectSchema = z.object({
   id: z.string(),
   name: z.string(),
+  nameZh: optStr,
   subtitle: optStr,
+  subtitleZh: optStr,
   year: z.coerce.string(),
+  yearZh: optStr,
   status: optStr,
+  statusZh: optStr,
   featured: z.boolean().nullish().transform((v) => v ?? true),
   tags: optStrArr,
   summary: z.string(),
+  summaryZh: optStr,
   highlights: optStrArr,
+  highlightsZh: optStrArr,
   links: z.array(LinkSchema).nullish().transform((v) => v ?? []),
 });
 
@@ -103,16 +124,57 @@ function loadYamlFile<S extends z.ZodTypeAny>(relPath: string, schema: S): z.inf
   return schema.parse(parse(raw));
 }
 
-export function getProfile(): Profile {
-  return loadYamlFile('src/data/profile.yaml', ProfileSchema);
+export function getProfile(locale: Locale = 'en'): Profile {
+  const raw = loadYamlFile('src/data/profile.yaml', ProfileSchema);
+  if (locale !== 'zh') return raw;
+  return {
+    ...raw,
+    description: raw.descriptionZh || raw.description,
+    tagline: raw.taglineZh || raw.tagline,
+    bio: raw.bioZh.length > 0 ? raw.bioZh : raw.bio,
+    interests: raw.interestsZh.length > 0 ? raw.interestsZh : raw.interests,
+    education: raw.education.map((edu) => ({
+      ...edu,
+      school: edu.schoolZh || edu.school,
+      degree: edu.degreeZh || edu.degree,
+      period: edu.periodZh || edu.period,
+    })),
+    experience: raw.experience.map((exp) => ({
+      ...exp,
+      period: exp.periodZh || exp.period,
+      role: exp.roleZh || exp.role,
+      org: exp.orgZh || exp.org,
+      summary: exp.summaryZh || exp.summary,
+    })),
+    skills: raw.skills.map((skill) => ({
+      ...skill,
+      group: skill.groupZh || skill.group,
+    })),
+  };
 }
 
-export function getPapers(): Paper[] {
-  return loadYamlFile('src/data/papers.yaml', z.object({ items: z.array(PaperSchema) })).items;
+export function getPapers(locale: Locale = 'en'): Paper[] {
+  const items = loadYamlFile('src/data/papers.yaml', z.object({ items: z.array(PaperSchema) })).items;
+  if (locale !== 'zh') return items;
+  return items.map((paper) => ({
+    ...paper,
+    status: paper.statusZh || paper.status,
+    summary: paper.summaryZh || paper.summary,
+  }));
 }
 
-export function getProjects(): Project[] {
-  return loadYamlFile('src/data/projects.yaml', z.object({ items: z.array(ProjectSchema) })).items;
+export function getProjects(locale: Locale = 'en'): Project[] {
+  const items = loadYamlFile('src/data/projects.yaml', z.object({ items: z.array(ProjectSchema) })).items;
+  if (locale !== 'zh') return items;
+  return items.map((project) => ({
+    ...project,
+    name: project.nameZh || project.name,
+    subtitle: project.subtitleZh || project.subtitle,
+    year: project.yearZh || project.year,
+    status: project.statusZh || project.status,
+    summary: project.summaryZh || project.summary,
+    highlights: project.highlightsZh.length > 0 ? project.highlightsZh : project.highlights,
+  }));
 }
 
 export function normalizeDate(dateInput: string | Date): string {
@@ -125,13 +187,13 @@ export function normalizeDate(dateInput: string | Date): string {
   return trimmed;
 }
 
-export function estimateReadTime(body: string, explicit?: string): string {
+export function estimateReadTime(body: string, explicit?: string, locale: Locale = 'en'): string {
   if (explicit && explicit.trim()) return explicit.trim();
   const cjkCount = (body.match(/[\u4e00-\u9fff\u3400-\u4dbf]/g) ?? []).length;
   const latinText = body.replace(/[\u4e00-\u9fff\u3400-\u4dbf]/g, ' ').replace(/[`*_>#\-[\]()]/g, ' ');
   const wordCount = latinText.split(/\s+/).filter(Boolean).length;
   const minutes = Math.max(1, Math.round(cjkCount / 320 + wordCount / 220));
-  return `${minutes} min read`;
+  return locale === 'zh' ? `约 ${minutes} 分钟` : `${minutes} min read`;
 }
 
 export interface AuthorToken {

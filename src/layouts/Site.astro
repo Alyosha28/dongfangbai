@@ -4,34 +4,52 @@ import CommandPalette from '../components/CommandPalette.astro';
 import Icon from '../components/Icon.astro';
 import PixelPet from '../components/PixelPet.astro';
 import { getProfile } from '../lib/data';
+import { getAlternatePath, getUi, localizePath, type Locale } from '../lib/i18n';
 
 export interface Props {
   title?: string;
   description?: string;
   lang?: 'en' | 'zh-CN';
+  locale?: Locale;
   view?: 'home' | 'projects' | 'papers' | 'thoughts' | 'thought' | 'about' | '404';
   showProgress?: boolean;
   wide?: boolean;
 }
 
-const profile = getProfile();
 const {
-  title = profile.siteTitle,
-  description = profile.description,
-  lang = 'en',
+  locale = 'en',
   view = 'home',
   showProgress = false,
   wide = false,
 } = Astro.props;
 
+const profile = getProfile(locale);
+const ui = getUi(locale);
+const title = Astro.props.title ?? profile.siteTitle;
+const description = Astro.props.description ?? profile.description;
+const lang = Astro.props.lang ?? (locale === 'zh' ? 'zh-CN' : 'en');
+const chromeLang = locale === 'zh' ? 'zh-CN' : 'en';
+
 const pathname = Astro.url.pathname;
+const normalizedPath = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
+const homeHref = localizePath('/', locale);
+const projectsHref = localizePath('/projects', locale);
+const papersHref = localizePath('/papers', locale);
+const thoughtsHref = localizePath('/thoughts', locale);
+const aboutHref = localizePath('/about', locale);
+
 const navItems = [
-  { href: '/', label: 'Home', active: pathname === '/' },
-  { href: '/projects', label: 'Projects', active: pathname.startsWith('/projects') },
-  { href: '/papers', label: 'Papers', active: pathname.startsWith('/papers') },
-  { href: '/thoughts', label: 'Thoughts', active: pathname.startsWith('/thoughts') },
-  { href: '/about', label: 'About', active: pathname.startsWith('/about') },
+  { href: homeHref, label: ui.nav.home, active: normalizedPath === homeHref },
+  { href: projectsHref, label: ui.nav.projects, active: normalizedPath.startsWith(projectsHref) },
+  { href: papersHref, label: ui.nav.papers, active: normalizedPath.startsWith(papersHref) },
+  { href: thoughtsHref, label: ui.nav.thoughts, active: normalizedPath.startsWith(thoughtsHref) },
+  { href: aboutHref, label: ui.nav.about, active: normalizedPath.startsWith(aboutHref) },
 ];
+
+const targetLocale: Locale = locale === 'zh' ? 'en' : 'zh';
+const alternateHref = view === '404' ? localizePath('/', targetLocale) : getAlternatePath(pathname, targetLocale);
+const enCanonicalPath = view === '404' ? '/' : getAlternatePath(pathname, 'en');
+const zhCanonicalPath = view === '404' ? '/zh' : getAlternatePath(pathname, 'zh');
 
 const expectAttrs = { blocking: 'render' } as Record<string, string>;
 const cmdInvokeAttrs = {
@@ -70,6 +88,13 @@ const inkOptions = [
   <title>{title}</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="alternate" type="application/rss+xml" title={profile.siteTitle} href="/rss.xml" />
+  {view !== '404' && (
+    <>
+      <link rel="alternate" hreflang="en" href={`${profile.siteUrl}${enCanonicalPath}`} />
+      <link rel="alternate" hreflang="zh-CN" href={`${profile.siteUrl}${zhCanonicalPath}`} />
+      <link rel="alternate" hreflang="x-default" href={`${profile.siteUrl}${enCanonicalPath}`} />
+    </>
+  )}
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -78,21 +103,21 @@ const inkOptions = [
   />
 </head>
 <body id="top">
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <a class="skip-link" href="#main-content">{ui.skipToContent}</a>
 
   <div class="site-horizon" aria-hidden="true"></div>
   {showProgress && <div class="read-progress" id="readProgress" aria-hidden="true"></div>}
 
-  <header class="site-header" id="siteHeader" lang="en">
+  <header class="site-header" id="siteHeader" lang={chromeLang}>
     <div class="header-inner">
-      <a class="site-brand" href="/">
+      <a class="site-brand" href={homeHref}>
         <Icon name="seal" size={20} class="site-brand-seal" />
         <span class="site-brand-name">{profile.name}</span>
         <span class="site-brand-cn" lang="zh-CN">{profile.moniker}</span>
       </a>
 
       <div class="header-controls">
-        <nav class="site-nav" aria-label="Primary">
+        <nav class="site-nav" aria-label={ui.nav.primaryLabel}>
           <button
             class="menu-button"
             type="button"
@@ -101,7 +126,7 @@ const inkOptions = [
             aria-controls="site-menu"
           >
             <Icon name="menu" size={16} />
-            <span class="menu-button-label">Menu</span>
+            <span class="menu-button-label">{ui.nav.menu}</span>
           </button>
 
           <ul id="site-menu" class="site-menu" popover="auto">
@@ -119,8 +144,8 @@ const inkOptions = [
           class="cmd-trigger"
           id="cmdTrigger"
           type="button"
-          aria-label="Open quick index"
-          title="Quick Index (Cmd/Ctrl + K)"
+          aria-label={ui.header.openQuickIndex}
+          title={ui.header.quickIndexTitle}
           {...cmdInvokeAttrs}
         >
           <Icon name="search" size={15} />
@@ -130,6 +155,19 @@ const inkOptions = [
           </kbd>
         </button>
 
+        <a
+          class="lang-toggle"
+          id="langToggle"
+          href={alternateHref}
+          hreflang={targetLocale === 'zh' ? 'zh-CN' : 'en'}
+          lang={targetLocale === 'zh' ? 'zh-CN' : 'en'}
+          aria-label={ui.header.langToggleAria}
+          title={ui.header.langToggleTitle}
+          data-lang-switch={targetLocale}
+        >
+          {ui.header.langToggleText}
+        </a>
+
         <button class="theme-toggle" id="themeToggle" type="button">
           <span class="icon-moon" aria-hidden="true">
             <Icon name="moon" size={16} />
@@ -137,8 +175,8 @@ const inkOptions = [
           <span class="icon-sun" aria-hidden="true">
             <Icon name="sun" size={16} />
           </span>
-          <span class="sr-only label-to-dark">Switch to dark theme</span>
-          <span class="sr-only label-to-light">Switch to light theme</span>
+          <span class="sr-only label-to-dark">{ui.header.switchToDark}</span>
+          <span class="sr-only label-to-light">{ui.header.switchToLight}</span>
         </button>
       </div>
     </div>
@@ -154,7 +192,7 @@ const inkOptions = [
     </div>
   </main>
 
-  <footer class="site-footer" lang="en">
+  <footer class="site-footer" lang={chromeLang}>
     <div class="footer-inner">
       <div class="footer-colophon">
         <span class="footer-epigraph" lang="zh-CN">{profile.epigraph}</span>
@@ -162,16 +200,18 @@ const inkOptions = [
       </div>
 
       <div class="footer-right">
-        <div class="ink-switcher" data-ink-switcher role="group" aria-label="Editorial ink edition">
-          <span class="ink-switcher-label" id="inkCurrentLabel">Dawn Plum</span>
+        <div class="ink-switcher" data-ink-switcher role="group" aria-label={ui.footer.inkGroupAria}>
+          <span class="ink-switcher-label" id="inkCurrentLabel">
+            {locale === 'zh' ? inkOptions[0].cn : inkOptions[0].label}
+          </span>
           <div class="ink-dots">
             {inkOptions.map((ink) => (
               <button
                 type="button"
                 class="ink-swatch"
                 data-ink-option={ink.id}
-                data-ink-label={ink.label}
-                aria-label={`${ink.label} (${ink.cn}) ink`}
+                data-ink-label={locale === 'zh' ? ink.cn : ink.label}
+                aria-label={locale === 'zh' ? `${ink.cn}（${ink.label}）印色` : `${ink.label} (${ink.cn}) ink`}
                 aria-pressed={ink.id === 'plum' ? 'true' : 'false'}
                 title={`${ink.label} · ${ink.cn}`}
               >
@@ -196,7 +236,7 @@ const inkOptions = [
     </div>
   </footer>
 
-  <CommandPalette />
+  <CommandPalette locale={locale} alternateHref={alternateHref} />
   <PixelPet view={view} />
 
   <script>

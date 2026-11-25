@@ -1,0 +1,158 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Site from '../layouts/Site.astro';
+import Icon from '../components/Icon.astro';
+import { estimateReadTime, getProfile, normalizeDate } from '../lib/data';
+import { getUi, localizePath, type Locale } from '../lib/i18n';
+
+export interface Props {
+  entry: CollectionEntry<'thoughts'>;
+  prev: CollectionEntry<'thoughts'> | null;
+  next: CollectionEntry<'thoughts'> | null;
+  locale?: Locale;
+}
+
+const { entry, prev, next, locale = 'en' } = Astro.props;
+const ui = getUi(locale);
+const profile = getProfile(locale);
+const { Content, headings } = await entry.render();
+
+const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
+const marginalia = entry.data.marginalia ?? [];
+const hasRail = tocHeadings.length > 0 || marginalia.length > 0;
+const dateIso = normalizeDate(entry.data.date);
+const readTime = estimateReadTime(entry.body ?? '', entry.data.readTime, locale);
+const pageLang = entry.data.lang === 'zh' ? 'zh-CN' : 'en';
+const chromeLang = locale === 'zh' ? 'zh-CN' : 'en';
+const displayName = locale === 'zh' ? profile.nativeName || profile.name : profile.name;
+---
+<Site
+  view="thought"
+  locale={locale}
+  lang={pageLang}
+  title={`${entry.data.title} — ${displayName}`}
+  description={entry.data.subtitle || entry.data.title}
+  showProgress={true}
+  wide={hasRail}
+>
+  <div class:list={['article-stage', { 'has-rail': hasRail }]}>
+    {hasRail &&
+      (tocHeadings.length > 0 ? (
+        <nav class="article-toc" id="articleToc" aria-label={ui.thoughts.tocAria}>
+          <p class="article-toc-title">{ui.thoughts.tocTitle}</p>
+          <ul>
+            {tocHeadings.map((h) => (
+              <li class:list={[{ 'is-sub': h.depth === 3 }]}>
+                <a href={`#${h.slug}`}>{h.text}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ) : (
+        <div class="article-rail-spacer" aria-hidden="true"></div>
+      ))}
+
+    <article class="article-main">
+      <a class="article-back" href={localizePath('/thoughts', locale)} lang={chromeLang}>
+        <Icon name="arrow-left" size={14} />
+        <span>{ui.thoughts.backToThoughts}</span>
+      </a>
+
+      <header class="article-header">
+        <div class="article-meta-line">
+          {entry.data.caseId && (
+            <>
+              <span class="article-case-id">{entry.data.caseId}</span>
+              <span aria-hidden="true">·</span>
+            </>
+          )}
+          <time datetime={dateIso}>{dateIso}</time>
+          <span aria-hidden="true">·</span>
+          <span>{readTime}</span>
+          {entry.data.tags.length > 0 && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span class="article-meta-tags">{entry.data.tags.join(' / ')}</span>
+            </>
+          )}
+        </div>
+        <h1 class="article-title">{entry.data.title}</h1>
+        {entry.data.subtitle && <p class="article-subtitle">{entry.data.subtitle}</p>}
+      </header>
+
+      <div class="prose" id="articleProse">
+        <Content />
+      </div>
+
+      <footer class="article-signoff">
+        <div class="article-signoff-mark">
+          <span class="article-signoff-seal" aria-hidden="true">
+            <Icon name="seal" size={18} />
+          </span>
+          <span lang="zh-CN">{profile.epigraph}</span>
+        </div>
+
+        <div class="article-signoff-actions" lang={chromeLang}>
+          <span class="signoff-copy-wrap">
+            <button
+              type="button"
+              class="copy-btn copy-btn--quiet"
+              data-copy-url
+              data-copy-label={ui.thoughts.linkCopied}
+            >
+              <span class="copy-icon-default" aria-hidden="true"><Icon name="link" size={13} /></span>
+              <span class="copy-icon-done" aria-hidden="true"><Icon name="check" size={13} /></span>
+              <span class="copy-btn-label">{ui.thoughts.copyLink}</span>
+            </button>
+            <span class="copy-status" role="status" aria-live="polite"></span>
+          </span>
+          <a class="signoff-top-link" href="#top">
+            <Icon name="arrow-up" size={13} />
+            <span>{ui.thoughts.top}</span>
+          </a>
+        </div>
+      </footer>
+
+      {(prev || next) && (
+        <nav class="article-pager" aria-label={ui.thoughts.adjacentAria}>
+          {prev ? (
+            <a class="pager-link" href={localizePath(`/thoughts/${prev.slug}`, locale)}>
+              <span class="pager-label">
+                <Icon name="arrow-left" size={13} />
+                <span>{ui.thoughts.previous}</span>
+              </span>
+              <span class="pager-title">{prev.data.title}</span>
+            </a>
+          ) : (
+            <div class="pager-spacer" aria-hidden="true"></div>
+          )}
+          {next ? (
+            <a class="pager-link pager-link--next" href={localizePath(`/thoughts/${next.slug}`, locale)}>
+              <span class="pager-label">
+                <span>{ui.thoughts.next}</span>
+                <Icon name="arrow-right" size={13} />
+              </span>
+              <span class="pager-title">{next.data.title}</span>
+            </a>
+          ) : (
+            <div class="pager-spacer" aria-hidden="true"></div>
+          )}
+        </nav>
+      )}
+    </article>
+
+    {hasRail &&
+      (marginalia.length > 0 ? (
+        <aside class="article-marginalia" aria-label={ui.thoughts.sideNotesAria}>
+          {marginalia.map((note) => (
+            <div class="marginalia-item">
+              <span class="marginalia-label">{note.label}</span>
+              <p>{note.text}</p>
+            </div>
+          ))}
+        </aside>
+      ) : (
+        <div class="article-rail-spacer" aria-hidden="true"></div>
+      ))}
+  </div>
+</Site>

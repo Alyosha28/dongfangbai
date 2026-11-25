@@ -1,9 +1,11 @@
 ---
 import Icon from './Icon.astro';
 import type { Project } from '../lib/data';
+import { getUi, localizePath, type Locale } from '../lib/i18n';
 
 export interface Props {
   project: Project;
+  locale?: Locale;
   showHighlights?: boolean;
   headingLevel?: 'h2' | 'h3';
   linkToDetail?: boolean;
@@ -12,11 +14,13 @@ export interface Props {
 
 const {
   project,
+  locale = 'en',
   showHighlights = false,
   headingLevel = 'h3',
   linkToDetail = false,
   compact = false,
 } = Astro.props;
+const ui = getUi(locale);
 const HeadingTag = headingLevel;
 ---
 <article class:list={['ledger-item', { 'ledger-item--compact': compact }]} id={showHighlights ? project.id : undefined}>
@@ -28,7 +32,7 @@ const HeadingTag = headingLevel;
   <div class="ledger-body">
     <HeadingTag class="item-title">
       {linkToDetail ? (
-        <a href={`/projects#${project.id}`}>{project.name}</a>
+        <a href={localizePath(`/projects#${project.id}`, locale)}>{project.name}</a>
       ) : (
         project.name
       )}
@@ -43,7 +47,7 @@ const HeadingTag = headingLevel;
     )}
 
     {!compact && project.tags.length > 0 && (
-      <ul class="item-tags" aria-label="Keywords">
+      <ul class="item-tags" aria-label={ui.projects.keywordsAria}>
         {project.tags.map((tag) => <li class="tag-term">{tag}</li>)}
       </ul>
     )}

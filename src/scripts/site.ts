@@ -185,6 +185,11 @@ function initInkSwitcher(): void {
   const swatches = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-ink-option]'));
   const cmdInkItems = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-cmd-ink]'));
 
+  const getInkLabel = (ink: InkId): string => {
+    const match = swatches.find((btn) => btn.dataset.inkOption === ink);
+    return match?.dataset.inkLabel || INK_LABELS[ink];
+  };
+
   const syncUi = (ink: InkId) => {
     if (ink === 'plum') {
       delete root.dataset.ink;
@@ -193,7 +198,7 @@ function initInkSwitcher(): void {
     }
 
     if (labelEl) {
-      labelEl.textContent = INK_LABELS[ink];
+      labelEl.textContent = getInkLabel(ink);
     }
 
     for (const btn of swatches) {
@@ -222,7 +227,7 @@ function initInkSwitcher(): void {
     syncUi(ink);
     if (announce) {
       document.dispatchEvent(
-        new CustomEvent('site:ink-changed', { detail: { ink, label: INK_LABELS[ink] } })
+        new CustomEvent('site:ink-changed', { detail: { ink, label: getInkLabel(ink) } })
       );
     }
   };
@@ -909,10 +914,30 @@ function initNotFoundPath(): void {
   }
 }
 
+function initLangSwitcher(): void {
+  document.addEventListener('click', (event) => {
+    const link = (event.target as HTMLElement | null)?.closest<HTMLAnchorElement>('[data-lang-switch]');
+    if (!link) return;
+    const targetLang = link.dataset.langSwitch;
+    if (targetLang === 'en' || targetLang === 'zh') {
+      try {
+        localStorage.setItem('site-lang', targetLang);
+      } catch {}
+    }
+    if (window.location.hash && !link.hash) {
+      const href = link.getAttribute('href');
+      if (href) {
+        link.setAttribute('href', `${href}${window.location.hash}`);
+      }
+    }
+  });
+}
+
 export function initSite(): void {
   initNavbar();
   initColorSchemeToggle();
   initInkSwitcher();
+  initLangSwitcher();
   initHeroSeal();
   initScrollProgressFallback();
   initPapersToggleAll();

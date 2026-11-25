@@ -1178,6 +1178,34 @@
     }
   }
 
+  /* ---------------- Language Switch Toggle (中 / EN) ---------------- */
+  .lang-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-block-size: 2.35rem;
+    min-inline-size: 2.35rem;
+    padding-inline: 0.55rem;
+    border: 1px solid var(--control-border);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1;
+    text-decoration: none;
+    transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+  }
+
+  @media (hover: hover) {
+    .lang-toggle:hover {
+      background: var(--surface);
+      color: var(--text);
+      text-decoration: none;
+    }
+  }
+
   /* ---------------- Color Scheme Two-State Toggle ---------------- */
   .theme-toggle {
     display: inline-flex;
@@ -1245,6 +1273,7 @@
 
     .menu-button,
     .cmd-trigger,
+    .lang-toggle,
     .theme-toggle {
       min-inline-size: 2.25rem;
       min-block-size: 2.25rem;
@@ -3389,6 +3418,7 @@
     .disclosure-panel,
     .menu-button,
     .cmd-trigger,
+    .lang-toggle,
     .theme-toggle,
     .pixel-pet-pause,
     .copy-btn,

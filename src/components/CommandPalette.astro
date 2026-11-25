@@ -2,23 +2,32 @@
 import { getCollection } from 'astro:content';
 import Icon from './Icon.astro';
 import { getPapers, getProfile, getProjects, normalizeDate } from '../lib/data';
+import { getUi, localizePath, type Locale } from '../lib/i18n';
 
-const profile = getProfile();
-const papers = getPapers();
-const projects = getProjects();
+export interface Props {
+  locale?: Locale;
+  alternateHref?: string;
+}
+
+const { locale = 'en', alternateHref = locale === 'zh' ? '/' : '/zh' } = Astro.props;
+const ui = getUi(locale);
+const profile = getProfile(locale);
+const papers = getPapers(locale);
+const projects = getProjects(locale);
 const thoughts = (await getCollection('thoughts'))
   .filter((t) => !t.data.draft)
   .sort((a, b) => normalizeDate(b.data.date).localeCompare(normalizeDate(a.data.date)));
 
 const emailLink = profile.links.find((l) => l.url.startsWith('mailto:'));
 const dialogAttrs = { closedby: 'any' } as Record<string, string>;
+const targetLocale: Locale = locale === 'zh' ? 'en' : 'zh';
 
 const pageRoutes = [
-  { label: 'Home', meta: '/', href: '/', keywords: 'home index frontispiece overview 首页' },
-  { label: 'Projects', meta: '/projects', href: '/projects', keywords: 'projects research systems engineering 项目' },
-  { label: 'Papers', meta: '/papers', href: '/papers', keywords: 'papers publications working manuscripts bibtex 论文' },
-  { label: 'Thoughts', meta: '/thoughts', href: '/thoughts', keywords: 'thoughts essays notes reading blog 随笔 思考' },
-  { label: 'About', meta: '/about', href: '/about', keywords: 'about bio education experience skills contact 关于' },
+  { label: ui.nav.home, meta: localizePath('/', locale), href: localizePath('/', locale), keywords: 'home index frontispiece overview 首页' },
+  { label: ui.nav.projects, meta: localizePath('/projects', locale), href: localizePath('/projects', locale), keywords: 'projects research systems engineering 项目' },
+  { label: ui.nav.papers, meta: localizePath('/papers', locale), href: localizePath('/papers', locale), keywords: 'papers publications working manuscripts bibtex 论文' },
+  { label: ui.nav.thoughts, meta: localizePath('/thoughts', locale), href: localizePath('/thoughts', locale), keywords: 'thoughts essays notes reading blog 随笔 思考' },
+  { label: ui.nav.about, meta: localizePath('/about', locale), href: localizePath('/about', locale), keywords: 'about bio education experience skills contact 关于' },
 ];
 
 const inkEditions = [
@@ -28,10 +37,10 @@ const inkEditions = [
   { id: 'noir', label: 'Ink Noir', cn: '松烟', keywords: 'ink accent theme color monochrome black minimal 松烟 黑白' },
 ];
 ---
-<dialog id="commandPalette" class="cmd-dialog" lang="en" aria-labelledby="cmdDialogTitle" {...dialogAttrs}>
+<dialog id="commandPalette" class="cmd-dialog" lang={locale === 'zh' ? 'zh-CN' : 'en'} aria-labelledby="cmdDialogTitle" {...dialogAttrs}>
   <div class="cmd-surface">
     <div class="cmd-header">
-      <h2 id="cmdDialogTitle" class="sr-only">Quick Index and Commands</h2>
+      <h2 id="cmdDialogTitle" class="sr-only">{ui.cmd.dialogTitle}</h2>
       <span class="cmd-search-icon" aria-hidden="true">
         <Icon name="search" size={16} />
       </span>
@@ -39,20 +48,20 @@ const inkEditions = [
         id="cmdSearchInput"
         class="cmd-input"
         type="search"
-        placeholder="Search pages, work, or atelier..."
+        placeholder={ui.cmd.placeholder}
         autocomplete="off"
         spellcheck="false"
         autofocus
-        aria-label="Filter index and commands"
+        aria-label={ui.cmd.filterAria}
       />
-      <button type="button" class="cmd-close" id="cmdCloseBtn" aria-label="Close quick index">
+      <button type="button" class="cmd-close" id="cmdCloseBtn" aria-label={ui.cmd.closeAria}>
         <Icon name="close" size={16} />
       </button>
     </div>
 
     <div class="cmd-body" id="cmdResults">
       <section class="cmd-group" data-cmd-group>
-        <h3 class="cmd-group-title">Pages</h3>
+        <h3 class="cmd-group-title">{ui.cmd.pages}</h3>
         <ul class="cmd-list">
           {pageRoutes.map((route) => (
             <li>
@@ -74,15 +83,15 @@ const inkEditions = [
 
       {papers.length > 0 && (
         <section class="cmd-group" data-cmd-group>
-          <h3 class="cmd-group-title">Papers</h3>
+          <h3 class="cmd-group-title">{ui.cmd.papers}</h3>
           <ul class="cmd-list">
             {papers.map((paper) => (
               <li>
                 <a
                   class="cmd-item"
-                  href={`/papers#${paper.id}`}
+                  href={localizePath(`/papers#${paper.id}`, locale)}
                   data-cmd-item
-                  data-cmd-search={`${paper.title} ${paper.venue} ${paper.year} ${paper.tags.join(' ')} paper`.toLowerCase()}
+                  data-cmd-search={`${paper.title} ${paper.venue} ${paper.year} ${paper.tags.join(' ')} paper 论文`.toLowerCase()}
                 >
                   <span class="cmd-item-main">
                     <span class="cmd-item-title">{paper.title}</span>
@@ -98,15 +107,15 @@ const inkEditions = [
 
       {projects.length > 0 && (
         <section class="cmd-group" data-cmd-group>
-          <h3 class="cmd-group-title">Projects</h3>
+          <h3 class="cmd-group-title">{ui.cmd.projects}</h3>
           <ul class="cmd-list">
             {projects.map((project) => (
               <li>
                 <a
                   class="cmd-item"
-                  href={`/projects#${project.id}`}
+                  href={localizePath(`/projects#${project.id}`, locale)}
                   data-cmd-item
-                  data-cmd-search={`${project.name} ${project.subtitle} ${project.tags.join(' ')} project`.toLowerCase()}
+                  data-cmd-search={`${project.name} ${project.subtitle} ${project.tags.join(' ')} project 项目`.toLowerCase()}
                 >
                   <span class="cmd-item-main">
                     <span class="cmd-item-title">{project.name}</span>
@@ -122,7 +131,7 @@ const inkEditions = [
 
       {thoughts.length > 0 && (
         <section class="cmd-group" data-cmd-group>
-          <h3 class="cmd-group-title">Thoughts</h3>
+          <h3 class="cmd-group-title">{ui.cmd.thoughts}</h3>
           <ul class="cmd-list">
             {thoughts.map((thought) => {
               const dateIso = normalizeDate(thought.data.date);
@@ -130,9 +139,9 @@ const inkEditions = [
                 <li>
                   <a
                     class="cmd-item"
-                    href={`/thoughts/${thought.slug}`}
+                    href={localizePath(`/thoughts/${thought.slug}`, locale)}
                     data-cmd-item
-                    data-cmd-search={`${thought.data.title} ${thought.data.subtitle ?? ''} ${thought.data.caseId ?? ''} ${thought.data.tags.join(' ')} thought essay`.toLowerCase()}
+                    data-cmd-search={`${thought.data.title} ${thought.data.subtitle ?? ''} ${thought.data.caseId ?? ''} ${thought.data.tags.join(' ')} thought essay 随笔`.toLowerCase()}
                   >
                     <span class="cmd-item-main">
                       <span class="cmd-item-title" lang={thought.data.lang === 'zh' ? 'zh-CN' : 'en'}>
@@ -154,8 +163,24 @@ const inkEditions = [
       )}
 
       <section class="cmd-group" data-cmd-group>
-        <h3 class="cmd-group-title">Atelier & Actions</h3>
+        <h3 class="cmd-group-title">{ui.cmd.actions}</h3>
         <ul class="cmd-list">
+          <li>
+            <a
+              class="cmd-item"
+              href={alternateHref}
+              data-cmd-item
+              data-lang-switch={targetLocale}
+              data-cmd-search="language switch chinese english zh en 语言 切换 中文 英文"
+            >
+              <span class="cmd-item-main">
+                <span class="cmd-item-title">{ui.cmd.switchLangTitle}</span>
+                <span class="cmd-item-sub">{ui.cmd.switchLangSub}</span>
+              </span>
+              <span class="cmd-item-meta">{ui.cmd.switchLangMeta}</span>
+            </a>
+          </li>
+
           <li>
             <button
               type="button"
@@ -165,10 +190,10 @@ const inkEditions = [
               data-cmd-search="toggle theme light dark paper charcoal dawn aperture appearance 切换 主题 深色 浅色"
             >
               <span class="cmd-item-main">
-                <span class="cmd-item-title">Toggle Paper / Charcoal Theme</span>
-                <span class="cmd-item-sub">Switch between light rag paper and dark ink-stone</span>
+                <span class="cmd-item-title">{ui.cmd.toggleThemeTitle}</span>
+                <span class="cmd-item-sub">{ui.cmd.toggleThemeSub}</span>
               </span>
-              <span class="cmd-item-meta">Theme</span>
+              <span class="cmd-item-meta">{ui.cmd.toggleThemeMeta}</span>
             </button>
           </li>
 
@@ -186,7 +211,10 @@ const inkEditions = [
                 <span class="cmd-item-main cmd-item-main--inline">
                   <span class={`ink-dot ink-dot--${ink.id}`} aria-hidden="true"></span>
                   <span class="cmd-item-title">
-                    Ink Edition: {ink.label} <span class="cmd-item-cn" lang="zh-CN">{ink.cn}</span>
+                    {ui.cmd.inkPrefix}{locale === 'zh' ? ink.cn : ink.label}{' '}
+                    <span class="cmd-item-cn" lang={locale === 'zh' ? 'en' : 'zh-CN'}>
+                      {locale === 'zh' ? ink.label : ink.cn}
+                    </span>
                   </span>
                 </span>
                 <span class="cmd-item-meta cmd-ink-active" aria-hidden="true">
@@ -207,10 +235,10 @@ const inkEditions = [
                 data-cmd-search={`copy email contact address ${emailLink.handle} 邮箱 复制`.toLowerCase()}
               >
                 <span class="cmd-item-main">
-                  <span class="cmd-item-title">Copy Email Address</span>
+                  <span class="cmd-item-title">{ui.cmd.copyEmailTitle}</span>
                   <span class="cmd-item-sub tabular">{emailLink.handle}</span>
                 </span>
-                <span class="cmd-item-meta">Copy</span>
+                <span class="cmd-item-meta">{ui.cmd.copyEmailMeta}</span>
               </button>
             </li>
           )}
@@ -223,8 +251,8 @@ const inkEditions = [
               data-cmd-search="rss feed subscribe xml atom 订阅"
             >
               <span class="cmd-item-main">
-                <span class="cmd-item-title">RSS Feed</span>
-                <span class="cmd-item-sub">Subscribe to thoughts via /rss.xml</span>
+                <span class="cmd-item-title">{ui.cmd.rssTitle}</span>
+                <span class="cmd-item-sub">{ui.cmd.rssSub}</span>
               </span>
               <span class="cmd-item-meta tabular">/rss.xml</span>
             </a>
@@ -239,17 +267,17 @@ const inkEditions = [
               data-cmd-search="greet pixel mouse companion wave pet 老鼠 互动 招手"
             >
               <span class="cmd-item-main">
-                <span class="cmd-item-title">Greet Pixel Mouse Companion</span>
-                <span class="cmd-item-sub">Wake companion with a wave</span>
+                <span class="cmd-item-title">{ui.cmd.petTitle}</span>
+                <span class="cmd-item-sub">{ui.cmd.petSub}</span>
               </span>
-              <span class="cmd-item-meta">Companion</span>
+              <span class="cmd-item-meta">{ui.cmd.petMeta}</span>
             </button>
           </li>
         </ul>
       </section>
 
       <p class="cmd-empty" id="cmdEmpty" hidden>
-        No matching entries in the index.
+        {ui.cmd.empty}
       </p>
     </div>
 
@@ -257,13 +285,13 @@ const inkEditions = [
 
     <div class="cmd-footer" aria-hidden="true">
       <span class="cmd-hint">
-        <kbd><Icon name="arrow-up" size={11} /></kbd><kbd><Icon name="arrow-down" size={11} /></kbd> Navigate
+        <kbd><Icon name="arrow-up" size={11} /></kbd><kbd><Icon name="arrow-down" size={11} /></kbd> {ui.cmd.hintNavigate}
       </span>
       <span class="cmd-hint">
-        <kbd><Icon name="corner-down-left" size={11} /></kbd> Open
+        <kbd><Icon name="corner-down-left" size={11} /></kbd> {ui.cmd.hintOpen}
       </span>
       <span class="cmd-hint">
-        <kbd>Esc</kbd> Close
+        <kbd>Esc</kbd> {ui.cmd.hintClose}
       </span>
     </div>
   </div>

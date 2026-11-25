@@ -7,14 +7,16 @@ items:
     venue: "Working Paper"
     year: 2026
     status: "Working Paper"
+    statusZh: "工作论文"
     featured: true
     tags:
-      - "Symbolic Regression"
-      - "Factor Discovery"
-      - "Neural-Guided GP"
-      - "CSI 300 / 500 / 1000"
-    summary: "Reframes symbolic factor search around deduplicated effective factors per evaluation budget, using a three-head neural ensemble for priority scheduling and parent sampling across 613.6k expression evaluations on CSI 300, CSI 500, and CSI 1000 (2017–2023)."
-    abstract: "Symbolic regression for quantitative factor discovery faces two bottlenecks: expensive historical backtesting and heavy collinearity across candidate formulas. We reformulate the search objective around deduplicated effective factors discovered per unit evaluation budget across 340 fields on CSI 300, CSI 500, and CSI 1000 (2017–2023). A three-head neural ensemble—jointly predicting quality, ranking overlap, and exploration value—schedules backtest evaluations and parent selection while updating model and operator priors online from execution feedback. Across 613.6k expression executions and 6x13 paired experiments under cross-period reconstruction, joint online feedback outperforms replay-only baselines in 13/13 runs, lifting qualified representative yield on fixed probes by +42.5% (p = 1.22e-4) and cumulative yield by +20.4%."
+      - "Genetic Programming"
+      - "Continual Learning"
+      - "Execution Feedback"
+      - "Stock Factor Discovery"
+    summary: "Studies continual execution feedback in neural-guided genetic programming for formulaic stock factors across 340 fields and 613.6k AST executions (2017–2023), lifting fixed-budget discovery by +133.69 qualified rank representatives over rehearsal-only across 13/13 paired seeds (p = 1.22e-4)."
+    summaryZh: "研究神经引导遗传规划在股票公式因子发现中的持续执行反馈机制。在 340 个字段与 61.36 万次 AST 执行（2017–2023）上，联合反馈在 13/13 配对种子中均优于仅重放基线，固定预算下平均多发现 +133.69 个去重有效排序因子（p = 1.22e-4）。"
+    abstract: "We study a finite, costly expression-execution search over formulaic stock factors: multiple formulas can produce identical rankings, so each new execution may or may not be novel. The question is whether learning from executed candidates increases discovery capability at a fixed execution budget. A three-member neural ensemble predicts quality, ranking duplication and remaining discovery value; observed executions supervise the ensemble and update bounded field/operator sampling weights. Across six feedback conditions and 13 paired search seeds (development 2017–2019, internal selection 2020, historical evaluation 2021–2023), we assess acquired capability with equal-budget fixed probes. Final joint-replay versus rehearsal-only contrast is positive for every seed: mean difference 133.69 new qualified rank representatives; one-sided finite-seed-population sign-test p = 0.00012207 supports a majority-positive paired effect. Mean final learning gains are joint replay 137.46, neural feedback 114.85, policy feedback 15.46, and joint recent only 144.85. Substantial gains accompany neural learning from new executions; current-only feedback has a higher mean than the tested historical/current mixture."
     bibtex: |
       @unpublished{huang2026continual,
         author = {Huang, Xianzhuo},
@@ -22,29 +24,35 @@ items:
         year   = {2026},
         note   = {Working paper}
       }
-    links: []
+    links:
+      - label: "PDF"
+        url: "/papers/continual-execution-feedback.pdf"
 
-  - id: "memory-guided-atomic-evolution"
-    title: "Memory-Guided Atomic Evolution of Factor Research Harnesses under Fixed Budgets"
+  - id: "evo-harness"
+    title: "EVO-HARNESS: Orthogonalized Research-Harness Evolution for Quantitative Factor Mining"
     authors:
       - "Xianzhuo Huang"
     authorNote: "First Author"
-    venue: "Working Paper"
+    venue: "Under Review"
     year: 2026
-    status: "Working Paper"
+    status: "Under Review"
+    statusZh: "在审"
     featured: true
     tags:
       - "LLM Agents"
-      - "Research Automation"
-      - "Factor Discovery"
-      - "Fixed Budget"
-    summary: "Evolves full factor research harnesses—operator sets, mutation rules, and probe memory—via a Propose–Probe–Compose loop under fixed LLM and evaluation budgets, with strict separation between online exploration and frozen holdout evaluation."
-    abstract: "Rather than evolving isolated factor formulas, we treat the factor discovery harness itself—operator sets, mutation rules, and probe memory—as the unit of evolution under fixed LLM and backtest budgets. We build a Propose–Probe–Compose atomic edit loop where online exploration is strictly isolated from the holdout evaluation split, invalid proposals are accounted against the budget, and frozen harnesses are scored on common dates and stock universes (2017–2020 development window). Across 24 paired experiments, memory-guided harness evolution consistently outperforms both fixed initial harnesses (+0.011 mean |IC|, 24/24 wins) and random legal edits in the same search space (+0.0035, p = 0.031), while quantifying the trade-off between faster convergence and factor diversity."
+      - "Evolutionary Search"
+      - "Factor Mining"
+      - "Orthogonalization"
+    summary: "Evolves 12-slot quantitative factor pipelines across 4 generations under a clone-proof deduplicated IC objective (M_dedup) and an eight-arm attribution ladder across 24 Chinese A-share domains and 4 LLMs (n = 192 runs), lifting held-out M_dedup by 70% over Fixed (p_Holm = 0.0002)."
+    summaryZh: "提出面向多因子流水线的正交化研究框架进化方法（EVO-HARNESS）：在防克隆去重 IC 目标（M_dedup）与八臂归因阶梯下，跨越 24 个互不相交的 A 股因子域与 4 个大模型（192 次配对实验），将样本外 M_dedup 较固定基线提升 70%（p_Holm = 0.0002）。"
+    abstract: "Language-model agents for automated factor mining are typically judged by mean rank correlation (IC) with future stock returns. This score is easily inflated by cloning one strong signal via order-preserving transforms, and it confounds evolutionary feedback with extra tokens, domain priors, and style tilts. We introduce EVO-HARNESS, an evolutionary framework and eight-arm benchmark that evolves a 12-slot factor pipeline across D = 4 generations via mutations, two-seed crossovers, and depth-2 chains under a deduplicated IC (M_dedup) giving clones zero credit. Across 24 disjoint Chinese A-share domains and 4 models (n = 192 runs), pathology-guided evolution (Diagnostic) lifts held-out M_dedup from 0.0152 (Fixed) and 0.0173 (HillClimb) to 0.0259 (p_Holm = 0.0002), while zero-token fingerprint-routed Meta-HillClimb already reaches 0.0215. An exact attribution assigns 73.1% of search-phase gains to structured priors and equal-token sampling (TTS_EqualToken, 0.0253 held out), while slot-level diagnosis adds 21.1% (+0.0009, p_Holm = 0.0038) by eliminating smoothing clones on fundamental domains and pruning high-turnover slots. Leads widen after industry-and-size neutralization (0.0246 vs. 0.0157, p_Holm = 0.0005) and raise monthly break-even cost tolerance to 51.6 bps, though 43-week net Sharpe contrasts remain noisy. In a frozen 2021–2025 replay, structural de-cloning endures across market regimes, whereas the diagnostic edge decays without periodic re-evolution."
     bibtex: |
-      @unpublished{huang2026memory,
+      @unpublished{huang2026evoharness,
         author = {Huang, Xianzhuo},
-        title  = {Memory-Guided Atomic Evolution of Factor Research Harnesses under Fixed Budgets},
+        title  = {EVO-HARNESS: Orthogonalized Research-Harness Evolution for Quantitative Factor Mining},
         year   = {2026},
-        note   = {Working paper}
+        note   = {Under review}
       }
-    links: []
+    links:
+      - label: "PDF"
+        url: "/papers/evo-harness.pdf"

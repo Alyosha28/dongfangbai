@@ -1,0 +1,29 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import ThoughtDetailView from '../../../views/ThoughtDetailView.astro';
+import { normalizeDate } from '../../../lib/data';
+
+export async function getStaticPaths() {
+  const thoughts = (await getCollection('thoughts'))
+    .filter((t) => !t.data.draft)
+    .sort((a, b) => normalizeDate(b.data.date).localeCompare(normalizeDate(a.data.date)));
+
+  return thoughts.map((entry, idx) => ({
+    params: { slug: entry.slug },
+    props: {
+      entry,
+      prev: thoughts[idx + 1] ?? null,
+      next: thoughts[idx - 1] ?? null,
+    },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'thoughts'>;
+  prev: CollectionEntry<'thoughts'> | null;
+  next: CollectionEntry<'thoughts'> | null;
+}
+
+const { entry, prev, next } = Astro.props;
+---
+<ThoughtDetailView entry={entry} prev={prev} next={next} locale="zh" />

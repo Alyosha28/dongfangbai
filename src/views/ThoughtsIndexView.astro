@@ -1,0 +1,115 @@
+---
+import { getCollection } from 'astro:content';
+import Site from '../layouts/Site.astro';
+import { estimateReadTime, getProfile, normalizeDate } from '../lib/data';
+import { getUi, localizePath, type Locale } from '../lib/i18n';
+
+export interface Props {
+  locale?: Locale;
+}
+
+const { locale = 'en' } = Astro.props;
+const ui = getUi(locale);
+const profile = getProfile(locale);
+const thoughts = (await getCollection('thoughts'))
+  .filter((t) => !t.data.draft)
+  .sort((a, b) => normalizeDate(b.data.date).localeCompare(normalizeDate(a.data.date)));
+
+const byYear = new Map<string, typeof thoughts>();
+const tagSet = new Set<string>();
+for (const entry of thoughts) {
+  const year = normalizeDate(entry.data.date).slice(0, 4);
+  if (!byYear.has(year)) byYear.set(year, []);
+  byYear.get(year)!.push(entry);
+  for (const tag of entry.data.tags) {
+    tagSet.add(tag);
+  }
+}
+const yearGroups = Array.from(byYear.entries());
+const allTags = Array.from(tagSet);
+const showFilter = thoughts.length >= 6 && allTags.length > 1;
+const toolbarAttrs = { focusgroup: 'toolbar wrap' } as Record<string, string>;
+const displayName = locale === 'zh' ? profile.nativeName || profile.name : profile.name;
+---
+<Site
+  view="thoughts"
+  locale={locale}
+  title={`${ui.thoughts.titleSuffix} — ${displayName}`}
+  description={ui.thoughts.description(displayName, profile.moniker)}
+>
+  <header class="page-header page-header--flush">
+    <h1>{ui.thoughts.heading}</h1>
+    <p class="page-intro">
+      {ui.thoughts.introPrefix}<a href="/rss.xml">RSS</a>{ui.thoughts.introSuffix}
+    </p>
+    {showFilter && (
+      <>
+        <div
+          class="filter-bar"
+          role="toolbar"
+          aria-label={ui.thoughts.filterAria}
+          data-thought-filter
+          {...toolbarAttrs}
+        >
+          <button type="button" class="filter-chip" data-filter-tag="all" aria-pressed="true">
+            {ui.thoughts.filterAll} <span class="filter-count tabular">{thoughts.length}</span>
+          </button>
+          {allTags.map((tag) => {
+            const count = thoughts.filter((t) => t.data.tags.includes(tag)).length;
+            return (
+              <button type="button" class="filter-chip" data-filter-tag={tag} aria-pressed="false">
+                {tag} <span class="filter-count tabular">{count}</span>
+              </button>
+            );
+          })}
+        </div>
+        <p class="sr-only" id="thoughtFilterStatus" role="status" aria-live="polite"></p>
+      </>
+    )}
+  </header>
+
+  {yearGroups.map(([year, entries]) => (
+    <section class="thought-year-group" aria-labelledby={`year-${year}`} data-year-group>
+      <h2 class="thought-year-heading tabular" id={`year-${year}`}>{year}</h2>
+      <div class="ledger-list ledger-list--interactive">
+        {entries.map((entry) => {
+          const dateIso = normalizeDate(entry.data.date);
+          const readTime = estimateReadTime(entry.body ?? '', entry.data.readTime, locale);
+          return (
+            <article class="thought-row" data-thought-tags={entry.data.tags.join(',')}>
+              <div class="thought-row-main">
+                <a
+                  class="thought-row-title"
+                  href={localizePath(`/thoughts/${entry.slug}`, locale)}
+                  lang={entry.data.lang === 'zh' ? 'zh-CN' : 'en'}
+                >
+                  {entry.data.title}
+                </a>
+                {entry.data.subtitle && (
+                  <p class="thought-row-sub" lang={entry.data.lang === 'zh' ? 'zh-CN' : 'en'}>
+                    {entry.data.subtitle}
+                  </p>
+                )}
+                {(entry.data.caseId || entry.data.tags.length > 0) && (
+                  <ul class="item-tags item-tags--compact" aria-label={ui.thoughts.tagsAria}>
+                    {entry.data.caseId && <li class="tag-term tag-term--code">{entry.data.caseId}</li>}
+                    {entry.data.tags.map((tag) => <li class="tag-term">{tag}</li>)}
+                  </ul>
+                )}
+              </div>
+              <div class="thought-row-meta">
+                <time datetime={dateIso}>{dateIso}</time>
+                <span class="meta-dot" aria-hidden="true">·</span>
+                <span>{readTime}</span>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  ))}
+
+  <p class="filter-empty" id="thoughtFilterEmpty" hidden>
+    {ui.thoughts.filterEmpty}
+  </p>
+</Site>

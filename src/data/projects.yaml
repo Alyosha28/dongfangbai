@@ -1,9 +1,13 @@
 items:
   - id: "unwilling-or-unable"
     name: "Unwilling or Unable?"
+    nameZh: "不愿还是不能？"
     subtitle: "Dual Policy-Commitment Uncertainty and Cross-Asset Pricing"
+    subtitleZh: "双重政策承诺不确定性与跨资产定价"
     year: "2026 — Present"
+    yearZh: "2026 — 至今"
     status: "Active Research"
+    statusZh: "在研"
     featured: true
     tags:
       - "Macro Event Study"
@@ -11,17 +15,26 @@ items:
       - "Gold / WTI / VIX / Nasdaq"
       - "Polymarket"
     summary: "Separates unilateral bluffing from external execution constraints across 172 policy-commitment event clusters (2017–2026) using resolution-timestamped text signals, Polymarket odds, and dual-layer Bayesian forgetting posteriors."
+    summaryZh: "基于 172 个政策承诺事件簇（2017–2026），结合兑现时点对齐的文本信号、Polymarket 赔率与双层贝叶斯遗忘后验，将「单边虚张声势（不愿）」与「外部执行约束（不能）」拆分并检验其跨资产定价效应。"
     highlights:
       - "Screened 54,000 public statements into 1,224 policy commitments merged into 172 event clusters with zero-lookahead resolution alignment."
       - "Separated 'unwilling' (unilateral bluffing) vs. 'unable' (external implementation friction) via dual-layer Bayesian forgetting posteriors controlling for pre-event returns and election cycles."
       - "Pre-registered BH-FDR tests across Gold, WTI Crude, VIX, and Nasdaq futures demonstrate asymmetric pricing (p = 0.013): execution capability drives directional Gold returns (q = 0.044), while WTI volatility exhibits bluff discounting (q = 5.3e-4, -13.0% leave-one-year-out OOS MSE) and constraint amplification (q = 0.022)."
+    highlightsZh:
+      - "从 54,000 条公开表态中筛选出 1,224 条政策承诺并聚类为 172 个事件簇，严格执行零前视兑现时点对齐。"
+      - "通过双层贝叶斯遗忘后验拆分「不愿（单边虚张声势）」与「不能（外部执行摩擦）」，并控制事件前收益与选举周期。"
+      - "预注册的 BH-FDR 检验覆盖黄金、WTI 原油、VIX 与纳斯达克期货，发现显著非对称定价（p = 0.013）：执行能力驱动黄金方向性收益（q = 0.044），WTI 波动率呈现虚张声势折价（q = 5.3e-4，留一年样本外 MSE 降低 13.0%）与约束放大效应（q = 0.022）。"
     links: []
 
   - id: "ashare-multifactor-system"
     name: "Full-Market Equity Multi-Factor Research System"
+    nameZh: "A 股全市场多因子研究系统"
     subtitle: "Point-in-Time Pipeline, Friction Backtester & Löwdin Orthogonalization"
+    subtitleZh: "时点数据流水线、交易摩擦回测与 Löwdin 正交化"
     year: "2026 — Present"
+    yearZh: "2026 — 至今"
     status: "Research System"
+    statusZh: "研究系统"
     featured: true
     tags:
       - "Python"
@@ -29,17 +42,26 @@ items:
       - "PIT Backtesting"
       - "CI Contracts"
     summary: "End-to-end empirical equity research infrastructure covering 42 feature panels (4,342 features), announcement-date PIT alignment, T+1 open-match trading frictions, BH-FDR screening, and daily lookahead-free orthogonalization."
+    summaryZh: "端到端实证股票研究基础设施，覆盖 42 个特征面板（4,342 个特征）、公告日时点对齐、T+1 开盘撮合交易摩擦回测、BH-FDR 筛选与日度无前视正交化。"
     highlights:
       - "Audits 42 feature panels across full A-share coverage with strict announcement-date PIT alignment and merge_asof index-weight integrity checks."
       - "Enforces T+1 open-auction execution, limit-up/down buy restrictions, halt/limit-down lock-ins, and 22.2–30 bp round-trip cost assumptions."
       - "Screens 1,062 statistically validated factors via BH-FDR and net-cost filters down to 212 core factors across 155 clusters and a 69-dimensional daily Löwdin orthogonal basis, backed by data-free CI contract tests."
+    highlightsZh:
+      - "对覆盖全 A 股的 42 个特征面板执行严格公告日时点对齐与 merge_asof 指数权重完整性审计。"
+      - "强制执行 T+1 集合竞价成交、涨跌停买入限制、停牌/跌停锁定与 22.2–30 bps 双边交易成本假设。"
+      - "通过 BH-FDR 与净成本过滤将 1,062 个统计显著因子收敛为 155 簇 212 个核心因子与 69 维日度 Löwdin 正交基，并配备无数据依赖的 CI 契约测试。"
     links: []
 
   - id: "finalwhite-site"
     name: "finalwhite.lol"
+    nameZh: "finalwhite.lol"
     subtitle: "Personal Homepage & Digital Garden"
+    subtitleZh: "个人主页与数字花园"
     year: "2026"
+    yearZh: "2026"
     status: "Open Source"
+    statusZh: "开源"
     featured: true
     tags:
       - "Astro 5"
@@ -47,9 +69,13 @@ items:
       - "Pages CMS"
       - "Pixel Sprite"
     summary: "Minimalist static personal site built with Astro 5, YAML-backed data collections, native CSS light-dark theming, view transitions, and an interactive pixel-art companion."
+    summaryZh: "基于 Astro 5 构建的极简静态个人网站，采用 YAML 数据驱动、原生 CSS 明暗与多印色主题、视图过渡动效、中英双语静态路由与交互式像素陪伴角色。"
     highlights:
       - "Decouples profile, papers, projects, and long-form thoughts into plain YAML and Markdown files managed via Git or Pages CMS."
       - "Built around CSS cascade layers, light-dark() tokens, native popover responsive navigation, and scroll-driven progress indicators."
+    highlightsZh:
+      - "将个人简介、论文、项目与长文随笔解耦为纯 YAML 与 Markdown 文件，支持 Git 或 Pages CMS 管理。"
+      - "基于 CSS 级联层、light-dark() 色彩令牌、原生 popover 响应式导航与滚动驱动阅读进度条构建。"
     links:
       - label: "GitHub"
         url: "https://github.com/Alyosha28"

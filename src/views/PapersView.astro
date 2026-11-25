@@ -1,0 +1,52 @@
+---
+import Site from '../layouts/Site.astro';
+import PaperItem from '../components/PaperItem.astro';
+import { getPapers, getProfile } from '../lib/data';
+import { getUi, type Locale } from '../lib/i18n';
+
+export interface Props {
+  locale?: Locale;
+}
+
+const { locale = 'en' } = Astro.props;
+const ui = getUi(locale);
+const profile = getProfile(locale);
+const papers = getPapers(locale);
+const hasDisclosures = papers.some((p) => p.abstract || p.bibtex);
+const toggleAttrs = {
+  commandfor: 'papers-list',
+  command: '--toggle-all',
+} as Record<string, string>;
+const displayName = locale === 'zh' ? profile.nativeName || profile.name : profile.name;
+---
+<Site
+  view="papers"
+  locale={locale}
+  title={`${ui.papers.titleSuffix} — ${displayName}`}
+  description={ui.papers.description(displayName)}
+>
+  <header class="page-header page-header--flush">
+    <div class="page-header-row">
+      <h1>{ui.papers.heading}</h1>
+      {hasDisclosures && (
+        <button
+          type="button"
+          class="disclosure-toggle-all"
+          id="papersToggleAll"
+          aria-expanded="false"
+          {...toggleAttrs}
+        >
+          <span class="toggle-expand">{ui.papers.expandAll}</span>
+          <span class="toggle-collapse">{ui.papers.collapseAll}</span>
+        </button>
+      )}
+    </div>
+    <p class="page-intro">{ui.papers.intro}</p>
+  </header>
+
+  <div class="ledger-list ledger-list--detail" id="papers-list">
+    {papers.map((paper) => (
+      <PaperItem paper={paper} locale={locale} showDetails={true} headingLevel="h2" />
+    ))}
+  </div>
+</Site>
