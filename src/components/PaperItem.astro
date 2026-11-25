@@ -8,14 +8,29 @@ export interface Props {
   showDetails?: boolean;
   headingLevel?: 'h2' | 'h3';
   linkToDetail?: boolean;
+  compact?: boolean;
+  showSummary?: boolean;
 }
 
-const { paper, showDetails = true, headingLevel = 'h3', linkToDetail = false } = Astro.props;
+const {
+  paper,
+  showDetails = true,
+  headingLevel = 'h3',
+  linkToDetail = false,
+  compact = false,
+  showSummary = true,
+} = Astro.props;
 const HeadingTag = headingLevel;
 const profile = getProfile();
 const authorTokens = tokenizeAuthors(paper.authors, profile.name);
+const isSoloOwner = authorTokens.length === 1 && authorTokens[0].isOwner;
+const hasCoauthors = authorTokens.length > 0 && !isSoloOwner;
+const normalizedStatus = paper.status.trim().toLowerCase();
+const normalizedVenue = paper.venue.trim().toLowerCase();
+const showVenue = Boolean(normalizedVenue && normalizedVenue !== normalizedStatus);
+const showByline = hasCoauthors || showVenue;
 ---
-<article class="ledger-item" id={showDetails ? paper.id : undefined}>
+<article class:list={['ledger-item', { 'ledger-item--compact': compact && !showSummary }]} id={showDetails ? paper.id : undefined}>
   <div class="ledger-meta">
     <span class="tabular ledger-year">{paper.year}</span>
     {paper.status && <span class="ledger-status">{paper.status}</span>}
@@ -30,26 +45,31 @@ const authorTokens = tokenizeAuthors(paper.authors, profile.name);
       )}
     </HeadingTag>
 
-    <p class="item-authors">
-      {authorTokens.map((author, idx) => (
-        <>
-          {idx > 0 && ', '}
-          {author.isOwner ? <strong>{author.name}</strong> : author.name}
-        </>
-      ))}
-      {paper.authorNote && <span class="meta-sep">· {paper.authorNote}</span>}
-      {paper.venue && <span class="meta-sep">· {paper.venue}</span>}
-    </p>
+    {showByline && (
+      <p class="item-authors">
+        {hasCoauthors &&
+          authorTokens.map((author, idx) => (
+            <>
+              {idx > 0 && ', '}
+              {author.isOwner ? <strong>{author.name}</strong> : author.name}
+            </>
+          ))}
+        {hasCoauthors && paper.authorNote && <span class="meta-sep">· {paper.authorNote}</span>}
+        {showVenue && (
+          hasCoauthors ? <span class="meta-sep">· {paper.venue}</span> : <span>{paper.venue}</span>
+        )}
+      </p>
+    )}
 
-    <p class="item-summary">{paper.summary}</p>
+    {showSummary && <p class="item-summary">{paper.summary}</p>}
 
-    {paper.tags.length > 0 && (
+    {!compact && paper.tags.length > 0 && (
       <ul class="item-tags" aria-label="Topics">
         {paper.tags.map((tag) => <li class="tag-term">{tag}</li>)}
       </ul>
     )}
 
-    {paper.links.length > 0 && (
+    {!compact && paper.links.length > 0 && (
       <div class="item-actions">
         {paper.links.map((link) => {
           const isExternal = link.url.startsWith('http');

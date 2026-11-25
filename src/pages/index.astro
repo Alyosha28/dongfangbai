@@ -48,22 +48,21 @@ const thoughts = (await getCollection('thoughts'))
     </div>
 
     <aside class="intro-colophon" aria-label="Epigraph">
-      <span class="colophon-dawn" aria-hidden="true">
-        <Icon name="dawn" size={28} />
-      </span>
-      <div class="colophon-epigraph-wrap">
+      <div class="colophon-compose">
         <p class="colophon-epigraph" lang="zh-CN">「{profile.epigraph}」</p>
-        <p class="colophon-source" lang="zh-CN">{profile.epigraphAttribution}</p>
+        <div class="colophon-meta">
+          <p class="colophon-source" lang="zh-CN">{profile.epigraphAttribution}</p>
+          <button
+            type="button"
+            class="colophon-seal-btn"
+            id="heroSealBtn"
+            aria-label="Press archival seal"
+            title="歌未竟，东方白"
+          >
+            <Icon name="seal" size={34} solid={true} />
+          </button>
+        </div>
       </div>
-      <button
-        type="button"
-        class="colophon-seal-btn"
-        id="heroSealBtn"
-        aria-label="Press archival seal"
-        title="歌未竟，东方白"
-      >
-        <Icon name="seal" size={26} />
-      </button>
     </aside>
   </section>
 
@@ -76,8 +75,14 @@ const thoughts = (await getCollection('thoughts'))
       </a>
     </div>
     <div class="ledger-list ledger-list--interactive">
-      {papers.map((paper) => (
-        <PaperItem paper={paper} showDetails={false} linkToDetail={true} />
+      {papers.map((paper, idx) => (
+        <PaperItem
+          paper={paper}
+          showDetails={false}
+          linkToDetail={true}
+          compact={true}
+          showSummary={idx === 0}
+        />
       ))}
     </div>
   </section>
@@ -92,7 +97,7 @@ const thoughts = (await getCollection('thoughts'))
     </div>
     <div class="ledger-list ledger-list--interactive">
       {projects.map((project) => (
-        <ProjectItem project={project} showHighlights={false} linkToDetail={true} />
+        <ProjectItem project={project} showHighlights={false} linkToDetail={true} compact={true} />
       ))}
     </div>
   </section>

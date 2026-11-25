@@ -68,9 +68,9 @@ function initNavbar(): void {
       }
     }
 
-    requestAnimationFrame(() => {
-      header.classList.remove('is-measuring');
-    });
+    // Flush collapsed/expanded computed styles while transitions are suppressed to avoid popover exit flash
+    void header.offsetWidth;
+    header.classList.remove('is-measuring');
   };
 
   const ro = new ResizeObserver(() => measureLayout(false));

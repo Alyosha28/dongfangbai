@@ -20,6 +20,7 @@ for (const entry of thoughts) {
 }
 const yearGroups = Array.from(byYear.entries());
 const allTags = Array.from(tagSet);
+const showFilter = thoughts.length >= 6 && allTags.length > 1;
 const toolbarAttrs = { focusgroup: 'toolbar wrap' } as Record<string, string>;
 ---
 <Site
@@ -27,12 +28,12 @@ const toolbarAttrs = { focusgroup: 'toolbar wrap' } as Record<string, string>;
   title={`Thoughts — ${profile.name}`}
   description={`Essays, reading notes, and reflections by ${profile.name} (${profile.moniker}).`}
 >
-  <header class="page-header">
+  <header class="page-header page-header--flush">
     <h1>Thoughts</h1>
     <p class="page-intro">
       Essays, market reflections, and reading notes. Updates are published via <a href="/rss.xml">RSS</a>.
     </p>
-    {allTags.length > 1 && (
+    {showFilter && (
       <>
         <div
           class="filter-bar"

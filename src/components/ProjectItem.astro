@@ -7,15 +7,22 @@ export interface Props {
   showHighlights?: boolean;
   headingLevel?: 'h2' | 'h3';
   linkToDetail?: boolean;
+  compact?: boolean;
 }
 
-const { project, showHighlights = false, headingLevel = 'h3', linkToDetail = false } = Astro.props;
+const {
+  project,
+  showHighlights = false,
+  headingLevel = 'h3',
+  linkToDetail = false,
+  compact = false,
+} = Astro.props;
 const HeadingTag = headingLevel;
 ---
-<article class="ledger-item" id={showHighlights ? project.id : undefined}>
+<article class:list={['ledger-item', { 'ledger-item--compact': compact }]} id={showHighlights ? project.id : undefined}>
   <div class="ledger-meta">
     <span class="tabular ledger-year">{project.year}</span>
-    {project.status && <span class="ledger-status">{project.status}</span>}
+    {!compact && project.status && <span class="ledger-status">{project.status}</span>}
   </div>
 
   <div class="ledger-body">
@@ -27,7 +34,7 @@ const HeadingTag = headingLevel;
       )}
     </HeadingTag>
     {project.subtitle && <p class="item-subtitle">{project.subtitle}</p>}
-    <p class="item-summary">{project.summary}</p>
+    {(!compact || !project.subtitle) && <p class="item-summary">{project.summary}</p>}
 
     {showHighlights && project.highlights.length > 0 && (
       <ul class="item-highlights">
@@ -35,13 +42,13 @@ const HeadingTag = headingLevel;
       </ul>
     )}
 
-    {project.tags.length > 0 && (
+    {!compact && project.tags.length > 0 && (
       <ul class="item-tags" aria-label="Keywords">
         {project.tags.map((tag) => <li class="tag-term">{tag}</li>)}
       </ul>
     )}
 
-    {project.links.length > 0 && (
+    {!compact && project.links.length > 0 && (
       <div class="item-actions">
         {project.links.map((link) => {
           const isExternal = link.url.startsWith('http');

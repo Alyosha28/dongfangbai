@@ -143,13 +143,23 @@ test('deep-link anchors, expand-all control, TOC scrollspy nav, and epigraph col
   assert.match(projectsHtml, /id="ashare-multifactor-system"/);
 
   const thoughtsHtml = await readFile(join(ROOT, 'dist/thoughts/index.html'), 'utf8');
-  assert.match(thoughtsHtml, /data-thought-filter/);
-  assert.match(thoughtsHtml, /focusgroup="toolbar wrap"/);
   assert.match(thoughtsHtml, /CASE-001/);
-  // Live status region must sit outside the toolbar landmark
-  const toolbarSection = thoughtsHtml.match(/<div[^>]*role="toolbar"[^>]*>[\s\S]*?<\/div>/)?.[0] ?? '';
-  assert.doesNotMatch(toolbarSection, /id="thoughtFilterStatus"/);
-  assert.match(thoughtsHtml, /id="thoughtFilterStatus"[^>]*role="status"/);
+  // With fewer than 6 thoughts, avoid rendering a premature topic filter bar
+  assert.doesNotMatch(thoughtsHtml, /data-thought-filter/);
+  // Ensure the Thoughts template preserves accessible focusgroup toolbar & external live status for 6+ thoughts
+  const thoughtsTemplate = await readFile(join(ROOT, 'src/pages/thoughts/index.astro'), 'utf8');
+  assert.match(thoughtsTemplate, /thoughts\.length\s*>=\s*6/);
+  assert.match(thoughtsTemplate, /data-thought-filter/);
+  assert.match(thoughtsTemplate, /focusgroup:\s*'toolbar wrap'/);
+  const toolbarTemplateSection = thoughtsTemplate.match(/<div[\s\S]*?role="toolbar"[\s\S]*?<\/div>/)?.[0] ?? '';
+  assert.doesNotMatch(toolbarTemplateSection, /id="thoughtFilterStatus"/);
+  assert.match(thoughtsTemplate, /id="thoughtFilterStatus"[^>]*role="status"/);
+
+  // Paper items omit redundant solo-owner self-attribution and duplicate "Working Paper" venue
+  assert.doesNotMatch(papersHtml, /First Author/);
+  assert.doesNotMatch(homeHtml, /First Author/);
+  assert.doesNotMatch(homeHtml, /Symbolic Regression/);
+  assert.doesNotMatch(homeHtml, /Macro Event Study/);
 
   const thoughtDetailHtml = await readFile(join(ROOT, 'dist/thoughts/case-001/index.html'), 'utf8');
   assert.match(thoughtDetailHtml, /<nav class="article-toc" id="articleToc"/);
