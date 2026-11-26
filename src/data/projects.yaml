@@ -53,16 +53,130 @@ items:
       - "通过 BH-FDR 与净成本过滤将 1,062 个统计显著因子收敛为 155 簇 212 个核心因子与 69 维日度 Löwdin 正交基，并配备无数据依赖的 CI 契约测试。"
     links: []
 
-  - id: "finalwhite-site"
-    name: "finalwhite.lol"
-    nameZh: "finalwhite.lol"
+  - id: "us-asset-risk-system"
+    name: "US Asset Risk Research System"
+    nameZh: "美国资产风险研究体系"
+    subtitle: "Unified USD Funding, Treasury, Collateral & Cross-Border Stress Model"
+    subtitleZh: "美股、美债、美元融资、抵押清算与跨境资本统一动态风险体系"
+    year: "2026"
+    yearZh: "2026"
+    status: "Research System"
+    statusZh: "研究系统"
+    featured: true
+    tags:
+      - "Python"
+      - "Macro Risk"
+      - "USD Funding"
+      - "Stress Testing"
+    summary: "Five-module dynamic risk model and live Grafana monitoring workbench covering US equities, Treasuries, USD funding markets, collateral clearing constraints, and cross-border capital reactions."
+    summaryZh: "覆盖美股、美债、美元融资、抵押清算约束与跨境资本反应的五模块统一动态模型及本机 Grafana 实时监测工作台。"
+    highlights:
+      - "Integrates 13 live series across six monitoring domains with 38 audited parameter baselines, pre-sample quantile thresholds, 54 rule-sensitivity checks, and 5,760 conditional cash stress tests."
+      - "Evaluates nine daily/weekly public warning candidates and 108 ALFRED historical debt-service snapshots on held-out episodes, explicitly reporting that no public signal meets early-warning admission criteria."
+      - "Cross-checks clearing-house payment timing (CME/FICC), FX basis, and repo roll-over mechanics via independent SQL recalculation while flagging unobserved institutional parameters."
+    highlightsZh:
+      - "整合 6 个监测领域的 13 条真实序列与 38 组参数依据，基于事前样本分位数设定阈值，输出 54 组规则敏感性与 5,760 组条件现金压力测试。"
+      - "在保留历史事件上检验 9 项日/周度公开预警候选与 108 份 ALFRED 家庭偿债历史快照，如实给出「当前公开信号均未通过提前预警准入」的克制结论。"
+      - "针对 CME/FICC 清算支付时序、外汇基差与回购续作建立独立 SQL 复算校验，并显式标注未观测的机构级参数边界。"
+    links: []
+
+  - id: "auto-mining-loop"
+    name: "Auto Mining Loop"
+    nameZh: "Auto Mining Loop"
+    subtitle: "Diagnostic-Driven Auto-Research & Research-Harness Evolution"
+    subtitleZh: "诊断驱动的自动研究回路与研究框架进化（harness²）"
+    year: "2026"
+    yearZh: "2026"
+    status: "Source-Available"
+    statusZh: "源码公开"
+    featured: true
+    tags:
+      - "Python"
+      - "Auto-Research"
+      - "Harness Evolution"
+      - "Reproducibility"
+    summary: "Reproducible code, synthetic benchmark, and V001–V003 study artifacts for diagnostic-driven proposer/route loops and research-harness evolution under common-support evaluation."
+    summaryZh: "诊断驱动的 proposer/route 自动研究回路与 harness² 进化代码库，完整包含合成基准、V001–V003 实验配置与论文统计复算脚本。"
+    highlights:
+      - "Implements Propose–Probe–Compose, atomic proposals, active-branch vs. frozen-champion tracking, probe-only exploration, and common-support final evaluation."
+      - "Evaluates the V003 development panel across 6 tasks, 2 splits, 24 paired units, and 288 model calls (2017–2020), showing memory beats fixed (+0.0110 median, exact sign-flip p = 0.03125) and random (+0.0035, p = 0.03125) while reporting null Holm-adjusted contrasts against scalar and diagnostic arms."
+      - "Enforces strict data-boundary hygiene: ships frozen derived CSVs, synthetic pytest suites, and automated manuscript statistics/figure verification without leaking raw market data."
+    highlightsZh:
+      - "实现 Propose–Probe–Compose、原子提案、active branch / frozen champion 对照、probe-only 探索与共同支持终评机制。"
+      - "在 V003 开发面板（6 任务、2 划分、24 个配对单元、288 次模型调用，2017–2020）上验证：memory 显著优于 fixed（中位差 +0.0110，精确符号翻转 p = 0.03125）与 random（+0.0035，p = 0.03125），并如实披露其与 scalar / diagnostic 对比经 Holm 校正无显著差异。"
+      - "严格隔离原始市场数据边界，公开克隆即可直接运行合成基准测试、论文统计复算与图表一致性检查。"
+    links:
+      - label: "GitHub"
+        url: "https://github.com/Alyosha28/auto-mining-loop"
+
+  - id: "research-skill"
+    name: "research-skill"
+    nameZh: "research-skill"
+    subtitle: "Verifiable Experiment Protocol & Resumable Research Skill for Agents"
+    subtitleZh: "面向科研 Agent 的可检验实验协议与可恢复研究框架"
+    year: "2026"
+    yearZh: "2026"
+    status: "Open Source"
+    statusZh: "开源"
+    featured: true
+    tags:
+      - "Agent Skills"
+      - "Propose-Probe-Compose"
+      - "Reproducible Research"
+      - "Python"
+    summary: "General-purpose Agent Skill that structures LLM-assisted research into pre-locked designs, bounded real-execution probes, common-support paired comparisons, and commit-bound release audits."
+    summaryZh: "通用科研 Agent Skill，通过 Propose–Probe–Compose 协议将大模型推理与宿主真实执行结合，提供设计锁定、共同支持配对对照、失败留痕与断点恢复能力。"
+    highlights:
+      - "Formalizes candidate search vs. research-harness evolution with five explicit routing actions (EXPLOIT, REPAIR, FORK, REFRAME, STOP), pre-read design locks, and E1–E4 evidence grading."
+      - "Enforces isolated Git worktree patch execution, real usage/budget tracking for interrupted runs, and commit-bound audit gates that block release on open high-severity findings."
+      - "Ships four stdlib-only Python contract checkers (research record, state, campaign, and audit report) backed by 72 regression tests and 12 behavioral/trigger evaluations."
+    highlightsZh:
+      - "明确区分候选搜索与研究框架进化两层问题，规范五类研究路线（EXPLOIT / REPAIR / FORK / REFRAME / STOP）、读取结果前设计锁定卡与 E1–E4 证据分级。"
+      - "支持独立 Git worktree 路径受限补丁执行、真实用量与断点恢复状态保存，以及绑定提交的发布审计门槛（未关闭高危问题即阻断发布）。"
+      - "内置四个零外部依赖的 Python 契约校验器（主张记录、研究状态、运行清单、审计报告），配套 72 项回归测试与 12 组行为/触发评测。"
+    links:
+      - label: "GitHub"
+        url: "https://github.com/Alyosha28/research-skill"
+
+  - id: "analyst-collective"
+    name: "AnalystCollective"
+    nameZh: "AnalystCollective"
+    subtitle: "Damodaran-Method Fundamental Equity Valuation Engine"
+    subtitleZh: "基于 Damodaran 六层估值框架的基本面权益估值引擎"
+    year: "2026"
+    yearZh: "2026"
+    status: "Open Source"
+    statusZh: "开源"
+    featured: true
+    tags:
+      - "Python"
+      - "DCF / Monte Carlo"
+      - "Multi-Agent"
+      - "Equity Valuation"
+    summary: "Transparent, agent-orchestrated fundamental equity valuation engine translating Damodaran's 'Story → Numbers → Value' framework into runnable Python models, margin-of-safety bands, and auditable PDF reports."
+    summaryZh: "透明可审计的 AI 多智能体基本面估值引擎，将 Damodaran「故事 → 数字 → 价值」六层框架工程化为可复现的 Python 估值代码与研报流水线。"
+    highlights:
+      - "Ships 10 valuation programs covering DCF, Monte Carlo simulation, reverse DCF, breakeven analysis, SOTP, and comps alongside six company-archetype playbooks (growth, financials, cyclicals, pre-profit, mature, holding companies)."
+      - "Orchestrates 14 sub-skills and 17 sub-agents across parallel execution waves with skeptical adversarial review at every step and cross-model Type-A/Type-B quality gates."
+      - "Enforces assumption disclosure, terminal-value share and bear-case parity, tiered data confidence, and visually verified PDF report rendering."
+    highlightsZh:
+      - "内置 10 个 Python 估值模块（DCF、蒙特卡洛、Reverse DCF、盈亏平衡、SOTP、可比公司）与 6 类企业原型剧本（成长、金融、周期、亏损早期、成熟、控股公司）。"
+      - "通过 14 个子技能与 17 个独立子智能体组成并行编排流水线，每一步均接入对抗式审查及跨模型 Type-A/Type-B 质量门禁。"
+      - "强制披露关键假设、终值占比、多空对称论证与数据置信分级，并支持经 PDF 渲染视觉校验的研究报告输出。"
+    links:
+      - label: "GitHub"
+        url: "https://github.com/Alyosha28/AnalystCollective"
+
+  - id: "alba-incompleta"
+    name: "Alba Incompleta"
+    nameZh: "Alba Incompleta"
     subtitle: "Personal Homepage & Digital Garden"
     subtitleZh: "个人主页与数字花园"
     year: "2026"
     yearZh: "2026"
     status: "Open Source"
     statusZh: "开源"
-    featured: true
+    featured: false
     tags:
       - "Astro 5"
       - "Modern CSS"
@@ -78,4 +192,4 @@ items:
       - "基于 CSS 级联层、light-dark() 色彩令牌、原生 popover 响应式导航与滚动驱动阅读进度条构建。"
     links:
       - label: "GitHub"
-        url: "https://github.com/Alyosha28"
+        url: "https://github.com/Alyosha28/dongfangbai"
