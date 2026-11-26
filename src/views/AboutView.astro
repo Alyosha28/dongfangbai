@@ -12,17 +12,30 @@ const { locale = 'en' } = Astro.props;
 const ui = getUi(locale);
 const profile = getProfile(locale);
 const displayName = locale === 'zh' ? profile.nativeName || profile.name : profile.name;
+const secondaryName = locale === 'zh' ? profile.name : profile.nativeName;
 ---
 <Site
   view="about"
   locale={locale}
   title={`${ui.about.titleSuffix} — ${displayName}`}
-  description={ui.about.description(displayName, profile.moniker)}
+  description={ui.about.description(displayName, secondaryName)}
 >
   <header class="page-header">
     <h1>{ui.about.heading}</h1>
-    <p class="page-intro" lang="zh-CN">
-      {profile.nativeName} · {profile.moniker} — 「{profile.epigraph}」
+    <p class="page-intro" lang={locale === 'zh' ? 'zh-CN' : 'en'}>
+      <span>{displayName}</span>
+      {secondaryName && (
+        <>
+          {' · '}
+          <span lang={locale === 'zh' ? 'en' : 'zh-CN'}>{secondaryName}</span>
+        </>
+      )}
+      {profile.epigraph && (
+        <>
+          {' — '}
+          <span lang="zh-CN">「{profile.epigraph}」</span>
+        </>
+      )}
     </p>
   </header>
 

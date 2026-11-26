@@ -1,4 +1,4 @@
-# Xianzhuo Huang — Personal Site (`finalwhite.lol`)
+# Alba (黍秋) — Personal Site (`finalwhite.lol`)
 
 个人主页与数字花园，基于 **Astro 5** 静态生成，托管在 Cloudflare Workers (`finalwhite.lol`)。包含个人简介、项目、工作论文与随想文章，以及一只可点击/暂停的像素风小老鼠桌宠。
 

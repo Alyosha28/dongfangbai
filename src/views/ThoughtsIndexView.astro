@@ -30,18 +30,17 @@ const allTags = Array.from(tagSet);
 const showFilter = thoughts.length >= 6 && allTags.length > 1;
 const toolbarAttrs = { focusgroup: 'toolbar wrap' } as Record<string, string>;
 const displayName = locale === 'zh' ? profile.nativeName || profile.name : profile.name;
+const secondaryName = locale === 'zh' ? profile.name : profile.nativeName;
 ---
 <Site
   view="thoughts"
   locale={locale}
   title={`${ui.thoughts.titleSuffix} — ${displayName}`}
-  description={ui.thoughts.description(displayName, profile.moniker)}
+  description={ui.thoughts.description(displayName, secondaryName)}
 >
   <header class="page-header page-header--flush">
     <h1>{ui.thoughts.heading}</h1>
-    <p class="page-intro">
-      {ui.thoughts.introPrefix}<a href="/rss.xml">RSS</a>{ui.thoughts.introSuffix}
-    </p>
+    <p class="page-intro">{ui.thoughts.intro}</p>
     {showFilter && (
       <>
         <div

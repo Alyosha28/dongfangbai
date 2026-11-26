@@ -7,7 +7,6 @@ export function localizePath(path: string, locale: Locale): string {
     path.startsWith('https://') ||
     path.startsWith('mailto:') ||
     path.startsWith('#') ||
-    path === '/rss.xml' ||
     path.endsWith('.pdf')
   ) {
     return path;
@@ -87,8 +86,7 @@ export interface UiStrings {
   thoughts: {
     titleSuffix: string;
     heading: string;
-    introPrefix: string;
-    introSuffix: string;
+    intro: string;
     description: (name: string, moniker: string) => string;
     filterAria: string;
     filterAll: string;
@@ -136,8 +134,6 @@ export interface UiStrings {
     inkPrefix: string;
     copyEmailTitle: string;
     copyEmailMeta: string;
-    rssTitle: string;
-    rssSub: string;
     petTitle: string;
     petSub: string;
     petMeta: string;
@@ -205,9 +201,11 @@ const EN_UI: UiStrings = {
   thoughts: {
     titleSuffix: 'Thoughts',
     heading: 'Thoughts',
-    introPrefix: 'Essays, market reflections, and reading notes. Updates are published via ',
-    introSuffix: '.',
-    description: (name, moniker) => `Essays, reading notes, and reflections by ${name} (${moniker}).`,
+    intro: 'Essays, market reflections, and reading notes.',
+    description: (name, moniker) =>
+      moniker
+        ? `Essays, reading notes, and reflections by ${name} (${moniker}).`
+        : `Essays, reading notes, and reflections by ${name}.`,
     filterAria: 'Filter thoughts by topic',
     filterAll: 'All',
     filterEmpty: 'No thoughts match this topic yet.',
@@ -226,7 +224,10 @@ const EN_UI: UiStrings = {
   about: {
     titleSuffix: 'About',
     heading: 'About',
-    description: (name, moniker) => `Background, research interests, and contact details for ${name} (${moniker}).`,
+    description: (name, moniker) =>
+      moniker
+        ? `Background, research interests, and contact details for ${name} (${moniker}).`
+        : `Background, research interests, and contact details for ${name}.`,
     introduction: 'Introduction',
     researchInterests: 'Research Interests',
     experienceAndEducation: 'Experience & Education',
@@ -254,8 +255,6 @@ const EN_UI: UiStrings = {
     inkPrefix: 'Ink Edition: ',
     copyEmailTitle: 'Copy Email Address',
     copyEmailMeta: 'Copy',
-    rssTitle: 'RSS Feed',
-    rssSub: 'Subscribe to thoughts via /rss.xml',
     petTitle: 'Greet Pixel Mouse Companion',
     petSub: 'Wake companion with a wave',
     petMeta: 'Companion',
@@ -323,9 +322,9 @@ const ZH_UI: UiStrings = {
   thoughts: {
     titleSuffix: '随笔',
     heading: '随笔',
-    introPrefix: '长文随笔、市场观察与读书笔记，更新同步发布于 ',
-    introSuffix: '。',
-    description: (name, moniker) => `${name}（${moniker}）的随笔、读书笔记与思考。`,
+    intro: '长文随笔、市场观察与读书笔记。',
+    description: (name, moniker) =>
+      moniker ? `${name}（${moniker}）的随笔、读书笔记与思考。` : `${name} 的随笔、读书笔记与思考。`,
     filterAria: '按主题筛选随笔',
     filterAll: '全部',
     filterEmpty: '该主题下暂无随笔。',
@@ -344,7 +343,8 @@ const ZH_UI: UiStrings = {
   about: {
     titleSuffix: '关于',
     heading: '关于',
-    description: (name, moniker) => `${name}（${moniker}）的个人背景、研究方向与联系方式。`,
+    description: (name, moniker) =>
+      moniker ? `${name}（${moniker}）的个人背景、研究方向与联系方式。` : `${name} 的个人背景、研究方向与联系方式。`,
     introduction: '简介',
     researchInterests: '研究方向',
     experienceAndEducation: '经历与教育',
@@ -372,8 +372,6 @@ const ZH_UI: UiStrings = {
     inkPrefix: '印色：',
     copyEmailTitle: '复制联系邮箱',
     copyEmailMeta: '复制',
-    rssTitle: 'RSS 订阅',
-    rssSub: '通过 /rss.xml 订阅随笔更新',
     petTitle: '向像素小老鼠打招呼',
     petSub: '唤醒陪伴角色挥手致意',
     petMeta: '互动',

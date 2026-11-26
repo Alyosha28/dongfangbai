@@ -26,6 +26,7 @@ const ProfileSchema = z.object({
   epigraph: optStr,
   epigraphAttribution: optStr,
   siteTitle: z.string(),
+  siteTitleZh: optStr,
   siteUrl: z.string(),
   domain: z.string(),
   description: optStr,
@@ -129,6 +130,7 @@ export function getProfile(locale: Locale = 'en'): Profile {
   if (locale !== 'zh') return raw;
   return {
     ...raw,
+    siteTitle: raw.siteTitleZh || raw.siteTitle,
     description: raw.descriptionZh || raw.description,
     tagline: raw.taglineZh || raw.tagline,
     bio: raw.bioZh.length > 0 ? raw.bioZh : raw.bio,

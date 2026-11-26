@@ -13,7 +13,8 @@ test('site-wide social links point to the owner profiles', async () => {
 
   assert.match(profile, /https:\/\/github\.com\/Alyosha28/);
   assert.match(profile, /https:\/\/x\.com\/finalwhit76/);
-  assert.match(profile, /mailto:hi@dongfangbai\.com/);
+  assert.match(profile, /mailto:shuqiu7628@gmail\.com/);
+  assert.doesNotMatch(profile, /rss\.xml/i);
 
   assert.doesNotMatch(profile, /url:\s*"https:\/\/github\.com\/"/);
   assert.doesNotMatch(profile, /url:\s*"https:\/\/x\.com\/"/);
@@ -22,6 +23,7 @@ test('site-wide social links point to the owner profiles', async () => {
     const html = await readFile(htmlUrl, 'utf8');
     assert.match(html, /href="https:\/\/github\.com\/Alyosha28"/);
     assert.match(html, /href="https:\/\/x\.com\/finalwhit76"/);
-    assert.match(html, /href="mailto:hi@dongfangbai\.com"/);
+    assert.match(html, /href="mailto:shuqiu7628@gmail\.com"/);
+    assert.doesNotMatch(html, /rss\.xml/i);
   }
 });

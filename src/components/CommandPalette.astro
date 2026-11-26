@@ -31,7 +31,7 @@ const pageRoutes = [
 ];
 
 const inkEditions = [
-  { id: 'plum', label: 'Dawn Plum', cn: '曙紫', keywords: 'ink accent theme color plum purple 曙紫 东方白' },
+  { id: 'plum', label: 'Dawn Plum', cn: '曙紫', keywords: 'ink accent theme color plum purple 曙紫 破晓 alba' },
   { id: 'cinnabar', label: 'Cinnabar Seal', cn: '朱砂', keywords: 'ink accent theme color red vermilion seal 朱砂 印章' },
   { id: 'celadon', label: 'Song Celadon', cn: '天青', keywords: 'ink accent theme color green jade teal 天青 宋瓷' },
   { id: 'noir', label: 'Ink Noir', cn: '松烟', keywords: 'ink accent theme color monochrome black minimal 松烟 黑白' },
@@ -242,21 +242,6 @@ const inkEditions = [
               </button>
             </li>
           )}
-
-          <li>
-            <a
-              class="cmd-item"
-              href="/rss.xml"
-              data-cmd-item
-              data-cmd-search="rss feed subscribe xml atom 订阅"
-            >
-              <span class="cmd-item-main">
-                <span class="cmd-item-title">{ui.cmd.rssTitle}</span>
-                <span class="cmd-item-sub">{ui.cmd.rssSub}</span>
-              </span>
-              <span class="cmd-item-meta tabular">/rss.xml</span>
-            </a>
-          </li>
 
           <li>
             <button

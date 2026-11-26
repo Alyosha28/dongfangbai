@@ -30,8 +30,12 @@ const thoughts = (await getCollection('thoughts'))
       </h1>
       <p class="intro-native" lang={locale === 'zh' ? 'en' : 'zh-CN'}>
         <span>{locale === 'zh' ? profile.name : profile.nativeName}</span>
-        <span class="intro-dot" aria-hidden="true">·</span>
-        <span lang="zh-CN">{profile.moniker}</span>
+        {profile.moniker && (
+          <>
+            <span class="intro-dot" aria-hidden="true">·</span>
+            <span lang="zh-CN">{profile.moniker}</span>
+          </>
+        )}
       </p>
       <p class="intro-lead">{profile.tagline}</p>
       <p class="intro-sub">{profile.bio[0]}</p>

@@ -7,9 +7,11 @@ import test from 'node:test';
 const ROOT = new URL('..', import.meta.url).pathname;
 
 const FORBIDDEN_PII_PATTERNS = [
+  /xianzhuo/i,
+  /\bhuang\b/i,
+  /黄显卓/,
   /151[\s-]*5865/,
   /5865[\s-]*3637/,
-  /shuqiu7628/i,
   /23\/100/,
   /CET-6/i,
   /\b538\b/,
@@ -50,7 +52,6 @@ test('built site contains all expected routes and sprite assets', async () => {
     'dist/zh/thoughts/case-002/index.html',
     'dist/zh/about/index.html',
     'dist/404.html',
-    'dist/rss.xml',
     'dist/papers/continual-execution-feedback.pdf',
     'dist/papers/evo-harness.pdf',
     'dist/pet/mouse-spritesheet.png',
@@ -60,6 +61,7 @@ test('built site contains all expected routes and sprite assets', async () => {
   for (const rel of expectedFiles) {
     assert.equal(existsSync(join(ROOT, rel)), true, `Missing built artifact: ${rel}`);
   }
+  assert.equal(existsSync(join(ROOT, 'dist/rss.xml')), false, 'RSS feed should not be generated');
 });
 
 test('each rendered page has exactly one <main>, color-scheme meta, and render-blocking expect link', async () => {
@@ -145,6 +147,13 @@ test('quick index command palette, editorial ink editions, hero seal, and signof
 test('deep-link anchors, expand-all control, TOC scrollspy nav, and epigraph colophon render properly', async () => {
   const homeHtml = await readFile(join(ROOT, 'dist/index.html'), 'utf8');
   assert.match(homeHtml, /歌未竟，东方白/);
+  assert.match(homeHtml, /<span class="site-brand-name">Alba<\/span>/);
+  assert.match(homeHtml, /<span class="site-brand-cn" lang="zh-CN">黍秋<\/span>/);
+  const brandHtml = homeHtml.match(/<a class="site-brand"[\s\S]*?<\/a>/)?.[0] ?? '';
+  assert.doesNotMatch(brandHtml, /东方白/);
+  const heroNativeHtml = homeHtml.match(/<p class="intro-native"[\s\S]*?<\/p>/)?.[0] ?? '';
+  assert.match(heroNativeHtml, /黍秋/);
+  assert.doesNotMatch(heroNativeHtml, /东方白/);
   assert.match(homeHtml, /href="\/papers#continual-execution-feedback"/);
   assert.match(homeHtml, /href="\/projects#unwilling-or-unable"/);
 
@@ -201,7 +210,7 @@ test('deep-link anchors, expand-all control, TOC scrollspy nav, and epigraph col
 
   const aboutHtml = await readFile(join(ROOT, 'dist/about/index.html'), 'utf8');
   assert.match(aboutHtml, /<dl class="channel-list">/);
-  assert.match(aboutHtml, /data-copy-text="hi@dongfangbai\.com"/);
+  assert.match(aboutHtml, /data-copy-text="shuqiu7628@gmail\.com"/);
 
   // Bilingual zh/en switcher, hreflang alternates, and /zh/ routes render properly
   assert.match(homeHtml, /id="langToggle"[^>]*href="\/zh"/);
